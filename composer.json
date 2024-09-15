@@ -1,0 +1,53 @@
+{
+    "name": "micromus/kafka-bus",
+    "description": "This is my package kafka-bus",
+    "keywords": [
+        "Micromus",
+        "kafka-bus"
+    ],
+    "homepage": "https://github.com/micromus/kafka-bus",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Micromus",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-rdkafka": "*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^2.34",
+        "pestphp/pest-plugin-arch": "^2.7",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan": "^1.12",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
+        "phpstan/phpstan-phpunit": "^1.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Micromus\\KafkaBus\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Micromus\\KafkaBus\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
