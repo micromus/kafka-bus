@@ -12,8 +12,7 @@ class KafkaConnection implements Connection
 {
     public function __construct(
         protected array $options
-    ) {
-    }
+    ) {}
 
     public function createProducer(string $topic, ProducerConfiguration $configuration): Producer
     {

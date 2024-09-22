@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Testing;
 
-use Micromus\KafkaBus\Connections\NullConnection;
 use Micromus\KafkaBus\Contracts\Producers\Producer;
 
 class ProducerFaker implements Producer

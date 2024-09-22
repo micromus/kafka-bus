@@ -15,8 +15,7 @@ class ProducerRouter
         protected Connection $connection,
         protected ProducerStreamFactory $producerStreamFactory,
         protected ProducerRoutes $routes
-    ) {
-    }
+    ) {}
 
     /**
      * @throws RouteProducerException

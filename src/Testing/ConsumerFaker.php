@@ -10,19 +10,16 @@ class ConsumerFaker implements Consumer
 {
     public function __construct(
         protected array $messages
-    ) {
-    }
+    ) {}
 
     public function getMessage(): ConsumerMessage
     {
         if (count($this->messages) == 0) {
-            throw new Exception();
+            throw new Exception;
         }
 
         return array_shift($this->messages);
     }
 
-    public function commit(ConsumerMessage $consumerMessage): void
-    {
-    }
+    public function commit(ConsumerMessage $consumerMessage): void {}
 }

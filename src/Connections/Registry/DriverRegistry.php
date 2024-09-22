@@ -29,7 +29,7 @@ class DriverRegistry
 
     private function addNullDriver(): void
     {
-        $this->add('null', fn () => new NullConnection());
+        $this->add('null', fn () => new NullConnection);
     }
 
     private function addKafkaDriver(): void

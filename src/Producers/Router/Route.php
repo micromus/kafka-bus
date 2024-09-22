@@ -7,6 +7,5 @@ readonly class Route
     public function __construct(
         public string $topicKey,
         public array $options = []
-    ) {
-    }
+    ) {}
 }

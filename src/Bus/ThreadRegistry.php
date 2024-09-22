@@ -26,10 +26,6 @@ class ThreadRegistry
         return $this->activeThreads[$connectionName];
     }
 
-    /**
-     * @param string $connectionName
-     * @return ThreadContract
-     */
     private function makeThread(string $connectionName): ThreadContract
     {
         $connection = $this->connectionRegistry

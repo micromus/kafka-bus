@@ -12,7 +12,7 @@ use Micromus\KafkaBus\Testing\ConnectionRegistryFaker;
 use Micromus\KafkaBus\Testing\ProducerMessageFaker;
 
 it('can produce message', function () {
-    $connectionFaker = new ConnectionFaker();
+    $connectionFaker = new ConnectionFaker;
     $routes = (new ProducerRoutes)
         ->add(ProducerMessageFaker::class, 'products');
 
@@ -22,11 +22,11 @@ it('can produce message', function () {
             new ProducerRouterFactory(
                 new ProducerStreamFactory(
                     new TopicNameResolver('production.', ['products' => 'fact.products.1']),
-                    new MessagePipelineFactory()
+                    new MessagePipelineFactory
                 ),
                 $routes
             ),
-            new ConsumerStreamFactory()
+            new ConsumerStreamFactory
         ),
         'default'
     );

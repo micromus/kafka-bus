@@ -12,6 +12,7 @@ class ProducerRoutes
     public function add(string $messageClass, string $topicKey, array $options = []): self
     {
         $this->routes[$messageClass] = new Route($topicKey, $options);
+
         return $this;
     }
 

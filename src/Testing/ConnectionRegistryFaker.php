@@ -9,8 +9,7 @@ class ConnectionRegistryFaker implements ConnectionRegistry
 {
     public function __construct(
         protected Connection $connection
-    ) {
-    }
+    ) {}
 
     public function connection(?string $connectionName = null): Connection
     {

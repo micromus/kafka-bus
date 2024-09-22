@@ -14,8 +14,7 @@ class Thread implements ThreadContract
         protected Connection $connection,
         protected ProducerRouter $producerRouter,
         protected ConsumerStreamFactory $consumerStreamFactory
-    ) {
-    }
+    ) {}
 
     public function publish(Message $message): void
     {

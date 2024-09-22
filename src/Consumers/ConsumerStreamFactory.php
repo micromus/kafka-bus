@@ -10,6 +10,6 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryContract
 {
     public function create(Connection $connection, ?string $listenerName = null): ConsumerStreamContract
     {
-        return new ConsumerStream();
+        return new ConsumerStream;
     }
 }

@@ -5,7 +5,7 @@ use Micromus\KafkaBus\Support\TopicNameResolver;
 
 it('resolve topic name with prefix', function () {
     $topicNameResolver = new TopicNameResolver('production.', [
-        'products' => 'fact.products.1'
+        'products' => 'fact.products.1',
     ]);
 
     expect($topicNameResolver->resolve('products'))

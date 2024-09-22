@@ -10,8 +10,7 @@ class ProducerRouterFactory
     public function __construct(
         protected ProducerStreamFactory $producerStreamFactory,
         protected ProducerRoutes $routes
-    ) {
-    }
+    ) {}
 
     public function create(Connection $connection): ProducerRouter
     {
