@@ -1,7 +1,8 @@
 <?php
 
-namespace Micromus\KafkaBus\Bus;
+namespace Micromus\KafkaBus;
 
+use Micromus\KafkaBus\Bus\ThreadRegistry;
 use Micromus\KafkaBus\Contracts\Bus\Bus as BusContract;
 use Micromus\KafkaBus\Contracts\Bus\Thread;
 use Micromus\KafkaBus\Contracts\Messages\Message;

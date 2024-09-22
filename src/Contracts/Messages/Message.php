@@ -4,5 +4,5 @@ namespace Micromus\KafkaBus\Contracts\Messages;
 
 interface Message
 {
-    public function toPayload(): mixed;
+    public function toPayload(): string;
 }

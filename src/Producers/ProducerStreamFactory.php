@@ -7,25 +7,20 @@ use Micromus\KafkaBus\Contracts\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream as ProducerStreamContract;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStreamFactory as ProducerStreamFactoryContract;
 use Micromus\KafkaBus\Contracts\TopicNameResolver;
-use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
 
 class ProducerStreamFactory implements ProducerStreamFactoryContract
 {
     public function __construct(
         protected TopicNameResolver $topicNameResolver,
         protected MessagePipelineFactory $messagePipelineFactory,
-        protected array $producerConfiguration,
-        protected array $routes
+        protected array $producerConfiguration = []
     ) {}
 
-    /**
-     * @throws RouteProducerException
-     */
-    public function create(Connection $connection, string $messageClass): ProducerStreamContract
+    public function create(Connection $connection, string $topicKey, array $options = []): ProducerStreamContract
     {
-        $rawConfiguration = $this->rawConfiguration($messageClass);
+        $rawConfiguration = $this->rawConfiguration($options);
         $configuration = $this->makeProducerConfiguration($rawConfiguration);
-        $topicName = $this->topicNameResolver->resolve($rawConfiguration['topic_key']);
+        $topicName = $this->topicNameResolver->resolve($topicKey);
 
         return new ProducerStream(
             $connection->createProducer($topicName, $configuration),
@@ -33,28 +28,15 @@ class ProducerStreamFactory implements ProducerStreamFactoryContract
         );
     }
 
-    /**
-     * @throws RouteProducerException
-     */
-    private function rawConfiguration(string $messageClass): array
+    private function rawConfiguration(array $options): array
     {
-        if (! isset($this->routes[$messageClass])) {
-            throw new RouteProducerException("Route for message [$messageClass] not found");
-        }
-
-        $routeConfiguration = $this->routes[$messageClass];
-
-        if (! isset($routeConfiguration['topic_key'])) {
-            throw new RouteProducerException("Parameter \"topic_key\" [$messageClass] is required");
-        }
-
         return [
             ...$this->producerConfiguration,
-            ...$routeConfiguration,
+            ...$options,
 
             'middlewares' => [
                 ...($this->producerConfiguration['middlewares'] ?? []),
-                ...($routeConfiguration['middlewares'] ?? []),
+                ...($options['middlewares'] ?? []),
             ],
         ];
     }

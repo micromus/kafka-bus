@@ -6,5 +6,5 @@ use Micromus\KafkaBus\Contracts\Connections\Connection;
 
 interface ProducerStreamFactory
 {
-    public function create(Connection $connection, string $messageClass): ProducerStream;
+    public function create(Connection $connection, string $topicKey, array $options = []): ProducerStream;
 }

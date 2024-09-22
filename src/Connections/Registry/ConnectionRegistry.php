@@ -3,9 +3,10 @@
 namespace Micromus\KafkaBus\Connections\Registry;
 
 use Micromus\KafkaBus\Contracts\Connections\Connection;
+use Micromus\KafkaBus\Contracts\Connections\ConnectionRegistry as ConnectionRegistryContract;
 use Micromus\KafkaBus\Exceptions\Connections\ConnectionException;
 
-class ConnectionRegistry
+class ConnectionRegistry implements ConnectionRegistryContract
 {
     protected array $activeConnections = [];
 
@@ -39,7 +40,7 @@ class ConnectionRegistry
             $availableConnections = implode(', ', array_keys($this->connectionsConfig));
 
             throw new ConnectionException(
-                "Connection [$connectionName] not defined kafka-bus.connections.".
+                "Connection [$connectionName] not defined.".
                     " Available connections: $availableConnections"
             );
         }
