@@ -9,6 +9,7 @@ class ProducerMessage
      */
     public function __construct(
         public string $payload,
-        public array $headers = []
+        public array $headers = [],
+        public int $partition = RD_KAFKA_PARTITION_UA,
     ) {}
 }

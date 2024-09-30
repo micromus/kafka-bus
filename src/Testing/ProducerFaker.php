@@ -2,15 +2,15 @@
 
 namespace Micromus\KafkaBus\Testing;
 
-use Micromus\KafkaBus\Connections\NullConnection;
 use Micromus\KafkaBus\Contracts\Producers\Producer;
 
 class ProducerFaker implements Producer
 {
     public function __construct(
         protected ConnectionFaker $connection,
-        protected string $topicName
-    ) {}
+        protected string $topicName,
+    ) {
+    }
 
     public function produce(array $messages): void
     {

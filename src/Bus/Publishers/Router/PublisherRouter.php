@@ -1,20 +1,20 @@
 <?php
 
-namespace Micromus\KafkaBus\Producers\Router;
+namespace Micromus\KafkaBus\Bus\Publishers\Router;
 
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
 
-class ProducerRouter
+class PublisherRouter
 {
     protected array $activeProducerStreams = [];
 
     public function __construct(
         protected Connection $connection,
         protected ProducerStreamFactory $producerStreamFactory,
-        protected ProducerRoutes $routes
+        protected PublisherRoutes $routes
     ) {
     }
 

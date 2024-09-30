@@ -2,7 +2,9 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-class NullProducer implements \Micromus\KafkaBus\Contracts\Producers\Producer
+use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
+
+class NullProducer implements ProducerContract
 {
     public function produce(array $messages): void
     {

@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Producers;
 
+use Micromus\KafkaBus\Bus\Publishers\Options;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream as ProducerStreamContract;
@@ -11,42 +12,27 @@ use Micromus\KafkaBus\Contracts\TopicNameResolver;
 class ProducerStreamFactory implements ProducerStreamFactoryContract
 {
     public function __construct(
-        protected TopicNameResolver $topicNameResolver,
         protected MessagePipelineFactory $messagePipelineFactory,
-        protected array $producerConfiguration = []
+        protected TopicNameResolver $topicNameResolver
     ) {}
 
-    public function create(Connection $connection, string $topicKey, array $options = []): ProducerStreamContract
+    public function create(Connection $connection, string $topicKey, Options $options): ProducerStreamContract
     {
-        $rawConfiguration = $this->rawConfiguration($options);
-        $configuration = $this->makeProducerConfiguration($rawConfiguration);
+        $configuration = $this->makeProducerConfiguration($options);
         $topicName = $this->topicNameResolver->resolve($topicKey);
 
         return new ProducerStream(
             $connection->createProducer($topicName, $configuration),
-            $this->messagePipelineFactory->create($rawConfiguration['middlewares'])
+            $this->messagePipelineFactory->create($options->middlewares)
         );
     }
 
-    private function rawConfiguration(array $options): array
+    private function makeProducerConfiguration(Options $options): Configuration
     {
-        return [
-            ...$this->producerConfiguration,
-            ...$options,
-
-            'middlewares' => [
-                ...($this->producerConfiguration['middlewares'] ?? []),
-                ...($options['middlewares'] ?? []),
-            ],
-        ];
-    }
-
-    private function makeProducerConfiguration(array $rawConfiguration): ProducerConfiguration
-    {
-        return new ProducerConfiguration(
-            compression: $rawConfiguration['compression'] ?? 'snappy',
-            flushTimeout: $rawConfiguration['flush_timeout'] ?? 5000,
-            flushRetries: $rawConfiguration['flush_retries'] ?? 5
+        return new Configuration(
+            additionalOptions: $options->additionalOptions,
+            flushTimeout: $options->flushTimeout,
+            flushRetries: $options->flushRetries,
         );
     }
 }

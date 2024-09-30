@@ -2,10 +2,10 @@
 
 namespace Micromus\KafkaBus\Bus;
 
+use Micromus\KafkaBus\Bus\Listeners\ListenerFactory;
+use Micromus\KafkaBus\Bus\Publishers\PublisherFactory;
 use Micromus\KafkaBus\Contracts\Bus\Thread as ThreadContract;
 use Micromus\KafkaBus\Contracts\Connections\ConnectionRegistry;
-use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
-use Micromus\KafkaBus\Producers\Router\ProducerRouterFactory;
 
 class ThreadRegistry
 {
@@ -13,8 +13,8 @@ class ThreadRegistry
 
     public function __construct(
         protected ConnectionRegistry $connectionRegistry,
-        protected ProducerRouterFactory $producerRouterFactory,
-        protected ConsumerStreamFactory $consumerStreamFactory
+        protected PublisherFactory $publisherFactory,
+        protected ListenerFactory $listenerFactory
     ) {}
 
     public function thread(string $connectionName): ThreadContract
@@ -37,8 +37,8 @@ class ThreadRegistry
 
         return new Thread(
             $connection,
-            $this->producerRouterFactory->create($connection),
-            $this->consumerStreamFactory
+            $this->listenerFactory,
+            $this->publisherFactory
         );
     }
 }

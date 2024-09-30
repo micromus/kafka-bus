@@ -16,7 +16,8 @@ class Producer implements ProducerContract
     public function __construct(
         protected KafkaProducer $producer,
         protected string $topicName,
-        protected RetryRepeater $retryRepeater = new RetryRepeater
+        protected RetryRepeater $retryRepeater = new RetryRepeater,
+        protected int $timeout = 2000
     ) {
         $this->topic = $this->producer
             ->newTopic($this->topicName);
@@ -37,7 +38,7 @@ class Producer implements ProducerContract
     private function poll(ProducerMessage $producerMessage): void
     {
         $this->topic->producev(
-            partition: -1,
+            partition: $producerMessage->partition,
             msgflags: RD_KAFKA_MSG_F_BLOCK,
             payload: $producerMessage->payload,
             headers: $producerMessage->headers
@@ -57,7 +58,7 @@ class Producer implements ProducerContract
      */
     private function attemptFlush(): void
     {
-        $result = $this->producer->flush(1000);
+        $result = $this->producer->flush($this->timeout);
 
         if ($result === RD_KAFKA_RESP_ERR_NO_ERROR) {
             return;

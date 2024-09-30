@@ -16,7 +16,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "ext-rdkafka": "*"
+        "ext-rdkafka": "*",
+        "ext-pcntl": "*"
     },
     "require-dev": {
         "pestphp/pest": "^2.34",

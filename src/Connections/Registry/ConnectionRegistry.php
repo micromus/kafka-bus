@@ -12,14 +12,11 @@ class ConnectionRegistry implements ConnectionRegistryContract
 
     public function __construct(
         protected DriverRegistry $driverRegistry,
-        protected string $defaultConnection,
         protected array $connectionsConfig
     ) {}
 
-    public function connection(?string $connectionName = null): Connection
+    public function connection(string $connectionName): Connection
     {
-        $connectionName = $connectionName ?: $this->defaultConnection;
-
         if (! isset($this->activeConnections[$connectionName])) {
             $this->activeConnections[] = $this->makeConnection($connectionName);
         }

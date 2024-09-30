@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
+use Micromus\KafkaBus\Consumers\Commiters\Commiter;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
 use Micromus\KafkaBus\Contracts\Consumers\Consumer as ConsumerContract;
@@ -18,6 +19,7 @@ class Consumer implements ConsumerContract
     public function __construct(
         protected KafkaConsumer $consumer,
         protected array $topicNames,
+        protected Commiter $commiter,
         protected RetryRepeater $retryRepeater = new RetryRepeater,
         protected int $consumerTimeout = 2000
     ) {
@@ -51,9 +53,6 @@ class Consumer implements ConsumerContract
     public function commit(ConsumerMessage $consumerMessage): void
     {
         $this->retryRepeater
-            ->execute(function () use ($consumerMessage) {
-                $this->consumer
-                    ->commit($consumerMessage->meta->message);
-            });
+            ->execute(fn () => $this->commiter->commit($consumerMessage));
     }
 }

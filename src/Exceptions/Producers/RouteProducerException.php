@@ -2,4 +2,6 @@
 
 namespace Micromus\KafkaBus\Exceptions\Producers;
 
-class RouteProducerException extends ProducerException {}
+use LogicException;
+
+class RouteProducerException extends LogicException {}
