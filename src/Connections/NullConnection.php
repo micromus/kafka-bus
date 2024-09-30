@@ -14,7 +14,7 @@ class NullConnection implements Connection
 {
     public function createProducer(string $topicName, ProducerConfiguration $configuration): Producer
     {
-        return new NullProducer();
+        return new NullProducer;
     }
 
     /**

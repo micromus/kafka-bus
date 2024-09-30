@@ -17,6 +17,7 @@ interface Thread
 
     /**
      * @param  Message[]  $messages
+     *
      * @throws RouteProducerException
      */
     public function publishMany(array $messages): void;
