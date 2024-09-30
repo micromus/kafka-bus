@@ -1,9 +1,6 @@
 <?php
 
 use Micromus\KafkaBus\Bus;
-use Micromus\KafkaBus\Bus\Listeners\ListenerFactory;
-use Micromus\KafkaBus\Bus\Publishers\Router\ProducerRouterFactory;
-use Micromus\KafkaBus\Bus\Publishers\Router\PublisherRoutes;
 use Micromus\KafkaBus\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Messages\MessagePipelineFactory;
@@ -19,18 +16,18 @@ test('can consume message', function () {
     $topicNameResolver = new TopicNameResolver('production.', ['products' => 'fact.products.1']);
     $connectionFaker = new ConnectionFaker($topicNameResolver);
 
-    $message = new Message();
+    $message = new Message;
     $message->payload = 'test-message';
     $message->headers = ['foo' => 'bar'];
 
     $connectionFaker->addMessage('products', $message);
 
     $listenerOptions = new Bus\Listeners\Options(
-        (new Bus\Listeners\Router\Routes())
+        (new Bus\Listeners\Router\Routes)
             ->add(new Bus\Listeners\Router\Route('products', ConsumerHandlerFaker::class))
     );
 
-    $listenerRegistry = (new Bus\Listeners\ListenerRegistry())
+    $listenerRegistry = (new Bus\Listeners\ListenerRegistry)
         ->add('default-listener', $listenerOptions);
 
     $bus = new Bus(
@@ -38,15 +35,15 @@ test('can consume message', function () {
             new ConnectionRegistryFaker($connectionFaker),
             new Bus\Publishers\PublisherFactory(
                 new ProducerStreamFactory(
-                    new MessagePipelineFactory(),
+                    new MessagePipelineFactory,
                     $topicNameResolver
                 )
             ),
             new Bus\Listeners\ListenerFactory(
                 new ConsumerStreamFactory(
-                    new MessagePipelineFactory(),
+                    new MessagePipelineFactory,
                     new ConsumerRouterFactory(
-                        new NativeResolver(),
+                        new NativeResolver,
                         $topicNameResolver,
                     )
                 ),

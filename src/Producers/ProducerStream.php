@@ -2,9 +2,9 @@
 
 namespace Micromus\KafkaBus\Producers;
 
+use Micromus\KafkaBus\Contracts\Messages\HasHeaders;
 use Micromus\KafkaBus\Contracts\Messages\HasPartition;
 use Micromus\KafkaBus\Contracts\Messages\Message;
-use Micromus\KafkaBus\Contracts\Messages\HasHeaders;
 use Micromus\KafkaBus\Contracts\Messages\MessagePipeline;
 use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream as ProducerStreamContract;

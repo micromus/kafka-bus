@@ -9,8 +9,7 @@ class ProducerFaker implements Producer
     public function __construct(
         protected ConnectionFaker $connection,
         protected string $topicName,
-    ) {
-    }
+    ) {}
 
     public function produce(array $messages): void
     {

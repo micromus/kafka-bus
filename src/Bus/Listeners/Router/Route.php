@@ -10,6 +10,5 @@ readonly class Route
         public string $topicKey,
         public string $handlerClass,
         public string $messageFactoryClass = NativeMessageFactory::class,
-    ) {
-    }
+    ) {}
 }

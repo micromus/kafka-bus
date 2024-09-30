@@ -12,6 +12,7 @@ class Routes
     public function add(Route $route): self
     {
         $this->routes[$route->topicKey] = $route;
+
         return $this;
     }
 

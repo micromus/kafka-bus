@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-
 class ConsumerRoutes
 {
     /**
@@ -18,6 +17,7 @@ class ConsumerRoutes
     public function add(string $topicName, string $handlerClass, string $messageFactory): self
     {
         $this->routes[$topicName] = new Route($handlerClass, $messageFactory);
+
         return $this;
     }
 

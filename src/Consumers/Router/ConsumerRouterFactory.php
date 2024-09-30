@@ -11,12 +11,11 @@ class ConsumerRouterFactory
     public function __construct(
         protected Resolver $resolver,
         protected TopicNameResolver $topicNameResolver
-    ) {
-    }
+    ) {}
 
     public function create(Routes $routes): ConsumerRouter
     {
-        $consumerRoutes = new ConsumerRoutes();
+        $consumerRoutes = new ConsumerRoutes;
         $routesCollection = $routes->all();
 
         foreach ($routesCollection as $route) {

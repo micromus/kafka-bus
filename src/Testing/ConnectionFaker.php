@@ -21,8 +21,7 @@ class ConnectionFaker implements Connection
 
     public function __construct(
         protected TopicNameResolver $topicNameResolver,
-    ) {
-    }
+    ) {}
 
     public function addMessage(string $topicKey, KafkaMessage $message): void
     {
@@ -39,6 +38,6 @@ class ConnectionFaker implements Connection
 
     public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): Consumer
     {
-        return new ConsumerFaker($this, new ConsumerMessageConverter(), $this->consumeMessages);
+        return new ConsumerFaker($this, new ConsumerMessageConverter, $this->consumeMessages);
     }
 }

@@ -11,18 +11,17 @@ use Micromus\KafkaBus\Contracts\Messages\Message;
 
 class Thread implements ThreadContract
 {
-    protected Publisher|null $publisher = null;
+    protected ?Publisher $publisher = null;
 
     public function __construct(
         protected Connection $connection,
         protected ListenerFactory $listenerFactory,
         protected PublisherFactory $publisherFactory,
-    ) {
-    }
+    ) {}
 
     private function getPublisher(): Publisher
     {
-        if (null === $this->publisher) {
+        if ($this->publisher === null) {
             $this->publisher = $this->publisherFactory
                 ->create($this->connection);
         }

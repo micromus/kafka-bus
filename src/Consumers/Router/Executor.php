@@ -10,8 +10,7 @@ class Executor
     public function __construct(
         protected mixed $handler,
         protected MessageFactory $factory
-    ) {
-    }
+    ) {}
 
     public function execute(ConsumerMessage $message): void
     {
