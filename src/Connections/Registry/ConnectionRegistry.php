@@ -18,7 +18,7 @@ class ConnectionRegistry implements ConnectionRegistryContract
     public function connection(string $connectionName): Connection
     {
         if (! isset($this->activeConnections[$connectionName])) {
-            $this->activeConnections[] = $this->makeConnection($connectionName);
+            $this->activeConnections[$connectionName] = $this->makeConnection($connectionName);
         }
 
         return $this->activeConnections[$connectionName];
