@@ -9,8 +9,8 @@ use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Contracts\Consumers\Consumer as ConsumerContract;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStream as ConsumerStreamContract;
 use Micromus\KafkaBus\Contracts\Messages\MessagePipeline;
-use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
+use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
@@ -34,10 +34,9 @@ class ConsumerStream implements ConsumerStreamContract
         protected ConsumerContract $consumer,
         protected ConsumerRouter $consumerRouter,
         protected MessagePipeline $messagePipeline,
-        protected MessageCounter $messageCounter = new MessageCounter(),
-        protected Timer $timer = new Timer()
-    ) {
-    }
+        protected MessageCounter $messageCounter = new MessageCounter,
+        protected Timer $timer = new Timer
+    ) {}
 
     public function listen(): void
     {
@@ -68,18 +67,19 @@ class ConsumerStream implements ConsumerStreamContract
                 if ($this->messageCounter->isCompleted()) {
                     throw new MessagesCompletedConsumerException('Превышено количество прочитанных сообщений');
                 }
-            } while (!$this->forceStop);
-        } catch (KafkaMessagesEndedException) {}
+            } while (! $this->forceStop);
+        } catch (KafkaMessagesEndedException) {
+        }
     }
 
     private function handleMessage(ConsumerMessage $message): void
     {
         $this->messagePipeline
             ->then($message, function (ConsumerMessage $message) {
-                 $this->consumerRouter
+                $this->consumerRouter
                     ->handle($message);
 
-                 return $message;
+                return $message;
             });
 
         $this->consumer->commit($message);
@@ -96,8 +96,8 @@ class ConsumerStream implements ConsumerStreamContract
     {
         pcntl_async_signals(true);
 
-        pcntl_signal(SIGQUIT, fn() => $this->forceStop());
-        pcntl_signal(SIGTERM, fn() => $this->forceStop());
-        pcntl_signal(SIGINT, fn() => $this->forceStop());
+        pcntl_signal(SIGQUIT, fn () => $this->forceStop());
+        pcntl_signal(SIGTERM, fn () => $this->forceStop());
+        pcntl_signal(SIGINT, fn () => $this->forceStop());
     }
 }

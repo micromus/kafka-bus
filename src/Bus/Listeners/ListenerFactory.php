@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
-use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Consumers\ListenerException;
@@ -11,9 +10,8 @@ class ListenerFactory
 {
     public function __construct(
         protected ConsumerStreamFactory $streamFactory,
-        protected ListenerRegistry $registry = new ListenerRegistry(),
-    ) {
-    }
+        protected ListenerRegistry $registry = new ListenerRegistry,
+    ) {}
 
     public function create(Connection $connection, string $listenerName): Listener
     {

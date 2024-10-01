@@ -8,6 +8,6 @@ class NativeResolver implements Resolver
 {
     public function resolve(string $class): mixed
     {
-        return new $class();
+        return new $class;
     }
 }

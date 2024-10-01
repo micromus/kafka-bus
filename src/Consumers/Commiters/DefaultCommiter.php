@@ -9,8 +9,7 @@ class DefaultCommiter implements Commiter
 {
     public function __construct(
         protected KafkaConsumer $consumer
-    ) {
-    }
+    ) {}
 
     public function commit(ConsumerMessage $consumerMessage): void
     {

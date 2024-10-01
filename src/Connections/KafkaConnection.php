@@ -4,13 +4,13 @@ namespace Micromus\KafkaBus\Connections;
 
 use Micromus\KafkaBus\Consumers\Commiters\DefaultCommiter;
 use Micromus\KafkaBus\Consumers\Commiters\VoidCommiter;
-use Micromus\KafkaBus\Consumers\Consumer;
 use Micromus\KafkaBus\Consumers\Configuration as ConsumerConfiguration;
+use Micromus\KafkaBus\Consumers\Consumer;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\Consumer as ConsumerContract;
 use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
-use Micromus\KafkaBus\Producers\Producer;
 use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
+use Micromus\KafkaBus\Producers\Producer;
 use Micromus\KafkaBus\Support\RetryRepeater;
 use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
@@ -50,8 +50,8 @@ class KafkaConnection implements Connection
         return new Consumer(
             consumer: $consumer,
             topicNames: $topicNames,
-            commiter: $configuration->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter(),
-            retryRepeater: new RetryRepeater(),
+            commiter: $configuration->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter,
+            retryRepeater: new RetryRepeater,
             consumerTimeout: $configuration->consumerTimeout,
         );
     }
@@ -68,7 +68,7 @@ class KafkaConnection implements Connection
 
     private function makeConf(array $options): Conf
     {
-        $conf = new Conf();
+        $conf = new Conf;
 
         foreach ($options as $key => $value) {
             $conf->set($key, $value);

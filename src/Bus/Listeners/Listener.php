@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
-use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
@@ -15,8 +14,7 @@ class Listener
         protected Connection $connection,
         protected ConsumerStreamFactory $consumerStreamFactory,
         protected Options $options
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ConsumerException

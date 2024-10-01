@@ -6,7 +6,7 @@ readonly class Configuration
 {
     public function __construct(
         public array $additionalOptions = [],
-        public int   $flushTimeout = 5000,
-        public int   $flushRetries = 10
+        public int $flushTimeout = 5000,
+        public int $flushRetries = 10
     ) {}
 }

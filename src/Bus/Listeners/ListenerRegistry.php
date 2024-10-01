@@ -6,9 +6,10 @@ class ListenerRegistry
 {
     protected array $listeners = [];
 
-    public function add(string $listenerName, Options $options = new Options()): self
+    public function add(string $listenerName, Options $options = new Options): self
     {
         $this->listeners[$listenerName] = $options;
+
         return $this;
     }
 

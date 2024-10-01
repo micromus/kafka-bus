@@ -6,7 +6,8 @@ interface Resolver
 {
     /**
      * @template T
-     * @param class-string<T> $class
+     *
+     * @param  class-string<T>  $class
      * @return T
      */
     public function resolve(string $class): mixed;

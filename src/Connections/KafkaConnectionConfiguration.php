@@ -24,7 +24,7 @@ class KafkaConnectionConfiguration
         'delivery.report.only.error',
         'dr_cb',
         'dr_msg_cb',
-        'sticky.partitioning.linger.ms'
+        'sticky.partitioning.linger.ms',
     ];
 
     final const CONSUMER_OPTIONS = [
@@ -62,13 +62,12 @@ class KafkaConnectionConfiguration
         'sasl.username',
         'sasl.password',
         'sasl.mechanisms',
-        'security.protocol'
+        'security.protocol',
     ];
 
     public function __construct(
         protected array $options = []
-    ) {
-    }
+    ) {}
 
     public function getProducerOptions(array $customOptions = []): array
     {

@@ -11,9 +11,8 @@ class PublisherFactory
 {
     public function __construct(
         protected ProducerStreamFactory $factory,
-        protected PublisherRoutes $routes = new PublisherRoutes(),
-    ) {
-    }
+        protected PublisherRoutes $routes = new PublisherRoutes,
+    ) {}
 
     public function create(Connection $connection): Publisher
     {

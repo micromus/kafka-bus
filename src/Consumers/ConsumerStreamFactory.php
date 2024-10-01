@@ -2,11 +2,9 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-use InvalidArgumentException;
 use Micromus\KafkaBus\Bus\Listeners\Options;
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Counters\Timer;
-use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStream as ConsumerStreamContract;
@@ -18,8 +16,7 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryContract
     public function __construct(
         protected MessagePipelineFactory $messagePipelineFactory,
         protected ConsumerRouterFactory $consumerRouterFactory,
-    ) {
-    }
+    ) {}
 
     public function create(Connection $connection, Options $options): ConsumerStreamContract
     {

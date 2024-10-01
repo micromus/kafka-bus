@@ -13,13 +13,12 @@ class ConsumerFaker implements Consumer
         protected ConnectionFaker $connectionFaker,
         protected ConsumerMessageConverter $consumerMessageConverter,
         protected array $messages
-    ) {
-    }
+    ) {}
 
     public function getMessage(): ConsumerMessage
     {
         if (count($this->messages) == 0) {
-            throw new KafkaMessagesEndedException();
+            throw new KafkaMessagesEndedException;
         }
 
         return $this->consumerMessageConverter

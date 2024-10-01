@@ -24,16 +24,16 @@ it('can produce message', function () {
             new ConnectionRegistryFaker($connectionFaker),
             new Bus\Publishers\PublisherFactory(
                 new ProducerStreamFactory(
-                    new MessagePipelineFactory(),
+                    new MessagePipelineFactory,
                     $topicNameResolver
                 ),
                 $routes
             ),
             new Bus\Listeners\ListenerFactory(
                 new ConsumerStreamFactory(
-                    new MessagePipelineFactory(),
+                    new MessagePipelineFactory,
                     new ConsumerRouterFactory(
-                        new NativeResolver(),
+                        new NativeResolver,
                         $topicNameResolver,
                     )
                 )

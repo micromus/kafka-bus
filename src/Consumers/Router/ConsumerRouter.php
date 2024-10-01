@@ -15,8 +15,7 @@ class ConsumerRouter
         protected Resolver $resolver,
         protected TopicNameResolver $topicNameResolver,
         protected ConsumerRoutes $routes
-    ) {
-    }
+    ) {}
 
     public function topics(): array
     {
@@ -31,7 +30,7 @@ class ConsumerRouter
 
     private function getOrCreateExecutor(string $topicName): Executor
     {
-        if (!isset($this->executors[$topicName])) {
+        if (! isset($this->executors[$topicName])) {
             $this->executors[$topicName] = $this->makeExecutor($topicName);
         }
 

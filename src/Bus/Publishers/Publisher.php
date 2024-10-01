@@ -8,8 +8,7 @@ class Publisher
 {
     public function __construct(
         protected PublisherRouter $router
-    ) {
-    }
+    ) {}
 
     public function publish(array $messages): void
     {
