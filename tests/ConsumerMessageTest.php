@@ -25,13 +25,13 @@ test('can consume message', function () {
 
     $connectionFaker->addMessage('products', $message);
 
-    $listenerOptions = new Bus\Listeners\Options(
-        (new Bus\Listeners\Router\Routes)
-            ->add(new Bus\Listeners\Router\Route('products', ConsumerHandlerFaker::class))
+    $group = new Bus\Listeners\Groups\Group(
+        (new Bus\Listeners\Groups\GroupRoutes)
+            ->add(new Bus\Listeners\Groups\Route('products', ConsumerHandlerFaker::class))
     );
 
-    $listenerRegistry = (new Bus\Listeners\ListenerRegistry)
-        ->add('default-listener', $listenerOptions);
+    $listenerRegistry = (new Bus\Listeners\Groups\GroupRegistry)
+        ->add('default-listener', $group);
 
     $bus = new Bus(
         new Bus\ThreadRegistry(

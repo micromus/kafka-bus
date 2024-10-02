@@ -1,13 +1,13 @@
 <?php
 
-namespace Micromus\KafkaBus\Bus\Publishers;
+namespace Micromus\KafkaBus\Bus\Listeners\Groups;
 
 readonly class Options
 {
     public function __construct(
         public array $additionalOptions = [],
         public array $middlewares = [],
-        public int $flushTimeout = 5000,
-        public int $flushRetries = 10
+        public bool $autoCommit = true,
+        public int $consumerTimeout = 2000,
     ) {}
 }

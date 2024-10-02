@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBus\Bus\Listeners\Router;
+namespace Micromus\KafkaBus\Bus\Listeners\Groups;
 
 use Micromus\KafkaBus\Messages\NativeMessageFactory;
 

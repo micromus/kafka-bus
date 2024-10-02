@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
+use Micromus\KafkaBus\Bus\Listeners\Groups\Group;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
@@ -13,7 +14,7 @@ class Listener
     public function __construct(
         protected Connection $connection,
         protected ConsumerStreamFactory $consumerStreamFactory,
-        protected Options $options
+        protected Group $group
     ) {}
 
     /**
@@ -24,7 +25,7 @@ class Listener
     public function listen(): void
     {
         $this->consumerStreamFactory
-            ->create($this->connection, $this->options)
+            ->create($this->connection, $this->group)
             ->listen();
     }
 }

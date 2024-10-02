@@ -2,8 +2,6 @@
 
 namespace Micromus\KafkaBus\Bus\Publishers\Router;
 
-use Micromus\KafkaBus\Bus\Publishers\Options;
-
 class PublisherRoutes
 {
     /**

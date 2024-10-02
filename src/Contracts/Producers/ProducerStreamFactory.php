@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Contracts\Producers;
 
-use Micromus\KafkaBus\Bus\Publishers\Options;
+use Micromus\KafkaBus\Bus\Publishers\Router\Options;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Topics\Topic;
 

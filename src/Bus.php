@@ -34,8 +34,8 @@ class Bus implements BusContract
         $this->thread->publishMany($messages);
     }
 
-    public function listen(string $listenerName): void
+    public function listen(string $listenerGroupName): void
     {
-        $this->thread->listen($listenerName);
+        $this->thread->listen($listenerGroupName);
     }
 }
