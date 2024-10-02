@@ -14,6 +14,7 @@ class TopicRegistry
     public function add(Topic $topic): self
     {
         $this->topics[$topic->key] = $topic;
+
         return $this;
     }
 
