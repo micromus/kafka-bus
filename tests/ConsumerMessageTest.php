@@ -14,7 +14,7 @@ use Micromus\KafkaBus\Topics\TopicRegistry;
 use RdKafka\Message;
 
 test('can consume message', function () {
-    $topicRegistry = (new TopicRegistry())
+    $topicRegistry = (new TopicRegistry)
         ->add(new Topic('production.fact.products.1', 'products', 6));
 
     $connectionFaker = new ConnectionFaker($topicRegistry);
