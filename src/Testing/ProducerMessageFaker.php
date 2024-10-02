@@ -24,7 +24,7 @@ class ProducerMessageFaker implements HasHeaders, HasPartition, Message
         return $this->headers;
     }
 
-    public function getPartition(): int
+    public function getPartition(int $partitions): int
     {
         return $this->partition;
     }

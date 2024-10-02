@@ -6,6 +6,7 @@ use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
+use Micromus\KafkaBus\Topics\TopicRegistry;
 
 class PublisherRouter
 {
@@ -14,6 +15,7 @@ class PublisherRouter
     public function __construct(
         protected Connection $connection,
         protected ProducerStreamFactory $producerStreamFactory,
+        protected TopicRegistry $topicRegistry,
         protected PublisherRoutes $routes
     ) {}
 
@@ -62,6 +64,6 @@ class PublisherRouter
             ?? throw new RouteProducerException("Route for message [$messageClass] not found");
 
         return $this->producerStreamFactory
-            ->create($this->connection, $route->topicKey, $route->options);
+            ->create($this->connection, $this->topicRegistry->get($route->topicKey), $route->options);
     }
 }

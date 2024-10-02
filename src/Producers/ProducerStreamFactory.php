@@ -7,23 +7,22 @@ use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream as ProducerStreamContract;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStreamFactory as ProducerStreamFactoryContract;
-use Micromus\KafkaBus\Contracts\TopicNameResolver;
+use Micromus\KafkaBus\Topics\Topic;
 
 class ProducerStreamFactory implements ProducerStreamFactoryContract
 {
     public function __construct(
-        protected MessagePipelineFactory $messagePipelineFactory,
-        protected TopicNameResolver $topicNameResolver
+        protected MessagePipelineFactory $messagePipelineFactory
     ) {}
 
-    public function create(Connection $connection, string $topicKey, Options $options): ProducerStreamContract
+    public function create(Connection $connection, Topic $topic, Options $options): ProducerStreamContract
     {
         $configuration = $this->makeProducerConfiguration($options);
-        $topicName = $this->topicNameResolver->resolve($topicKey);
 
         return new ProducerStream(
-            $connection->createProducer($topicName, $configuration),
-            $this->messagePipelineFactory->create($options->middlewares)
+            $connection->createProducer($topic->name, $configuration),
+            $this->messagePipelineFactory->create($options->middlewares),
+            $topic
         );
     }
 

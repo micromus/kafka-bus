@@ -4,13 +4,13 @@ namespace Micromus\KafkaBus\Consumers\Router;
 
 use Micromus\KafkaBus\Bus\Listeners\Router\Routes;
 use Micromus\KafkaBus\Contracts\Resolver;
-use Micromus\KafkaBus\Contracts\TopicNameResolver;
+use Micromus\KafkaBus\Topics\TopicRegistry;
 
 class ConsumerRouterFactory
 {
     public function __construct(
         protected Resolver $resolver,
-        protected TopicNameResolver $topicNameResolver
+        protected TopicRegistry $topicRegistry
     ) {}
 
     public function create(Routes $routes): ConsumerRouter
@@ -20,12 +20,12 @@ class ConsumerRouterFactory
 
         foreach ($routesCollection as $route) {
             $consumerRoutes->add(
-                topicName: $this->topicNameResolver->resolve($route->topicKey),
+                topicName: $this->topicRegistry->getTopicName($route->topicKey),
                 handlerClass: $route->handlerClass,
                 messageFactory: $route->messageFactoryClass
             );
         }
 
-        return new ConsumerRouter($this->resolver, $this->topicNameResolver, $consumerRoutes);
+        return new ConsumerRouter($this->resolver, $consumerRoutes);
     }
 }

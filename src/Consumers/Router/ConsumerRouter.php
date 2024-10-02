@@ -4,7 +4,6 @@ namespace Micromus\KafkaBus\Consumers\Router;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Contracts\Resolver;
-use Micromus\KafkaBus\Contracts\TopicNameResolver;
 use Micromus\KafkaBus\Exceptions\Consumers\RouteConsumerException;
 
 class ConsumerRouter
@@ -13,7 +12,6 @@ class ConsumerRouter
 
     public function __construct(
         protected Resolver $resolver,
-        protected TopicNameResolver $topicNameResolver,
         protected ConsumerRoutes $routes
     ) {}
 

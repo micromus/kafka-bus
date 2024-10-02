@@ -7,8 +7,8 @@ use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\Consumer;
 use Micromus\KafkaBus\Contracts\Producers\Producer;
-use Micromus\KafkaBus\Contracts\TopicNameResolver;
 use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
+use Micromus\KafkaBus\Topics\TopicRegistry;
 use RdKafka\Message as KafkaMessage;
 
 class ConnectionFaker implements Connection
@@ -20,12 +20,12 @@ class ConnectionFaker implements Connection
     protected array $consumeMessages = [];
 
     public function __construct(
-        protected TopicNameResolver $topicNameResolver,
+        protected TopicRegistry $topicRegistry,
     ) {}
 
     public function addMessage(string $topicKey, KafkaMessage $message): void
     {
-        $message->topic_name = $this->topicNameResolver->resolve($topicKey);
+        $message->topic_name = $this->topicRegistry->getTopicName($topicKey);
         $message->err = RD_KAFKA_RESP_ERR_NO_ERROR;
 
         $this->consumeMessages[] = $message;

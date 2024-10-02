@@ -9,12 +9,14 @@ use Micromus\KafkaBus\Contracts\Messages\MessagePipeline;
 use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
 use Micromus\KafkaBus\Contracts\Producers\ProducerStream as ProducerStreamContract;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
+use Micromus\KafkaBus\Topics\Topic;
 
 class ProducerStream implements ProducerStreamContract
 {
     public function __construct(
         protected ProducerContract $producer,
-        protected MessagePipeline $messagePipeline
+        protected MessagePipeline $messagePipeline,
+        protected Topic $topic
     ) {}
 
     public function handle(array $messages): void
@@ -35,8 +37,22 @@ class ProducerStream implements ProducerStreamContract
     {
         return new ProducerMessage(
             payload: $message->toPayload(),
-            headers: $message instanceof HasHeaders ? $message->getHeaders() : [],
-            partition: $message instanceof HasPartition ? $message->getPartition() : RD_KAFKA_PARTITION_UA,
+            headers: $this->getHeadersFromMessage($message),
+            partition: max($this->getPartitionFromMessage($message), RD_KAFKA_PARTITION_UA),
         );
+    }
+
+    private function getHeadersFromMessage(Message $message): array
+    {
+        return $message instanceof HasHeaders
+            ? $message->getHeaders()
+            : [];
+    }
+
+    private function getPartitionFromMessage(Message $message): int
+    {
+        return $message instanceof HasPartition
+            ? min($message->getPartition($this->topic->partitions), $this->topic->partitions - 1)
+            : RD_KAFKA_PARTITION_UA;
     }
 }

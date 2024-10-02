@@ -7,14 +7,17 @@ use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Support\Resolvers\NativeResolver;
-use Micromus\KafkaBus\Support\TopicNameResolver;
 use Micromus\KafkaBus\Testing\ConnectionFaker;
 use Micromus\KafkaBus\Testing\ConnectionRegistryFaker;
 use Micromus\KafkaBus\Testing\ProducerMessageFaker;
+use Micromus\KafkaBus\Topics\Topic;
+use Micromus\KafkaBus\Topics\TopicRegistry;
 
 it('can produce message', function () {
-    $topicNameResolver = new TopicNameResolver('production.', ['products' => 'fact.products.1']);
-    $connectionFaker = new ConnectionFaker($topicNameResolver);
+    $topicRegistry = (new TopicRegistry())
+        ->add(new Topic('production.fact.products.1', 'products', 6));
+
+    $connectionFaker = new ConnectionFaker($topicRegistry);
 
     $routes = (new PublisherRoutes)
         ->add(ProducerMessageFaker::class, 'products');
@@ -23,19 +26,14 @@ it('can produce message', function () {
         new Bus\ThreadRegistry(
             new ConnectionRegistryFaker($connectionFaker),
             new Bus\Publishers\PublisherFactory(
-                new ProducerStreamFactory(
-                    new MessagePipelineFactory,
-                    $topicNameResolver
-                ),
+                new ProducerStreamFactory(new MessagePipelineFactory),
+                $topicRegistry,
                 $routes
             ),
             new Bus\Listeners\ListenerFactory(
                 new ConsumerStreamFactory(
                     new MessagePipelineFactory,
-                    new ConsumerRouterFactory(
-                        new NativeResolver,
-                        $topicNameResolver,
-                    )
+                    new ConsumerRouterFactory(new NativeResolver, $topicRegistry)
                 )
             )
         ),

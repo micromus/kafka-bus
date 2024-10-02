@@ -16,8 +16,9 @@
     ],
     "require": {
         "php": "^8.2",
+        "ext-pcntl": "*",
         "ext-rdkafka": "*",
-        "ext-pcntl": "*"
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
         "pestphp/pest": "^2.34",
