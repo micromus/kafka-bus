@@ -12,7 +12,7 @@ class ListenerFactory
 {
     public function __construct(
         protected ConsumerStreamFactory $streamFactory,
-        protected WorkerRegistry        $groupRegistry = new WorkerRegistry,
+        protected WorkerRegistry $groupRegistry = new WorkerRegistry,
     ) {}
 
     public function create(Connection $connection, string $listenerGroupName): Listener

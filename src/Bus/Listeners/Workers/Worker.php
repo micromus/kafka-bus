@@ -6,8 +6,8 @@ readonly class Worker
 {
     public function __construct(
         public WorkerRoutes $routes,
-        public Options      $options = new Options,
-        public int          $maxMessages = -1,
-        public int          $maxTime = -1
+        public Options $options = new Options,
+        public int $maxMessages = -1,
+        public int $maxTime = -1
     ) {}
 }

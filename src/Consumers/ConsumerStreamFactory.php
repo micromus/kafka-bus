@@ -2,8 +2,8 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Counters\Timer;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
