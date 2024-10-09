@@ -2,8 +2,8 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
-use Micromus\KafkaBus\Bus\Listeners\Groups\Group;
-use Micromus\KafkaBus\Bus\Listeners\Groups\GroupRegistry;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
+use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRegistry;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Consumers\ListenerException;
@@ -12,7 +12,7 @@ class ListenerFactory
 {
     public function __construct(
         protected ConsumerStreamFactory $streamFactory,
-        protected GroupRegistry $groupRegistry = new GroupRegistry,
+        protected WorkerRegistry        $groupRegistry = new WorkerRegistry,
     ) {}
 
     public function create(Connection $connection, string $listenerGroupName): Listener
@@ -26,7 +26,7 @@ class ListenerFactory
         );
     }
 
-    private function getGroup(string $groupName): Group
+    private function getGroup(string $groupName): Worker
     {
         return $this->groupRegistry->get($groupName)
             ?: throw new ListenerException("Group [$groupName] not found.");

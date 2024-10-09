@@ -1,8 +1,8 @@
 <?php
 
-namespace Micromus\KafkaBus\Bus\Listeners\Groups;
+namespace Micromus\KafkaBus\Bus\Listeners\Workers;
 
-class GroupRoutes
+class WorkerRoutes
 {
     /**
      * @var Route[]

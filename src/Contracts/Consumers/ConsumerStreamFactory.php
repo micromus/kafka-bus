@@ -2,10 +2,10 @@
 
 namespace Micromus\KafkaBus\Contracts\Consumers;
 
-use Micromus\KafkaBus\Bus\Listeners\Groups\Group;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 
 interface ConsumerStreamFactory
 {
-    public function create(Connection $connection, Group $group): ConsumerStream;
+    public function create(Connection $connection, Worker $worker): ConsumerStream;
 }

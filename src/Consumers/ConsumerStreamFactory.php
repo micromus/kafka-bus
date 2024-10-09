@@ -2,8 +2,8 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-use Micromus\KafkaBus\Bus\Listeners\Groups\Group;
-use Micromus\KafkaBus\Bus\Listeners\Groups\Options;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Counters\Timer;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
@@ -19,17 +19,17 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryContract
         protected ConsumerRouterFactory $consumerRouterFactory,
     ) {}
 
-    public function create(Connection $connection, Group $group): ConsumerStreamContract
+    public function create(Connection $connection, Worker $worker): ConsumerStreamContract
     {
-        $configuration = $this->makeConsumerConfiguration($group->options);
-        $router = $this->consumerRouterFactory->create($group->routes);
+        $configuration = $this->makeConsumerConfiguration($worker->options);
+        $router = $this->consumerRouterFactory->create($worker->routes);
 
         return new ConsumerStream(
             $connection->createConsumer($router->topics(), $configuration),
             $router,
-            $this->messagePipelineFactory->create($group->options->middlewares),
-            new MessageCounter($group->maxMessages),
-            new Timer($group->maxTime)
+            $this->messagePipelineFactory->create($worker->options->middlewares),
+            new MessageCounter($worker->maxMessages),
+            new Timer($worker->maxTime)
         );
     }
 

@@ -40,10 +40,10 @@ class Thread implements ThreadContract
             ->publish($messages);
     }
 
-    public function listen(string $listenerGroupName): void
+    public function listen(string $listenerWorkerName): void
     {
         $this->listenerFactory
-            ->create($this->connection, $listenerGroupName)
+            ->create($this->connection, $listenerWorkerName)
             ->listen();
     }
 }

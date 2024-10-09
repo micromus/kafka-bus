@@ -27,5 +27,5 @@ interface Thread
      * @throws MessagesCompletedConsumerException
      * @throws TimeoutConsumerException
      */
-    public function listen(string $listenerGroupName): void;
+    public function listen(string $listenerWorkerName): void;
 }

@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Bus\Listeners\Groups\GroupRoutes;
+use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRoutes;
 use Micromus\KafkaBus\Contracts\Resolver;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 
@@ -13,7 +13,7 @@ class ConsumerRouterFactory
         protected TopicRegistry $topicRegistry
     ) {}
 
-    public function create(GroupRoutes $routes): ConsumerRouter
+    public function create(WorkerRoutes $routes): ConsumerRouter
     {
         $consumerRoutes = new ConsumerRoutes;
         $routesCollection = $routes->all();

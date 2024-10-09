@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
-use Micromus\KafkaBus\Bus\Listeners\Groups\Group;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Contracts\Connections\Connection;
 use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
@@ -14,7 +14,7 @@ class Listener
     public function __construct(
         protected Connection $connection,
         protected ConsumerStreamFactory $consumerStreamFactory,
-        protected Group $group
+        protected Worker $group
     ) {}
 
     /**
