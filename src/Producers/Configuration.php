@@ -8,5 +8,6 @@ readonly class Configuration
         public array $additionalOptions = [],
         public int $flushTimeout = 5000,
         public int $flushRetries = 10
-    ) {}
+    ) {
+    }
 }

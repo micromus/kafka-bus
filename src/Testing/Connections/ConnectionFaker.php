@@ -1,17 +1,19 @@
 <?php
 
-namespace Micromus\KafkaBus\Testing;
+namespace Micromus\KafkaBus\Testing\Connections;
 
 use Micromus\KafkaBus\Consumers\Configuration as ConsumerConfiguration;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Consumers\Consumer;
-use Micromus\KafkaBus\Contracts\Producers\Producer;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
+use Micromus\KafkaBus\Testing\ConsumerFaker;
+use Micromus\KafkaBus\Testing\ProducerFaker;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 use RdKafka\Message as KafkaMessage;
 
-class ConnectionFaker implements Connection
+class ConnectionFaker implements ConnectionInterface
 {
     public array $publishedMessages = [];
 
@@ -21,7 +23,8 @@ class ConnectionFaker implements Connection
 
     public function __construct(
         protected TopicRegistry $topicRegistry,
-    ) {}
+    ) {
+    }
 
     public function addMessage(string $topicKey, KafkaMessage $message): void
     {
@@ -31,13 +34,13 @@ class ConnectionFaker implements Connection
         $this->consumeMessages[] = $message;
     }
 
-    public function createProducer(string $topicName, ProducerConfiguration $configuration): Producer
+    public function createProducer(string $topicName, ProducerConfiguration $configuration): ProducerInterface
     {
         return new ProducerFaker($this, $topicName);
     }
 
-    public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): Consumer
+    public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): ConsumerInterface
     {
-        return new ConsumerFaker($this, new ConsumerMessageConverter, $this->consumeMessages);
+        return new ConsumerFaker($this, new ConsumerMessageConverter(), $this->consumeMessages);
     }
 }

@@ -8,7 +8,8 @@ class MessageCounter
 
     public function __construct(
         protected int $maxMessages = -1,
-    ) {}
+    ) {
+    }
 
     public function isCompleted(): bool
     {

@@ -2,20 +2,21 @@
 
 namespace Micromus\KafkaBus\Connections\Registry;
 
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Connections\ConnectionRegistry as ConnectionRegistryContract;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionRegistryInterface;
 use Micromus\KafkaBus\Exceptions\Connections\ConnectionException;
 
-class ConnectionRegistry implements ConnectionRegistryContract
+class ConnectionRegistry implements ConnectionRegistryInterface
 {
     protected array $activeConnections = [];
 
     public function __construct(
         protected DriverRegistry $driverRegistry,
         protected array $connectionsConfig
-    ) {}
+    ) {
+    }
 
-    public function connection(string $connectionName): Connection
+    public function connection(string $connectionName): ConnectionInterface
     {
         if (! isset($this->activeConnections[$connectionName])) {
             $this->activeConnections[$connectionName] = $this->makeConnection($connectionName);
@@ -24,7 +25,7 @@ class ConnectionRegistry implements ConnectionRegistryContract
         return $this->activeConnections[$connectionName];
     }
 
-    private function makeConnection(string $connectionName): Connection
+    private function makeConnection(string $connectionName): ConnectionInterface
     {
         $config = $this->getConnectionConfig($connectionName);
 
@@ -37,7 +38,7 @@ class ConnectionRegistry implements ConnectionRegistryContract
             $availableConnections = implode(', ', array_keys($this->connectionsConfig));
 
             throw new ConnectionException(
-                "Connection [$connectionName] not defined.".
+                "Connection [$connectionName] not defined." .
                     " Available connections: $availableConnections"
             );
         }

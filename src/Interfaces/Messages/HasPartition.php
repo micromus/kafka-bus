@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts\Messages;
+namespace Micromus\KafkaBus\Interfaces\Messages;
 
 interface HasPartition
 {

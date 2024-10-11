@@ -6,9 +6,9 @@ use Micromus\KafkaBus\Consumers\Commiters\DefaultCommiter;
 use Micromus\KafkaBus\Consumers\Commiters\VoidCommiter;
 use Micromus\KafkaBus\Consumers\Configuration as ConsumerConfiguration;
 use Micromus\KafkaBus\Consumers\Consumer;
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Consumers\Consumer as ConsumerContract;
-use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
 use Micromus\KafkaBus\Producers\Producer;
 use Micromus\KafkaBus\Support\RetryRepeater;
@@ -16,7 +16,7 @@ use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
 use RdKafka\Producer as KafkaProducer;
 
-class KafkaConnection implements Connection
+class KafkaConnection implements ConnectionInterface
 {
     protected KafkaConnectionConfiguration $configuration;
 
@@ -25,7 +25,7 @@ class KafkaConnection implements Connection
         $this->configuration = new KafkaConnectionConfiguration($options);
     }
 
-    public function createProducer(string $topicName, ProducerConfiguration $configuration): ProducerContract
+    public function createProducer(string $topicName, ProducerConfiguration $configuration): ProducerInterface
     {
         return new Producer(
             producer: $this->makeKafkaProducer($configuration),
@@ -43,15 +43,15 @@ class KafkaConnection implements Connection
         return new KafkaProducer($this->makeConf($options));
     }
 
-    public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): ConsumerContract
+    public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): ConsumerInterface
     {
         $consumer = $this->makeKafkaConsumer($configuration);
 
         return new Consumer(
             consumer: $consumer,
             topicNames: $topicNames,
-            commiter: $configuration->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter,
-            retryRepeater: new RetryRepeater,
+            commiter: $configuration->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter(),
+            retryRepeater: new RetryRepeater(),
             consumerTimeout: $configuration->consumerTimeout,
         );
     }
@@ -68,7 +68,7 @@ class KafkaConnection implements Connection
 
     private function makeConf(array $options): Conf
     {
-        $conf = new Conf;
+        $conf = new Conf();
 
         foreach ($options as $key => $value) {
             $conf->set($key, $value);

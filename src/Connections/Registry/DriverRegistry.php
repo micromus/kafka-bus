@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Connections\Registry;
 
 use Micromus\KafkaBus\Connections\KafkaConnection;
 use Micromus\KafkaBus\Connections\NullConnection;
-use Micromus\KafkaBus\Contracts\Connections\Connection;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Exceptions\Connections\DriverException;
 
 class DriverRegistry
@@ -29,7 +29,7 @@ class DriverRegistry
 
     private function addNullDriver(): void
     {
-        $this->add('null', fn () => new NullConnection);
+        $this->add('null', fn () => new NullConnection());
     }
 
     private function addKafkaDriver(): void
@@ -37,7 +37,7 @@ class DriverRegistry
         $this->add('kafka', fn ($options) => new KafkaConnection($options));
     }
 
-    public function makeConnection(string $driverName, array $options): Connection
+    public function makeConnection(string $driverName, array $options): ConnectionInterface
     {
         if (! isset($this->drivers[$driverName])) {
             $availableDrivers = implode(', ', array_keys($this->drivers));

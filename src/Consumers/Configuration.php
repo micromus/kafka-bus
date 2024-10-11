@@ -8,5 +8,6 @@ readonly class Configuration
         public array $additionalOptions = [],
         public bool $autoCommit = true,
         public int $consumerTimeout = 2000
-    ) {}
+    ) {
+    }
 }

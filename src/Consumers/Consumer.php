@@ -2,28 +2,28 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-use Micromus\KafkaBus\Consumers\Commiters\Commiter;
+use Micromus\KafkaBus\Consumers\Commiters\CommiterInterface;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
-use Micromus\KafkaBus\Contracts\Consumers\Consumer as ConsumerContract;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
 use Micromus\KafkaBus\Support\RetryRepeater;
 use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
 
-class Consumer implements ConsumerContract
+class Consumer implements ConsumerInterface
 {
     protected ConsumerMessageConverter $consumerMessageNormalizer;
 
     public function __construct(
-        protected KafkaConsumer $consumer,
-        protected array $topicNames,
-        protected Commiter $commiter,
-        protected RetryRepeater $retryRepeater = new RetryRepeater,
-        protected int $consumerTimeout = 2000
+        protected KafkaConsumer     $consumer,
+        protected array             $topicNames,
+        protected CommiterInterface $commiter,
+        protected RetryRepeater     $retryRepeater = new RetryRepeater(),
+        protected int               $consumerTimeout = 2000
     ) {
-        $this->consumerMessageNormalizer = new ConsumerMessageConverter;
+        $this->consumerMessageNormalizer = new ConsumerMessageConverter();
         $this->consumer->subscribe($this->topicNames);
     }
 
@@ -45,7 +45,8 @@ class Consumer implements ConsumerContract
 
             return $this->consumerMessageNormalizer
                 ->fromKafka($message);
-        } catch (Exception $exception) {
+        }
+        catch (Exception $exception) {
             throw new ConsumerException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }

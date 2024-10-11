@@ -3,8 +3,8 @@
 namespace Micromus\KafkaBus\Bus\Listeners;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Consumers\ConsumerStreamFactory;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
@@ -12,10 +12,11 @@ use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
 class Listener
 {
     public function __construct(
-        protected Connection $connection,
-        protected ConsumerStreamFactory $consumerStreamFactory,
-        protected Worker $group
-    ) {}
+        protected ConnectionInterface            $connection,
+        protected ConsumerStreamFactoryInterface $consumerStreamFactory,
+        protected Worker                         $worker
+    ) {
+    }
 
     /**
      * @throws ConsumerException
@@ -25,7 +26,7 @@ class Listener
     public function listen(): void
     {
         $this->consumerStreamFactory
-            ->create($this->connection, $this->group)
+            ->create($this->connection, $this->worker)
             ->listen();
     }
 }

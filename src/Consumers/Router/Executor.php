@@ -3,14 +3,15 @@
 namespace Micromus\KafkaBus\Consumers\Router;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Contracts\Messages\MessageFactory;
+use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
 
 class Executor
 {
     public function __construct(
         protected mixed $handler,
-        protected MessageFactory $factory
-    ) {}
+        protected MessageFactoryInterface $factory
+    ) {
+    }
 
     public function execute(ConsumerMessage $message): void
     {

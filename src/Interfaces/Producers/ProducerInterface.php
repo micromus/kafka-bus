@@ -1,10 +1,10 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts\Producers;
+namespace Micromus\KafkaBus\Interfaces\Producers;
 
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 
-interface Producer
+interface ProducerInterface
 {
     /**
      * @param  ProducerMessage[]  $messages

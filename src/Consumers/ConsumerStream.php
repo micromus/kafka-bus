@@ -6,15 +6,15 @@ use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Counters\Timer;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
-use Micromus\KafkaBus\Contracts\Consumers\Consumer as ConsumerContract;
-use Micromus\KafkaBus\Contracts\Consumers\ConsumerStream as ConsumerStreamContract;
-use Micromus\KafkaBus\Contracts\Messages\MessagePipeline;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
+use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
-class ConsumerStream implements ConsumerStreamContract
+class ConsumerStream implements ConsumerStreamInterface
 {
     protected bool $forceStop = false;
 
@@ -31,12 +31,13 @@ class ConsumerStream implements ConsumerStreamContract
     ];
 
     public function __construct(
-        protected ConsumerContract $consumer,
-        protected ConsumerRouter $consumerRouter,
-        protected MessagePipeline $messagePipeline,
-        protected MessageCounter $messageCounter = new MessageCounter,
-        protected Timer $timer = new Timer
-    ) {}
+        protected ConsumerInterface        $consumer,
+        protected ConsumerRouter           $consumerRouter,
+        protected MessagePipelineInterface $messagePipeline,
+        protected MessageCounter           $messageCounter = new MessageCounter(),
+        protected Timer                    $timer = new Timer()
+    ) {
+    }
 
     public function listen(): void
     {
@@ -67,8 +68,10 @@ class ConsumerStream implements ConsumerStreamContract
                 if ($this->messageCounter->isCompleted()) {
                     throw new MessagesCompletedConsumerException('Превышено количество прочитанных сообщений');
                 }
-            } while (! $this->forceStop);
-        } catch (KafkaMessagesEndedException) {
+            }
+            while (! $this->forceStop);
+        }
+        catch (KafkaMessagesEndedException) {
         }
     }
 

@@ -11,5 +11,6 @@ class ProducerMessage
         public string $payload,
         public array $headers = [],
         public int $partition = RD_KAFKA_PARTITION_UA,
-    ) {}
+    ) {
+    }
 }

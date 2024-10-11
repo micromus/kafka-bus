@@ -1,11 +1,11 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts\Consumers;
+namespace Micromus\KafkaBus\Interfaces\Consumers;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 
-interface Consumer
+interface ConsumerInterface
 {
     /**
      * @throws ConsumerException

@@ -3,9 +3,9 @@
 namespace Micromus\KafkaBus\Messages;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Contracts\Messages\MessageFactory;
+use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
 
-class NativeMessageFactory implements MessageFactory
+class NativeMessageFactory implements MessageFactoryInterface
 {
     public function fromKafka(ConsumerMessage $message): ConsumerMessage
     {

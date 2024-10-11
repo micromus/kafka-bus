@@ -4,21 +4,23 @@ namespace Micromus\KafkaBus\Testing;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
-use Micromus\KafkaBus\Contracts\Consumers\Consumer;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
+use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
-class ConsumerFaker implements Consumer
+class ConsumerFaker implements ConsumerInterface
 {
     public function __construct(
-        protected ConnectionFaker $connectionFaker,
+        protected ConnectionFaker          $connectionFaker,
         protected ConsumerMessageConverter $consumerMessageConverter,
-        protected array $messages
-    ) {}
+        protected array                    $messages
+    ) {
+    }
 
     public function getMessage(): ConsumerMessage
     {
         if (count($this->messages) == 0) {
-            throw new KafkaMessagesEndedException;
+            throw new KafkaMessagesEndedException();
         }
 
         return $this->consumerMessageConverter

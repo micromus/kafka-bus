@@ -7,9 +7,9 @@ use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Support\Resolvers\NativeResolver;
-use Micromus\KafkaBus\Testing\ConnectionFaker;
-use Micromus\KafkaBus\Testing\ConnectionRegistryFaker;
-use Micromus\KafkaBus\Testing\ProducerMessageFaker;
+use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
+use Micromus\KafkaBus\Testing\Connections\ConnectionRegistryFaker;
+use Micromus\KafkaBus\Testing\Messages\ProducerMessageFaker;
 use Micromus\KafkaBus\Topics\Topic;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 

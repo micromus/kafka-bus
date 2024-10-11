@@ -9,5 +9,6 @@ readonly class Options
         public array $middlewares = [],
         public bool $autoCommit = true,
         public int $consumerTimeout = 2000,
-    ) {}
+    ) {
+    }
 }

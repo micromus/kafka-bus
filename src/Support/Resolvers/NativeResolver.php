@@ -2,12 +2,12 @@
 
 namespace Micromus\KafkaBus\Support\Resolvers;
 
-use Micromus\KafkaBus\Contracts\Resolver;
+use Micromus\KafkaBus\Interfaces\ResolverInterface;
 
-class NativeResolver implements Resolver
+class NativeResolver implements ResolverInterface
 {
     public function resolve(string $class): mixed
     {
-        return new $class;
+        return new $class();
     }
 }

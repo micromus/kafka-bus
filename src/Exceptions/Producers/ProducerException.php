@@ -4,4 +4,6 @@ namespace Micromus\KafkaBus\Exceptions\Producers;
 
 use Exception;
 
-class ProducerException extends Exception {}
+class ProducerException extends Exception
+{
+}

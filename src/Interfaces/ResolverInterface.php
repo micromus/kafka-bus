@@ -1,8 +1,8 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts;
+namespace Micromus\KafkaBus\Interfaces;
 
-interface Resolver
+interface ResolverInterface
 {
     /**
      * @template T

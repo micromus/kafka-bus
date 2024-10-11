@@ -1,18 +1,19 @@
 <?php
 
-namespace Micromus\KafkaBus\Testing;
+namespace Micromus\KafkaBus\Testing\Messages;
 
-use Micromus\KafkaBus\Contracts\Messages\HasHeaders;
-use Micromus\KafkaBus\Contracts\Messages\HasPartition;
-use Micromus\KafkaBus\Contracts\Messages\Message;
+use Micromus\KafkaBus\Interfaces\Messages\HasHeaders;
+use Micromus\KafkaBus\Interfaces\Messages\HasPartition;
+use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
 
-class ProducerMessageFaker implements HasHeaders, HasPartition, Message
+class ProducerMessageFaker implements HasHeaders, HasPartition, MessageInterface
 {
     public function __construct(
         protected string $message,
         protected array $headers = [],
         protected int $partition = -1,
-    ) {}
+    ) {
+    }
 
     public function toPayload(): string
     {

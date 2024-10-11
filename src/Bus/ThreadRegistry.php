@@ -4,20 +4,21 @@ namespace Micromus\KafkaBus\Bus;
 
 use Micromus\KafkaBus\Bus\Listeners\ListenerFactory;
 use Micromus\KafkaBus\Bus\Publishers\PublisherFactory;
-use Micromus\KafkaBus\Contracts\Bus\Thread as ThreadContract;
-use Micromus\KafkaBus\Contracts\Connections\ConnectionRegistry;
+use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionRegistryInterface;
 
 class ThreadRegistry
 {
     protected array $activeThreads = [];
 
     public function __construct(
-        protected ConnectionRegistry $connectionRegistry,
-        protected PublisherFactory $publisherFactory,
-        protected ListenerFactory $listenerFactory
-    ) {}
+        protected ConnectionRegistryInterface $connectionRegistry,
+        protected PublisherFactory            $publisherFactory,
+        protected ListenerFactory             $listenerFactory
+    ) {
+    }
 
-    public function thread(string $connectionName): ThreadContract
+    public function thread(string $connectionName): ThreadInterface
     {
         if (! isset($this->activeThreads[$connectionName])) {
             $this->activeThreads[$connectionName] = $this->makeThread($connectionName);
@@ -26,7 +27,7 @@ class ThreadRegistry
         return $this->activeThreads[$connectionName];
     }
 
-    private function makeThread(string $connectionName): ThreadContract
+    private function makeThread(string $connectionName): ThreadInterface
     {
         $connection = $this->connectionRegistry
             ->connection($connectionName);

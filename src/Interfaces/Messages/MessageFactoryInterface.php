@@ -1,10 +1,10 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts\Messages;
+namespace Micromus\KafkaBus\Interfaces\Messages;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 
-interface MessageFactory
+interface MessageFactoryInterface
 {
     public function fromKafka(ConsumerMessage $message): mixed;
 }

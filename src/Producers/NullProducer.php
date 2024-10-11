@@ -2,9 +2,11 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 
-class NullProducer implements ProducerContract
+class NullProducer implements ProducerInterface
 {
-    public function produce(array $messages): void {}
+    public function produce(array $messages): void
+    {
+    }
 }

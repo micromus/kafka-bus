@@ -9,7 +9,8 @@ class RetryRepeater
     public function __construct(
         protected int $maximumRetries = 10,
         protected int $sleepAfterError = 1000
-    ) {}
+    ) {
+    }
 
     public function execute(callable $function): void
     {
@@ -23,7 +24,8 @@ class RetryRepeater
     {
         try {
             $function();
-        } catch (Throwable $exception) {
+        }
+        catch (Throwable $exception) {
             if ($attempt >= $this->maximumRetries) {
                 throw $exception;
             }

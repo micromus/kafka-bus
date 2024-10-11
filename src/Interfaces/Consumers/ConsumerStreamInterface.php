@@ -1,12 +1,12 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts\Consumers;
+namespace Micromus\KafkaBus\Interfaces\Consumers;
 
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
 
-interface ConsumerStream
+interface ConsumerStreamInterface
 {
     /**
      * @throws MessagesCompletedConsumerException

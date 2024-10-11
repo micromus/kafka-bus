@@ -3,13 +3,13 @@
 namespace Micromus\KafkaBus;
 
 use Micromus\KafkaBus\Bus\ThreadRegistry;
-use Micromus\KafkaBus\Contracts\Bus\Bus as BusContract;
-use Micromus\KafkaBus\Contracts\Bus\Thread;
-use Micromus\KafkaBus\Contracts\Messages\Message;
+use Micromus\KafkaBus\Interfaces\Bus\BusInterface;
+use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
+use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
 
-class Bus implements BusContract
+class Bus implements BusInterface
 {
-    protected Thread $thread;
+    protected ThreadInterface $thread;
 
     public function __construct(
         protected ThreadRegistry $threadRegistry,
@@ -18,13 +18,13 @@ class Bus implements BusContract
         $this->thread = $this->threadRegistry->thread($defaultConnection);
     }
 
-    public function onConnection(string $connectionName): Thread
+    public function onConnection(string $connectionName): ThreadInterface
     {
         return $this->threadRegistry
             ->thread($connectionName);
     }
 
-    public function publish(Message $message): void
+    public function publish(MessageInterface $message): void
     {
         $this->thread->publish($message);
     }

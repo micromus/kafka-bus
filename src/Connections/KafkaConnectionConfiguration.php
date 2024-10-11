@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Connections;
 
 class KafkaConnectionConfiguration
 {
-    final const PRODUCER_OPTIONS = [
+    final public const PRODUCER_OPTIONS = [
         'transactional.id',
         'transaction.timeout.ms',
         'enable.idempotence',
@@ -27,7 +27,7 @@ class KafkaConnectionConfiguration
         'sticky.partitioning.linger.ms',
     ];
 
-    final const CONSUMER_OPTIONS = [
+    final public const CONSUMER_OPTIONS = [
         'partition.assignment.strategy',
         'session.timeout.ms',
         'heartbeat.interval.ms',
@@ -56,7 +56,7 @@ class KafkaConnectionConfiguration
         'auto.offset.reset',
     ];
 
-    final const GLOBAL_OPTIONS = [
+    final public const GLOBAL_OPTIONS = [
         'bootstrap.servers',
         'metadata.broker.list',
         'sasl.username',
@@ -67,7 +67,8 @@ class KafkaConnectionConfiguration
 
     public function __construct(
         protected array $options = []
-    ) {}
+    ) {
+    }
 
     public function getProducerOptions(array $customOptions = []): array
     {

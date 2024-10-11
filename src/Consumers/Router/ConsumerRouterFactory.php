@@ -3,19 +3,20 @@
 namespace Micromus\KafkaBus\Consumers\Router;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRoutes;
-use Micromus\KafkaBus\Contracts\Resolver;
+use Micromus\KafkaBus\Interfaces\ResolverInterface;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 
 class ConsumerRouterFactory
 {
     public function __construct(
-        protected Resolver $resolver,
-        protected TopicRegistry $topicRegistry
-    ) {}
+        protected ResolverInterface $resolver,
+        protected TopicRegistry     $topicRegistry
+    ) {
+    }
 
     public function create(WorkerRoutes $routes): ConsumerRouter
     {
-        $consumerRoutes = new ConsumerRoutes;
+        $consumerRoutes = new ConsumerRoutes();
         $routesCollection = $routes->all();
 
         foreach ($routesCollection as $route) {

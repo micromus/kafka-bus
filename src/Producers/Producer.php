@@ -2,21 +2,21 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-use Micromus\KafkaBus\Contracts\Producers\Producer as ProducerContract;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Exceptions\Producers\CannotFlushProducerException;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 use Micromus\KafkaBus\Support\RetryRepeater;
 use RdKafka\Producer as KafkaProducer;
 use RdKafka\ProducerTopic;
 
-class Producer implements ProducerContract
+class Producer implements ProducerInterface
 {
     protected ProducerTopic $topic;
 
     public function __construct(
         protected KafkaProducer $producer,
         protected string $topicName,
-        protected RetryRepeater $retryRepeater = new RetryRepeater,
+        protected RetryRepeater $retryRepeater = new RetryRepeater(),
         protected int $timeout = 2000
     ) {
         $this->topic = $this->producer

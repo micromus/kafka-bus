@@ -8,7 +8,8 @@ class Timer
 
     public function __construct(
         protected int $maxTimeInSeconds = -1
-    ) {}
+    ) {
+    }
 
     public function isTimeout(): bool
     {

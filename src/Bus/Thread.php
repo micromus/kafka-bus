@@ -5,19 +5,20 @@ namespace Micromus\KafkaBus\Bus;
 use Micromus\KafkaBus\Bus\Listeners\ListenerFactory;
 use Micromus\KafkaBus\Bus\Publishers\Publisher;
 use Micromus\KafkaBus\Bus\Publishers\PublisherFactory;
-use Micromus\KafkaBus\Contracts\Bus\Thread as ThreadContract;
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Messages\Message;
+use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
 
-class Thread implements ThreadContract
+class Thread implements ThreadInterface
 {
     protected ?Publisher $publisher = null;
 
     public function __construct(
-        protected Connection $connection,
+        protected ConnectionInterface $connection,
         protected ListenerFactory $listenerFactory,
         protected PublisherFactory $publisherFactory,
-    ) {}
+    ) {
+    }
 
     private function getPublisher(): Publisher
     {
@@ -29,7 +30,7 @@ class Thread implements ThreadContract
         return $this->publisher;
     }
 
-    public function publish(Message $message): void
+    public function publish(MessageInterface $message): void
     {
         $this->publishMany([$message]);
     }

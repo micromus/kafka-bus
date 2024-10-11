@@ -8,7 +8,8 @@ class ConsumerMessage
         public string $payload,
         public array $headers,
         public readonly ConsumerMeta $meta
-    ) {}
+    ) {
+    }
 
     public function topicName(): string
     {

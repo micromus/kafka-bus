@@ -3,19 +3,20 @@
 namespace Micromus\KafkaBus\Producers;
 
 use Micromus\KafkaBus\Bus\Publishers\Router\Options;
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Messages\MessagePipelineFactory;
-use Micromus\KafkaBus\Contracts\Producers\ProducerStream as ProducerStreamContract;
-use Micromus\KafkaBus\Contracts\Producers\ProducerStreamFactory as ProducerStreamFactoryContract;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
 use Micromus\KafkaBus\Topics\Topic;
 
-class ProducerStreamFactory implements ProducerStreamFactoryContract
+class ProducerStreamFactory implements ProducerStreamFactoryInterface
 {
     public function __construct(
-        protected MessagePipelineFactory $messagePipelineFactory
-    ) {}
+        protected MessagePipelineFactoryInterface $messagePipelineFactory
+    ) {
+    }
 
-    public function create(Connection $connection, Topic $topic, Options $options): ProducerStreamContract
+    public function create(ConnectionInterface $connection, Topic $topic, Options $options): ProducerStreamInterface
     {
         $configuration = $this->makeProducerConfiguration($options);
 

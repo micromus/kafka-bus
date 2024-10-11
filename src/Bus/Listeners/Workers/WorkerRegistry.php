@@ -7,17 +7,17 @@ class WorkerRegistry
     /**
      * @var array<string, Worker>
      */
-    protected array $groups = [];
+    protected array $workers = [];
 
-    public function add(string $groupName, Worker $group): self
+    public function add(string $workerName, Worker $worker): self
     {
-        $this->groups[$groupName] = $group;
+        $this->workers[$workerName] = $worker;
 
         return $this;
     }
 
-    public function get(string $groupName): ?Worker
+    public function get(string $workerName): ?Worker
     {
-        return $this->groups[$groupName] ?? null;
+        return $this->workers[$workerName] ?? null;
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Micromus\KafkaBus\Messages;
 
-use Micromus\KafkaBus\Contracts\Messages\MessagePipeline as MessagePipelineContract;
-use Micromus\KafkaBus\Contracts\Messages\MessagePipelineFactory as MessagePipelineFactoryContract;
+use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
+use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineFactoryInterface;
 
-class MessagePipelineFactory implements MessagePipelineFactoryContract
+class MessagePipelineFactory implements MessagePipelineFactoryInterface
 {
-    public function create(array $middlewares): MessagePipelineContract
+    public function create(array $middlewares): MessagePipelineInterface
     {
         return new MessagePipeline($middlewares);
     }

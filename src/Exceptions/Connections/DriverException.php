@@ -4,4 +4,6 @@ namespace Micromus\KafkaBus\Exceptions\Connections;
 
 use LogicException;
 
-class DriverException extends LogicException {}
+class DriverException extends LogicException
+{
+}

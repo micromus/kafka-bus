@@ -8,5 +8,6 @@ readonly class ConsumerMeta
 {
     public function __construct(
         public Message $message
-    ) {}
+    ) {
+    }
 }

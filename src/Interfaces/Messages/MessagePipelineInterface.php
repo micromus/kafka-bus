@@ -1,10 +1,10 @@
 <?php
 
-namespace Micromus\KafkaBus\Contracts\Messages;
+namespace Micromus\KafkaBus\Interfaces\Messages;
 
 use Closure;
 
-interface MessagePipeline
+interface MessagePipelineInterface
 {
     public function then(mixed $message, Closure $destination): mixed;
 }

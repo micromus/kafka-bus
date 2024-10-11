@@ -2,9 +2,9 @@
 
 namespace Micromus\KafkaBus\Bus\Publishers\Router;
 
-use Micromus\KafkaBus\Contracts\Connections\Connection;
-use Micromus\KafkaBus\Contracts\Producers\ProducerStream;
-use Micromus\KafkaBus\Contracts\Producers\ProducerStreamFactory;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
+use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
 use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 
@@ -13,11 +13,12 @@ class PublisherRouter
     protected array $activeProducerStreams = [];
 
     public function __construct(
-        protected Connection $connection,
-        protected ProducerStreamFactory $producerStreamFactory,
-        protected TopicRegistry $topicRegistry,
-        protected PublisherRoutes $routes
-    ) {}
+        protected ConnectionInterface            $connection,
+        protected ProducerStreamFactoryInterface $producerStreamFactory,
+        protected TopicRegistry                  $topicRegistry,
+        protected PublisherRoutes                $routes
+    ) {
+    }
 
     /**
      * @throws RouteProducerException
@@ -46,7 +47,7 @@ class PublisherRouter
     /**
      * @throws RouteProducerException
      */
-    private function getOrCreateProducerStream(string $messageClass): ProducerStream
+    private function getOrCreateProducerStream(string $messageClass): ProducerStreamInterface
     {
         if (! isset($this->activeProducerStreams[$messageClass])) {
             $this->activeProducerStreams[$messageClass] = $this->createProducerStream($messageClass);
@@ -58,7 +59,7 @@ class PublisherRouter
     /**
      * @throws RouteProducerException
      */
-    private function createProducerStream(string $messageClass): ProducerStream
+    private function createProducerStream(string $messageClass): ProducerStreamInterface
     {
         $route = $this->routes->get($messageClass)
             ?? throw new RouteProducerException("Route for message [$messageClass] not found");

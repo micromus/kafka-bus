@@ -6,9 +6,9 @@ use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Support\Resolvers\NativeResolver;
-use Micromus\KafkaBus\Testing\ConnectionFaker;
-use Micromus\KafkaBus\Testing\ConnectionRegistryFaker;
-use Micromus\KafkaBus\Testing\ConsumerHandlerFaker;
+use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
+use Micromus\KafkaBus\Testing\Connections\ConnectionRegistryFaker;
+use Micromus\KafkaBus\Testing\Messages\ConsumerHandlerFaker;
 use Micromus\KafkaBus\Topics\Topic;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 use RdKafka\Message;
@@ -25,13 +25,13 @@ test('can consume message', function () {
 
     $connectionFaker->addMessage('products', $message);
 
-    $group = new Bus\Listeners\Workers\Worker(
+    $worker = new Bus\Listeners\Workers\Worker(
         (new Bus\Listeners\Workers\WorkerRoutes)
             ->add(new Bus\Listeners\Workers\Route('products', ConsumerHandlerFaker::class))
     );
 
     $listenerRegistry = (new Bus\Listeners\Workers\WorkerRegistry)
-        ->add('default-listener', $group);
+        ->add('default-listener', $worker);
 
     $bus = new Bus(
         new Bus\ThreadRegistry(
