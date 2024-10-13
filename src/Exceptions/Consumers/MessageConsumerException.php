@@ -11,6 +11,6 @@ class MessageConsumerException extends ConsumerException
     ) {
         $errorMessage = rd_kafka_err2str($this->consumerMessage->err);
 
-        parent::__construct("Kafka error: #{$this->consumerMessage->err} $errorMessage");
+        parent::__construct("Kafka error: {$this->consumerMessage->err} [$errorMessage]");
     }
 }

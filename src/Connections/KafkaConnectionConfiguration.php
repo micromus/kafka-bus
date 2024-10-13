@@ -54,15 +54,7 @@ class KafkaConnectionConfiguration
         'check.crcs',
         'allow.auto.create.topics',
         'auto.offset.reset',
-    ];
-
-    final public const GLOBAL_OPTIONS = [
-        'bootstrap.servers',
-        'metadata.broker.list',
-        'sasl.username',
-        'sasl.password',
-        'sasl.mechanisms',
-        'security.protocol',
+        'group.id',
     ];
 
     public function __construct(
@@ -72,26 +64,48 @@ class KafkaConnectionConfiguration
 
     public function getProducerOptions(array $customOptions = []): array
     {
-        return [
-            ...$this->prepareOptions($customOptions, self::PRODUCER_OPTIONS),
-            ...$this->prepareOptions($this->options, self::GLOBAL_OPTIONS),
+        $settings = [
+            ...$this->options,
+            ...$this->filterSettingsByKeys($customOptions, self::PRODUCER_OPTIONS),
         ];
+
+        return $this->cleanupSettings($settings);
     }
 
     public function getConsumerOptions(array $customOptions = []): array
     {
-        return [
-            ...$this->prepareOptions($customOptions, self::CONSUMER_OPTIONS),
-            ...$this->prepareOptions($this->options, self::GLOBAL_OPTIONS),
+        $settings = [
+            ...$this->options,
+            ...$this->filterSettingsByKeys($customOptions, self::CONSUMER_OPTIONS),
         ];
+
+        return $this->cleanupSettings($settings);
     }
 
-    private function prepareOptions(array $customOptions, array $allowKeys): array
+    private function filterSettingsByKeys(array $customOptions, array $allowKeys): array
     {
         return array_filter(
             $customOptions,
             fn (string $key) => in_array($key, $allowKeys, true),
             ARRAY_FILTER_USE_KEY
         );
+    }
+
+    private function cleanupSettings(array $settings = []): array
+    {
+        return array_filter(array_map($this->prepareSetting(...), $settings));
+    }
+
+    private function prepareSetting(mixed $value): mixed
+    {
+        if (is_null($value)) {
+            return null;
+        }
+
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+
+        return $value;
     }
 }

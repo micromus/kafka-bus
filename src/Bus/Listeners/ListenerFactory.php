@@ -20,11 +20,7 @@ class ListenerFactory
     {
         $worker = $this->getWorker($listenerWorkerName);
 
-        return new Listener(
-            $connection,
-            $this->streamFactory,
-            $worker
-        );
+        return new Listener($this->streamFactory->create($connection, $worker));
     }
 
     private function getWorker(string $workerName): Worker

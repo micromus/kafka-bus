@@ -18,7 +18,7 @@ class ConsumerRouter
 
     public function topics(): array
     {
-        return array_keys($this->routes->topics());
+        return $this->routes->topics();
     }
 
     public function handle(ConsumerMessage $consumerMessage): void

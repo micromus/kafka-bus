@@ -14,4 +14,6 @@ interface ConsumerStreamInterface
      * @throws ConsumerException
      */
     public function listen(): void;
+
+    public function forceStop(): void;
 }

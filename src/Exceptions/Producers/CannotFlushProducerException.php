@@ -8,6 +8,6 @@ class CannotFlushProducerException extends ProducerException
     {
         $errorMessage = rd_kafka_err2str($this->error);
 
-        parent::__construct("Kafka error: #{$this->error} $errorMessage");
+        parent::__construct("Kafka error: {$this->error} [$errorMessage]");
     }
 }

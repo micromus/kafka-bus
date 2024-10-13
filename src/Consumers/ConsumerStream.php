@@ -25,11 +25,6 @@ class ConsumerStream implements ConsumerStreamInterface
         RD_KAFKA_RESP_ERR__TIMED_OUT,
     ];
 
-    private const CONSUME_STOP_EOF_ERRORS = [
-        RD_KAFKA_RESP_ERR__PARTITION_EOF,
-        RD_KAFKA_RESP_ERR__TIMED_OUT,
-    ];
-
     public function __construct(
         protected ConsumerInterface        $consumer,
         protected ConsumerRouter           $consumerRouter,
@@ -42,37 +37,32 @@ class ConsumerStream implements ConsumerStreamInterface
     public function listen(): void
     {
         $this->timer->start();
-        $this->listenForSignals();
 
-        try {
-            do {
+        do {
+            try {
                 $consumerMessage = $this->consumer
                     ->getMessage();
 
-                if ($consumerMessage->meta->message->err !== RD_KAFKA_RESP_ERR_NO_ERROR) {
-                    if (in_array($consumerMessage->meta->message->err, self::CONSUME_STOP_EOF_ERRORS, true)) {
-                        return;
-                    }
-
-                    if (! in_array($consumerMessage->meta->message->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
-                        throw new MessageConsumerException($consumerMessage->meta->message);
-                    }
-                }
-
                 $this->handleMessage($consumerMessage);
-
-                if ($this->timer->isTimeout()) {
-                    throw new TimeoutConsumerException('Время прослушивания закончилось');
-                }
-
-                if ($this->messageCounter->isCompleted()) {
-                    throw new MessagesCompletedConsumerException('Превышено количество прочитанных сообщений');
+            }
+            catch (MessageConsumerException $exception) {
+                if (! in_array($exception->consumerMessage->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
+                    throw $exception;
                 }
             }
-            while (! $this->forceStop);
+            catch (KafkaMessagesEndedException) {
+                return;
+            }
+
+            if ($this->timer->isTimeout()) {
+                throw new TimeoutConsumerException('Время прослушивания закончилось');
+            }
+
+            if ($this->messageCounter->isCompleted()) {
+                throw new MessagesCompletedConsumerException('Превышено количество прочитанных сообщений');
+            }
         }
-        catch (KafkaMessagesEndedException) {
-        }
+        while (! $this->forceStop);
     }
 
     private function handleMessage(ConsumerMessage $message): void
@@ -90,17 +80,8 @@ class ConsumerStream implements ConsumerStreamInterface
         $this->messageCounter->increment();
     }
 
-    private function forceStop(): void
+    public function forceStop(): void
     {
         $this->forceStop = true;
-    }
-
-    private function listenForSignals(): void
-    {
-        pcntl_async_signals(true);
-
-        pcntl_signal(SIGQUIT, fn () => $this->forceStop());
-        pcntl_signal(SIGTERM, fn () => $this->forceStop());
-        pcntl_signal(SIGINT, fn () => $this->forceStop());
     }
 }

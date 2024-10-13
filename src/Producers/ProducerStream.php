@@ -22,7 +22,7 @@ class ProducerStream implements ProducerStreamInterface
 
     public function handle(array $messages): void
     {
-        $producerMessages = array_map($this->handleMessage(...), $messages);
+        $producerMessages = array_filter(array_map($this->handleMessage(...), $messages));
 
         $this->producer
             ->produce($producerMessages);
@@ -33,6 +33,7 @@ class ProducerStream implements ProducerStreamInterface
         return $this->messagePipeline
             ->then($message, $this->mapProducerMessage(...));
     }
+
 
     private function mapProducerMessage(MessageInterface $message): ProducerMessage
     {

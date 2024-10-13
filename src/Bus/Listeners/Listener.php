@@ -8,14 +8,19 @@ use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 
 class Listener
 {
     public function __construct(
-        protected ConnectionInterface            $connection,
-        protected ConsumerStreamFactoryInterface $consumerStreamFactory,
-        protected Worker                         $worker
+        protected ConsumerStreamInterface $consumerStream,
     ) {
+    }
+
+    public function forceStop(): void
+    {
+        $this->consumerStream
+            ->forceStop();
     }
 
     /**
@@ -25,8 +30,7 @@ class Listener
      */
     public function listen(): void
     {
-        $this->consumerStreamFactory
-            ->create($this->connection, $this->worker)
+        $this->consumerStream
             ->listen();
     }
 }

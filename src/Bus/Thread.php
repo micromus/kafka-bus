@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Bus;
 
+use Micromus\KafkaBus\Bus\Listeners\Listener;
 use Micromus\KafkaBus\Bus\Listeners\ListenerFactory;
 use Micromus\KafkaBus\Bus\Publishers\Publisher;
 use Micromus\KafkaBus\Bus\Publishers\PublisherFactory;
@@ -41,10 +42,9 @@ class Thread implements ThreadInterface
             ->publish($messages);
     }
 
-    public function listen(string $listenerWorkerName): void
+    public function listener(string $listenerWorkerName): Listener
     {
-        $this->listenerFactory
-            ->create($this->connection, $listenerWorkerName)
-            ->listen();
+        return $this->listenerFactory
+            ->create($this->connection, $listenerWorkerName);
     }
 }

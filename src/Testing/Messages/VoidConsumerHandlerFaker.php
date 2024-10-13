@@ -4,10 +4,10 @@ namespace Micromus\KafkaBus\Testing\Messages;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 
-class ConsumerHandlerFaker
+class VoidConsumerHandlerFaker
 {
     public function execute(ConsumerMessage $message): void
     {
-        echo $message->payload . PHP_EOL;
+
     }
 }

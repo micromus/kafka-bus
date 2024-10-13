@@ -2,10 +2,8 @@
 
 namespace Micromus\KafkaBus\Interfaces\Bus;
 
+use Micromus\KafkaBus\Bus\Listeners\Listener;
 use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
-use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
-use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
-use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
 use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
 
 interface ThreadInterface
@@ -22,10 +20,5 @@ interface ThreadInterface
      */
     public function publishMany(array $messages): void;
 
-    /**
-     * @throws ConsumerException
-     * @throws MessagesCompletedConsumerException
-     * @throws TimeoutConsumerException
-     */
-    public function listen(string $listenerWorkerName): void;
+    public function listener(string $listenerWorkerName): Listener;
 }

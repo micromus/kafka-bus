@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus;
 
+use Micromus\KafkaBus\Bus\Listeners\Listener;
 use Micromus\KafkaBus\Bus\ThreadRegistry;
 use Micromus\KafkaBus\Interfaces\Bus\BusInterface;
 use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
@@ -34,8 +35,8 @@ class Bus implements BusInterface
         $this->thread->publishMany($messages);
     }
 
-    public function listen(string $listenerWorkerName): void
+    public function listener(string $listenerWorkerName): Listener
     {
-        $this->thread->listen($listenerWorkerName);
+        return $this->thread->listener($listenerWorkerName);
     }
 }

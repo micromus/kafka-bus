@@ -29,8 +29,8 @@ class Consumer implements ConsumerInterface
 
     public function __destruct()
     {
-        $this->consumer->unsubscribe();
-        $this->consumer->close();
+        //        $this->consumer->unsubscribe();
+        //        $this->consumer->close();
     }
 
     public function getMessage(): ConsumerMessage
