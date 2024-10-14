@@ -15,6 +15,6 @@ class DefaultCommiter implements CommiterInterface
     public function commit(ConsumerMessage $consumerMessage): void
     {
         $this->consumer
-            ->commit($consumerMessage->meta->message);
+            ->commitAsync($consumerMessage->meta->message);
     }
 }

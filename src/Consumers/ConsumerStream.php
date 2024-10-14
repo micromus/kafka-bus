@@ -3,7 +3,6 @@
 namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
-use Micromus\KafkaBus\Consumers\Counters\Timer;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
@@ -11,7 +10,6 @@ use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
-use Micromus\KafkaBus\Exceptions\Consumers\TimeoutConsumerException;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
 class ConsumerStream implements ConsumerStreamInterface
@@ -29,15 +27,12 @@ class ConsumerStream implements ConsumerStreamInterface
         protected ConsumerInterface        $consumer,
         protected ConsumerRouter           $consumerRouter,
         protected MessagePipelineInterface $messagePipeline,
-        protected MessageCounter           $messageCounter = new MessageCounter(),
-        protected Timer                    $timer = new Timer()
+        protected MessageCounter           $messageCounter = new MessageCounter()
     ) {
     }
 
     public function listen(): void
     {
-        $this->timer->start();
-
         do {
             try {
                 $consumerMessage = $this->consumer
@@ -52,10 +47,6 @@ class ConsumerStream implements ConsumerStreamInterface
             }
             catch (KafkaMessagesEndedException) {
                 return;
-            }
-
-            if ($this->timer->isTimeout()) {
-                throw new TimeoutConsumerException('Время прослушивания закончилось');
             }
 
             if ($this->messageCounter->isCompleted()) {

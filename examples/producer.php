@@ -16,7 +16,7 @@ use Micromus\KafkaBus\Topics\TopicRegistry;
 require '../vendor/autoload.php';
 
 $topicRegistry = (new TopicRegistry())
-    ->add(new Topic('production.fact.products.1', 'products', 1));
+    ->add(new Topic('production.fact.products.1', 'products'));
 
 $routes = (new PublisherRoutes())
     ->add(ProducerMessageFaker::class, 'products');

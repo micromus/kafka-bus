@@ -5,7 +5,6 @@ namespace Micromus\KafkaBus\Consumers;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
-use Micromus\KafkaBus\Consumers\Counters\Timer;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
@@ -29,8 +28,7 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
             $connection->createConsumer($router->topics(), $configuration),
             $router,
             $this->messagePipelineFactory->create($worker->options->middlewares),
-            new MessageCounter($worker->maxMessages),
-            new Timer($worker->maxTime)
+            new MessageCounter($worker->maxMessages)
         );
     }
 
