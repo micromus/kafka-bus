@@ -41,6 +41,7 @@ class Producer implements ProducerInterface
             partition: $producerMessage->partition,
             msgflags: RD_KAFKA_MSG_F_BLOCK,
             payload: $producerMessage->payload,
+            key: $producerMessage->key,
             headers: $producerMessage->headers
         );
 

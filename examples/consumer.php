@@ -15,7 +15,7 @@ use Micromus\KafkaBus\Topics\TopicRegistry;
 require '../vendor/autoload.php';
 
 $topicRegistry = (new TopicRegistry())
-    ->add(new Topic('production.fact.products.1', 'products', 1));
+    ->add(new Topic('production.fact.products.1', 'products'));
 
 $worker = new Bus\Listeners\Workers\Worker(
     (new Bus\Listeners\Workers\WorkerRoutes())

@@ -3,6 +3,7 @@
 namespace Micromus\KafkaBus\Producers;
 
 use Micromus\KafkaBus\Interfaces\Messages\HasHeaders;
+use Micromus\KafkaBus\Interfaces\Messages\HasKey;
 use Micromus\KafkaBus\Interfaces\Messages\HasPartition;
 use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
 use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
@@ -40,7 +41,8 @@ class ProducerStream implements ProducerStreamInterface
         return new ProducerMessage(
             payload: $message->toPayload(),
             headers: $this->getHeadersFromMessage($message),
-            partition: max($this->getPartitionFromMessage($message), RD_KAFKA_PARTITION_UA),
+            partition: $this->getPartitionFromMessage($message),
+            key: $this->getKey($message)
         );
     }
 
@@ -51,10 +53,17 @@ class ProducerStream implements ProducerStreamInterface
             : [];
     }
 
+    private function getKey(MessageInterface $message): ?string
+    {
+        return $message instanceof HasKey
+            ? $message->getKey()
+            : null;
+    }
+
     private function getPartitionFromMessage(MessageInterface $message): int
     {
         return $message instanceof HasPartition
-            ? min($message->getPartition($this->topic->partitions), $this->topic->partitions - 1)
+            ? max($message->getPartition(), RD_KAFKA_PARTITION_UA)
             : RD_KAFKA_PARTITION_UA;
     }
 }
