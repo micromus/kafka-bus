@@ -12,20 +12,17 @@ class ListenerFactory
 {
     public function __construct(
         protected ConsumerStreamFactoryInterface $streamFactory,
-        protected WorkerRegistry                 $workerRegistry = new WorkerRegistry(),
+        protected WorkerRegistry $workerRegistry = new WorkerRegistry(),
     ) {
     }
 
     public function create(ConnectionInterface $connection, string $listenerWorkerName): Listener
     {
-        $worker = $this->getWorker($listenerWorkerName);
+        $worker = $this->workerRegistry->get($listenerWorkerName)
+            ?: throw new ListenerException("Worker [$listenerWorkerName] not found.");
 
-        return new Listener($this->streamFactory->create($connection, $worker));
-    }
+        $consumerStream = $this->streamFactory->create($connection, $worker);
 
-    private function getWorker(string $workerName): Worker
-    {
-        return $this->workerRegistry->get($workerName)
-            ?: throw new ListenerException("Worker [$workerName] not found.");
+        return new Listener($consumerStream);
     }
 }

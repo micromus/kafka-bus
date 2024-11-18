@@ -2,6 +2,7 @@
 
 use Micromus\KafkaBus\Bus;
 use Micromus\KafkaBus\Consumers\ConsumerStreamFactory;
+use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Messages\MessagePipelineFactory;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
@@ -25,27 +26,30 @@ test('can consume message', function () {
 
     $connectionFaker->addMessage('products', $message);
 
-    $worker = new Bus\Listeners\Workers\Worker(
-        (new Bus\Listeners\Workers\WorkerRoutes())
-            ->add(new Bus\Listeners\Workers\Route('products', VoidConsumerHandlerFaker::class))
-    );
-
-    $listenerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
-        ->add('default-listener', $worker);
+    $workerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
+        ->add(
+            new Bus\Listeners\Workers\Worker(
+                'default-listener',
+                (new Bus\Listeners\Workers\WorkerRoutes())
+                    ->add(new Bus\Listeners\Workers\Route('products', VoidConsumerHandlerFaker::class))
+            )
+        );
 
     $bus = new Bus(
         new Bus\ThreadRegistry(
             new ConnectionRegistryFaker($connectionFaker),
             new Bus\Publishers\PublisherFactory(
-                new ProducerStreamFactory(new MessagePipelineFactory()),
+                new ProducerStreamFactory(new MessagePipelineFactory(new NativeResolver())),
                 $topicRegistry
             ),
             new Bus\Listeners\ListenerFactory(
                 new ConsumerStreamFactory(
-                    new MessagePipelineFactory(),
-                    new ConsumerRouterFactory(new NativeResolver(), $topicRegistry)
+                    new ConsumerMessageHandlerFactory(
+                        new MessagePipelineFactory(new NativeResolver()),
+                        new ConsumerRouterFactory(new NativeResolver(), $topicRegistry)
+                    )
                 ),
-                $listenerRegistry
+                $workerRegistry
             )
         ),
         'default'

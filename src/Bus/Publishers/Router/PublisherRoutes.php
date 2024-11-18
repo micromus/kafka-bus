@@ -9,9 +9,9 @@ class PublisherRoutes
      */
     protected array $routes = [];
 
-    public function add(string $messageClass, string $topicKey, Options $options = new Options()): self
+    public function add(Route $route): self
     {
-        $this->routes[$messageClass] = new Route($topicKey, $options);
+        $this->routes[$route->messageClass] = $route;
 
         return $this;
     }

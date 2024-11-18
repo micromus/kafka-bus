@@ -5,29 +5,28 @@ namespace Micromus\KafkaBus\Consumers;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
-use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
+use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineFactoryInterface;
 
 class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
 {
     public function __construct(
-        protected MessagePipelineFactoryInterface $messagePipelineFactory,
-        protected ConsumerRouterFactory           $consumerRouterFactory,
+        protected ConsumerMessageHandlerFactory $consumerMessageHandlerFactory,
     ) {
     }
 
     public function create(ConnectionInterface $connection, Worker $worker): ConsumerStreamInterface
     {
         $configuration = $this->makeConsumerConfiguration($worker->options);
-        $router = $this->consumerRouterFactory->create($worker->routes);
+
+        $consumerMessageHandler = $this->consumerMessageHandlerFactory
+            ->create($worker);
 
         return new ConsumerStream(
-            $connection->createConsumer($router->topics(), $configuration),
-            $router,
-            $this->messagePipelineFactory->create($worker->options->middlewares),
+            $connection->createConsumer($consumerMessageHandler->topics(), $configuration),
+            $consumerMessageHandler,
             new MessageCounter($worker->maxMessages)
         );
     }

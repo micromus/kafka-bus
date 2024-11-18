@@ -9,9 +9,9 @@ class WorkerRegistry
      */
     protected array $workers = [];
 
-    public function add(string $workerName, Worker $worker): self
+    public function add(Worker $worker): self
     {
-        $this->workers[$workerName] = $worker;
+        $this->workers[$worker->name] = $worker;
 
         return $this;
     }

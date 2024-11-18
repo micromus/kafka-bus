@@ -4,10 +4,10 @@ namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
+use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
@@ -25,8 +25,7 @@ class ConsumerStream implements ConsumerStreamInterface
 
     public function __construct(
         protected ConsumerInterface        $consumer,
-        protected ConsumerRouter           $consumerRouter,
-        protected MessagePipelineInterface $messagePipeline,
+        protected ConsumerMessageHandlerInterface $consumerMessageHandler,
         protected MessageCounter           $messageCounter = new MessageCounter()
     ) {
     }
@@ -56,16 +55,15 @@ class ConsumerStream implements ConsumerStreamInterface
         while (! $this->forceStop);
     }
 
+    /**
+     * @param ConsumerMessage $message
+     * @return void
+     *
+     * @throws MessageConsumerNotHandledException
+     */
     private function handleMessage(ConsumerMessage $message): void
     {
-        $this->messagePipeline
-            ->then($message, function (ConsumerMessage $message) {
-                $this->consumerRouter
-                    ->handle($message);
-
-                return $message;
-            });
-
+        $this->consumerMessageHandler->handle($message);
         $this->consumer->commit($message);
 
         $this->messageCounter->increment();
