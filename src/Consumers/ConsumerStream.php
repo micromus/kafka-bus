@@ -44,6 +44,7 @@ class ConsumerStream implements ConsumerStreamInterface
                     throw $exception;
                 }
             }
+            // @phpstan-ignore-next-line
             catch (KafkaMessagesEndedException) {
                 return;
             }
