@@ -23,14 +23,20 @@ class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
 
     public function handle(ConsumerMessage $message): void
     {
-        try {
-            $this->messagePipeline
-                ->then($message, function (ConsumerMessage $message) {
-                    $this->consumerRouter
-                        ->handle($message);
+        $this->messagePipeline
+            ->then($message, $this->handleMessage(...));
+    }
 
-                    return $message;
-                });
+    /**
+     * @throws MessageConsumerNotHandledException
+     */
+    protected function handleMessage(ConsumerMessage $message): ConsumerMessage
+    {
+        try {
+            $this->consumerRouter
+                ->handle($message);
+
+            return $message;
         }
         catch (Throwable $exception) {
             throw new MessageConsumerNotHandledException($message, $exception);

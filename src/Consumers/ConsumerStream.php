@@ -2,14 +2,12 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
-use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
 class ConsumerStream implements ConsumerStreamInterface
@@ -24,9 +22,8 @@ class ConsumerStream implements ConsumerStreamInterface
     ];
 
     public function __construct(
-        protected ConsumerInterface        $consumer,
-        protected ConsumerMessageHandlerInterface $consumerMessageHandler,
-        protected MessageCounter           $messageCounter = new MessageCounter()
+        protected ConsumerInterface $consumer,
+        protected ConsumerMessageHandlerInterface $consumerMessageHandler
     ) {
     }
 
@@ -44,13 +41,8 @@ class ConsumerStream implements ConsumerStreamInterface
                     throw $exception;
                 }
             }
-            // @phpstan-ignore-next-line
             catch (KafkaMessagesEndedException) {
                 return;
-            }
-
-            if ($this->messageCounter->isCompleted()) {
-                throw new MessagesCompletedConsumerException('Превышено количество прочитанных сообщений');
             }
         }
         while (! $this->forceStop);
@@ -66,8 +58,6 @@ class ConsumerStream implements ConsumerStreamInterface
     {
         $this->consumerMessageHandler->handle($message);
         $this->consumer->commit($message);
-
-        $this->messageCounter->increment();
     }
 
     public function forceStop(): void

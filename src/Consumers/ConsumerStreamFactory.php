@@ -4,7 +4,6 @@ namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
-use Micromus\KafkaBus\Consumers\Counters\MessageCounter;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
@@ -26,8 +25,7 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
 
         return new ConsumerStream(
             $connection->createConsumer($consumerMessageHandler->topics(), $configuration),
-            $consumerMessageHandler,
-            new MessageCounter($worker->maxMessages)
+            $consumerMessageHandler
         );
     }
 

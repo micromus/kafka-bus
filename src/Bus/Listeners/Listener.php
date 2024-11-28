@@ -3,7 +3,8 @@
 namespace Micromus\KafkaBus\Bus\Listeners;
 
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
-use Micromus\KafkaBus\Exceptions\Consumers\MessagesCompletedConsumerException;
+use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
+use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 
 class Listener
@@ -21,7 +22,8 @@ class Listener
 
     /**
      * @throws ConsumerException
-     * @throws MessagesCompletedConsumerException
+     * @throws MessageConsumerNotHandledException
+     * @throws MessageConsumerException
      */
     public function listen(): void
     {
