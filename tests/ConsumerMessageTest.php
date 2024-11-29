@@ -9,22 +9,25 @@ use Micromus\KafkaBus\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Support\Resolvers\NativeResolver;
 use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
 use Micromus\KafkaBus\Testing\Connections\ConnectionRegistryFaker;
+use Micromus\KafkaBus\Testing\Consumers\MessageBuilder;
 use Micromus\KafkaBus\Testing\Messages\VoidConsumerHandlerFaker;
 use Micromus\KafkaBus\Topics\Topic;
 use Micromus\KafkaBus\Topics\TopicRegistry;
-use RdKafka\Message;
 
 test('can consume message', function () {
     $topicRegistry = (new TopicRegistry())
         ->add(new Topic('production.fact.products.1', 'products'));
 
-    $connectionFaker = new ConnectionFaker($topicRegistry);
+    $connectionFaker = new ConnectionFaker();
 
-    $message = new Message();
-    $message->payload = 'test-message';
-    $message->headers = ['foo' => 'bar'];
+    $message = MessageBuilder::for($topicRegistry)
+        ->build([
+            'topic_name' => 'products',
+            'payload' => 'test-message',
+            'headers' => ['foo' => 'bar'],
+        ]);
 
-    $connectionFaker->addMessage('products', $message);
+    $connectionFaker->addMessage($message);
 
     $workerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
         ->add(
@@ -60,8 +63,9 @@ test('can consume message', function () {
 
     expect($connectionFaker->committedMessages)
         ->toHaveCount(1)
-        ->and($connectionFaker->committedMessages['production.fact.products.1'][0]->payload)
-        ->toEqual('test-message')
-        ->and($connectionFaker->committedMessages['production.fact.products.1'][0]->headers)
-        ->toEqual(['foo' => 'bar']);
+        ->and($connectionFaker->committedMessages['production.fact.products.1'][0])
+        ->toHaveProperties([
+            'payload' => 'test-message',
+            'headers' => ['foo' => 'bar'],
+        ]);
 });

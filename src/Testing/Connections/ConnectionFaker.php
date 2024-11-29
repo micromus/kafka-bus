@@ -21,16 +21,8 @@ class ConnectionFaker implements ConnectionInterface
 
     protected array $consumeMessages = [];
 
-    public function __construct(
-        protected TopicRegistry $topicRegistry,
-    ) {
-    }
-
-    public function addMessage(string $topicKey, KafkaMessage $message): void
+    public function addMessage(KafkaMessage $message): void
     {
-        $message->topic_name = $this->topicRegistry->getTopicName($topicKey);
-        $message->err = RD_KAFKA_RESP_ERR_NO_ERROR;
-
         $this->consumeMessages[] = $message;
     }
 

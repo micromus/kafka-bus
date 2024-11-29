@@ -47,10 +47,10 @@ it('can produce message', function () {
 
     expect($connectionFaker->publishedMessages)
         ->toHaveCount(1)
-        ->and($connectionFaker->publishedMessages['production.fact.products.1'][0]->payload)
-        ->toEqual('test-message')
-        ->and($connectionFaker->publishedMessages['production.fact.products.1'][0]->headers)
-        ->toEqual(['foo' => 'bar'])
-        ->and($connectionFaker->publishedMessages['production.fact.products.1'][0]->partition)
-        ->toEqual(5);
+        ->and($connectionFaker->publishedMessages['production.fact.products.1'][0])
+        ->toHaveProperties([
+            'payload' => 'test-message',
+            'headers' => ['foo' => 'bar'],
+            'partition' => 5,
+        ]);
 });
