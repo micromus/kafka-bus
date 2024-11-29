@@ -4,10 +4,11 @@ namespace Micromus\KafkaBus\Consumers\Messages;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerFactoryInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
 use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineFactoryInterface;
 
-class ConsumerMessageHandlerFactory
+class ConsumerMessageHandlerFactory implements ConsumerMessageHandlerFactoryInterface
 {
     public function __construct(
         protected MessagePipelineFactoryInterface $messagePipelineFactory,

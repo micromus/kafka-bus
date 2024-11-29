@@ -4,15 +4,15 @@ namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerFactoryInterface;
 
 class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
 {
     public function __construct(
-        protected ConsumerMessageHandlerFactory $consumerMessageHandlerFactory,
+        protected ConsumerMessageHandlerFactoryInterface $consumerMessageHandlerFactory,
     ) {
     }
 
