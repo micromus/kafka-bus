@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v0.5.2 - 2024-11-29
+
+- [add] Добавлен сборщик сообщений для тестирования
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v0.5.1...v0.5.2
+
 ## v0.5.1 - 2024-11-29
 
 - Добавлен ConsumerMessageHandlerFactoryInterface
