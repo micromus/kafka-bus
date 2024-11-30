@@ -10,7 +10,7 @@ class ConsumerRouterFactory
 {
     public function __construct(
         protected ResolverInterface $resolver,
-        protected TopicRegistry     $topicRegistry
+        protected TopicRegistry $topicRegistry
     ) {
     }
 
@@ -20,11 +20,8 @@ class ConsumerRouterFactory
         $routesCollection = $routes->all();
 
         foreach ($routesCollection as $route) {
-            $consumerRoutes->add(
-                topicName: $this->topicRegistry->getTopicName($route->topicKey),
-                handlerClass: $route->handlerClass,
-                messageFactory: $route->messageFactoryClass
-            );
+            $topicName = $this->topicRegistry->getTopicName($route->topicKey);
+            $consumerRoutes->add(new Route($topicName, $route->handlerClass));
         }
 
         return new ConsumerRouter($this->resolver, $consumerRoutes);

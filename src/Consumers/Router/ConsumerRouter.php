@@ -10,10 +10,13 @@ class ConsumerRouter
 {
     protected array $executors = [];
 
+    protected MessageFactoryClassExtractor $extractor;
+
     public function __construct(
         protected ResolverInterface $resolver,
-        protected ConsumerRoutes    $routes
+        protected ConsumerRoutes $routes
     ) {
+        $this->extractor = new MessageFactoryClassExtractor($this->resolver);
     }
 
     public function topics(): array
@@ -41,9 +44,8 @@ class ConsumerRouter
         $route = $this->routes->get($topicName)
             ?? throw new RouteConsumerException("Route for topic [$topicName] not found.");
 
-        return new Executor(
-            $this->resolver->resolve($route->handlerClass),
-            $this->resolver->resolve($route->messageFactory)
-        );
+        $handler = $this->resolver->resolve($route->handlerClass);
+
+        return new Executor($handler, $this->extractor->extract($handler));
     }
 }

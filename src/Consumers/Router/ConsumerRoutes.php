@@ -14,9 +14,9 @@ class ConsumerRoutes
         return array_keys($this->routes);
     }
 
-    public function add(string $topicName, string $handlerClass, string $messageFactory): self
+    public function add(Route $route): self
     {
-        $this->routes[$topicName] = new Route($handlerClass, $messageFactory);
+        $this->routes[$route->topicKey] = $route;
 
         return $this;
     }

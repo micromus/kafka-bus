@@ -18,7 +18,7 @@ it('can produce message', function () {
     $topicRegistry = (new TopicRegistry())
         ->add(new Topic('production.fact.products.1', 'products'));
 
-    $connectionFaker = new ConnectionFaker($topicRegistry);
+    $connectionFaker = new ConnectionFaker();
 
     $routes = (new PublisherRoutes())
         ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, 'products'));
