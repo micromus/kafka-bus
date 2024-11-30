@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v0.5.4 - 2024-11-30
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v0.5.3...v0.5.4
+
 ## v0.5.3 - 2024-11-30
 
 - [add] Добавлен атрибут MessageFactory
