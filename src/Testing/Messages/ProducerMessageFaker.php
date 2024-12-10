@@ -6,7 +6,7 @@ use Micromus\KafkaBus\Interfaces\Producers\Messages\HasHeaders;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasPartition;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
-class ProducerMessageFaker implements HasHeaders, HasPartition, ProducerMessageInterface
+final class ProducerMessageFaker implements HasHeaders, HasPartition, ProducerMessageInterface
 {
     public function __construct(
         protected string $message,

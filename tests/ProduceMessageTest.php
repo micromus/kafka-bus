@@ -5,7 +5,7 @@ use Micromus\KafkaBus\Bus\Publishers\Router\PublisherRoutes;
 use Micromus\KafkaBus\Consumers\ConsumerStreamFactory;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
-use Micromus\KafkaBus\Messages\MessagePipelineFactory;
+use Micromus\KafkaBus\Pipelines\PipelineFactory;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Support\Resolvers\NativeResolver;
 use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
@@ -27,15 +27,19 @@ it('can produce message', function () {
         new Bus\ThreadRegistry(
             new ConnectionRegistryFaker($connectionFaker),
             new Bus\Publishers\PublisherFactory(
-                new ProducerStreamFactory(new MessagePipelineFactory(new NativeResolver())),
+                new ProducerStreamFactory(new PipelineFactory(new NativeResolver())),
                 $topicRegistry,
                 $routes
             ),
             new Bus\Listeners\ListenerFactory(
                 new ConsumerStreamFactory(
                     new ConsumerMessageHandlerFactory(
-                        new MessagePipelineFactory(new NativeResolver()),
-                        new ConsumerRouterFactory(new NativeResolver(), $topicRegistry)
+                        new PipelineFactory(new NativeResolver()),
+                        new ConsumerRouterFactory(
+                            new NativeResolver(),
+                            new PipelineFactory(new NativeResolver()),
+                            $topicRegistry
+                        )
                     )
                 )
             )

@@ -6,12 +6,12 @@ use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerFactoryInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineFactoryInterface;
 
 class ConsumerMessageHandlerFactory implements ConsumerMessageHandlerFactoryInterface
 {
     public function __construct(
-        protected MessagePipelineFactoryInterface $messagePipelineFactory,
+        protected PipelineFactoryInterface $pipelineFactory,
         protected ConsumerRouterFactory $consumerRouterFactory,
     ) {
     }
@@ -20,7 +20,7 @@ class ConsumerMessageHandlerFactory implements ConsumerMessageHandlerFactoryInte
     {
         return new ConsumerMessageHandler(
             $this->consumerRouterFactory->create($worker->routes),
-            $this->messagePipelineFactory->create($worker->options->middlewares)
+            $this->pipelineFactory->create($worker->options->middlewares)
         );
     }
 }

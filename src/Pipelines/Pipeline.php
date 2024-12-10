@@ -1,11 +1,11 @@
 <?php
 
-namespace Micromus\KafkaBus\Messages;
+namespace Micromus\KafkaBus\Pipelines;
 
 use Closure;
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
 
-class MessagePipeline implements MessagePipelineInterface
+final class Pipeline implements PipelineInterface
 {
     public function __construct(
         protected array $pipes = []

@@ -1,10 +1,13 @@
 <?php
 
-namespace Micromus\KafkaBus\Consumers\Router;
+namespace Micromus\KafkaBus\Consumers\Router\Extractors;
 
+use Micromus\KafkaBus\Consumers\Attributes\MessageFactory;
 use Micromus\KafkaBus\Consumers\Messages\NativeMessageFactory;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 use Micromus\KafkaBus\Interfaces\ResolverInterface;
+use ReflectionException;
+use ReflectionObject;
 
 final class MessageFactoryClassExtractor
 {
@@ -13,9 +16,15 @@ final class MessageFactoryClassExtractor
     ) {
     }
 
+    /**
+     * @param mixed $handler
+     * @return MessageFactoryInterface
+     *
+     * @throws ReflectionException
+     */
     public function extract(mixed $handler): MessageFactoryInterface
     {
-        $reflectionObject = new \ReflectionObject($handler);
+        $reflectionObject = new ReflectionObject($handler);
         $attributes = $reflectionObject->getMethod('execute')
             ->getAttributes(MessageFactory::class);
 

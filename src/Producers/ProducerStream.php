@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasHeaders;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasKey;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasPartition;
@@ -15,9 +15,9 @@ use Micromus\KafkaBus\Topics\Topic;
 class ProducerStream implements ProducerStreamInterface
 {
     public function __construct(
-        protected ProducerInterface         $producer,
-        protected MessagePipelineInterface $messagePipeline,
-        protected Topic                    $topic
+        protected ProducerInterface $producer,
+        protected PipelineInterface $pipeline,
+        protected Topic $topic
     ) {
     }
 
@@ -31,7 +31,7 @@ class ProducerStream implements ProducerStreamInterface
 
     private function handleMessage(ProducerMessageInterface $message): ProducerMessage
     {
-        return $this->messagePipeline
+        return $this->pipeline
             ->then($message, $this->mapProducerMessage(...));
     }
 

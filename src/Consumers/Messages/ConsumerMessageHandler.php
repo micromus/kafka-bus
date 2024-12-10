@@ -6,14 +6,14 @@ use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
 use Throwable;
 
 class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
 {
     public function __construct(
         protected ConsumerRouter $consumerRouter,
-        protected MessagePipelineInterface $messagePipeline,
+        protected PipelineInterface $pipeline,
     ) {
     }
 
@@ -24,7 +24,7 @@ class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
 
     public function handle(ConsumerMessageInterface $message): void
     {
-        $this->messagePipeline
+        $this->pipeline
             ->then($message, $this->handleMessage(...));
     }
 

@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Producers;
 
 use Micromus\KafkaBus\Bus\Publishers\Router\Options;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineFactoryInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
 use Micromus\KafkaBus\Topics\Topic;
@@ -12,7 +12,7 @@ use Micromus\KafkaBus\Topics\Topic;
 class ProducerStreamFactory implements ProducerStreamFactoryInterface
 {
     public function __construct(
-        protected MessagePipelineFactoryInterface $messagePipelineFactory
+        protected PipelineFactoryInterface $pipelineFactory
     ) {
     }
 
@@ -22,7 +22,7 @@ class ProducerStreamFactory implements ProducerStreamFactoryInterface
 
         return new ProducerStream(
             $connection->createProducer($topic->name, $configuration),
-            $this->messagePipelineFactory->create($options->middlewares),
+            $this->pipelineFactory->create($options->middlewares),
             $topic
         );
     }

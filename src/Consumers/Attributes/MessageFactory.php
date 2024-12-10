@@ -1,10 +1,11 @@
 <?php
 
-namespace Micromus\KafkaBus\Consumers\Router;
+namespace Micromus\KafkaBus\Consumers\Attributes;
 
+use Attribute;
 use Micromus\KafkaBus\Consumers\Messages\NativeMessageFactory;
 
-#[\Attribute]
+#[Attribute(Attribute::TARGET_METHOD)]
 final readonly class MessageFactory
 {
     public function __construct(
