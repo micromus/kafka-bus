@@ -2,9 +2,9 @@
 
 namespace Micromus\KafkaBus\Consumers\Commiters;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 
 interface CommiterInterface
 {
-    public function commit(ConsumerMessage $consumerMessage): void;
+    public function commit(ConsumerMessageInterface $consumerMessage): void;
 }

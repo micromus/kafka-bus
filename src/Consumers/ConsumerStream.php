@@ -2,12 +2,12 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
 class ConsumerStream implements ConsumerStreamInterface
@@ -49,12 +49,12 @@ class ConsumerStream implements ConsumerStreamInterface
     }
 
     /**
-     * @param ConsumerMessage $message
+     * @param ConsumerMessageInterface $message
      * @return void
      *
      * @throws MessageConsumerNotHandledException
      */
-    private function handleMessage(ConsumerMessage $message): void
+    private function handleMessage(ConsumerMessageInterface $message): void
     {
         $this->consumerMessageHandler->handle($message);
         $this->consumer->commit($message);

@@ -2,11 +2,11 @@
 
 namespace Micromus\KafkaBus\Testing\Messages;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 
 class VoidConsumerHandlerFaker
 {
-    public function execute(ConsumerMessage $message): void
+    public function execute(ConsumerMessageInterface $message): void
     {
 
     }

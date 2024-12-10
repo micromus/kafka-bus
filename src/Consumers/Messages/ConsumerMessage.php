@@ -2,27 +2,43 @@
 
 namespace Micromus\KafkaBus\Consumers\Messages;
 
-class ConsumerMessage
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use RdKafka\Message;
+
+final class ConsumerMessage implements ConsumerMessageInterface
 {
     public function __construct(
-        public string $payload,
-        public array $headers,
-        public readonly ConsumerMeta $meta
+        protected Message $message
     ) {
-    }
-
-    public function topicName(): string
-    {
-        return $this->meta->message->topic_name;
-    }
-
-    public function key(): ?string
-    {
-        return $this->meta->message->key;
     }
 
     public function msgId(): string
     {
-        return "{$this->meta->message->partition}-{$this->meta->message->offset}";
+        return "{$this->message->partition}-{$this->message->offset}";
+    }
+
+    public function topicName(): string
+    {
+        return $this->message->topic_name;
+    }
+
+    public function key(): ?string
+    {
+        return $this->message->key;
+    }
+
+    public function payload(): string
+    {
+        return $this->message->payload;
+    }
+
+    public function headers(): array
+    {
+        return $this->message->headers;
+    }
+
+    public function original(): Message
+    {
+        return $this->message;
     }
 }

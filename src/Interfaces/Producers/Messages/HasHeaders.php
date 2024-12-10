@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBus\Interfaces\Messages;
+namespace Micromus\KafkaBus\Interfaces\Producers\Messages;
 
 interface HasHeaders
 {

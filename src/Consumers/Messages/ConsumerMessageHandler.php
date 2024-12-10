@@ -5,6 +5,7 @@ namespace Micromus\KafkaBus\Consumers\Messages;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
 use Throwable;
 
@@ -21,7 +22,7 @@ class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
         return $this->consumerRouter->topics();
     }
 
-    public function handle(ConsumerMessage $message): void
+    public function handle(ConsumerMessageInterface $message): void
     {
         $this->messagePipeline
             ->then($message, $this->handleMessage(...));
@@ -30,7 +31,7 @@ class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
     /**
      * @throws MessageConsumerNotHandledException
      */
-    protected function handleMessage(ConsumerMessage $message): ConsumerMessage
+    protected function handleMessage(ConsumerMessageInterface $message): ConsumerMessageInterface
     {
         try {
             $this->consumerRouter

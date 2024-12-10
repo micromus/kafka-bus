@@ -2,8 +2,8 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 
 class Executor
 {
@@ -13,13 +13,13 @@ class Executor
     ) {
     }
 
-    public function execute(ConsumerMessage $message): void
+    public function execute(ConsumerMessageInterface $message): void
     {
         $this->handler
             ->execute($this->map($message));
     }
 
-    private function map(ConsumerMessage $message): mixed
+    private function map(ConsumerMessageInterface $message): mixed
     {
         return $this->factory
             ->fromKafka($message);

@@ -3,11 +3,11 @@
 namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Consumers\Commiters\CommiterInterface;
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Support\RetryRepeater;
 use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
@@ -33,7 +33,7 @@ class Consumer implements ConsumerInterface
         $this->consumer->close();
     }
 
-    public function getMessage(): ConsumerMessage
+    public function getMessage(): ConsumerMessageInterface
     {
         try {
             $message = $this->consumer
@@ -51,7 +51,7 @@ class Consumer implements ConsumerInterface
         }
     }
 
-    public function commit(ConsumerMessage $consumerMessage): void
+    public function commit(ConsumerMessageInterface $consumerMessage): void
     {
         $this->retryRepeater
             ->execute(fn () => $this->commiter->commit($consumerMessage));

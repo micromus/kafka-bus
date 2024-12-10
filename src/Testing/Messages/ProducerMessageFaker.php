@@ -2,11 +2,11 @@
 
 namespace Micromus\KafkaBus\Testing\Messages;
 
-use Micromus\KafkaBus\Interfaces\Messages\HasHeaders;
-use Micromus\KafkaBus\Interfaces\Messages\HasPartition;
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\HasHeaders;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\HasPartition;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
-class ProducerMessageFaker implements HasHeaders, HasPartition, MessageInterface
+class ProducerMessageFaker implements HasHeaders, HasPartition, ProducerMessageInterface
 {
     public function __construct(
         protected string $message,

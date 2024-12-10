@@ -63,7 +63,7 @@ test('can consume message', function () {
 
     expect($connectionFaker->committedMessages)
         ->toHaveCount(1)
-        ->and($connectionFaker->committedMessages['production.fact.products.1'][0])
+        ->and($connectionFaker->committedMessages['production.fact.products.1'][0]->original())
         ->toHaveProperties([
             'payload' => 'test-message',
             'headers' => ['foo' => 'bar'],

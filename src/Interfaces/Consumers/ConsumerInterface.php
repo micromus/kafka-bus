@@ -2,8 +2,8 @@
 
 namespace Micromus\KafkaBus\Interfaces\Consumers;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
 interface ConsumerInterface
@@ -12,7 +12,7 @@ interface ConsumerInterface
      * @throws KafkaMessagesEndedException
      * @throws ConsumerException
      */
-    public function getMessage(): ConsumerMessage;
+    public function getMessage(): ConsumerMessageInterface;
 
-    public function commit(ConsumerMessage $consumerMessage): void;
+    public function commit(ConsumerMessageInterface $consumerMessage): void;
 }

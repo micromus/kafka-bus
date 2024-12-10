@@ -2,9 +2,9 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
+use Micromus\KafkaBus\Consumers\Messages\NativeMessageFactory;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 use Micromus\KafkaBus\Interfaces\ResolverInterface;
-use Micromus\KafkaBus\Messages\NativeMessageFactory;
 
 final class MessageFactoryClassExtractor
 {

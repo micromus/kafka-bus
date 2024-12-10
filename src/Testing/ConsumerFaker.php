@@ -2,9 +2,9 @@
 
 namespace Micromus\KafkaBus\Testing;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
@@ -17,7 +17,7 @@ class ConsumerFaker implements ConsumerInterface
     ) {
     }
 
-    public function getMessage(): ConsumerMessage
+    public function getMessage(): ConsumerMessageInterface
     {
         if (count($this->messages) == 0) {
             throw new KafkaMessagesEndedException();
@@ -27,7 +27,7 @@ class ConsumerFaker implements ConsumerInterface
             ->fromKafka(array_shift($this->messages));
     }
 
-    public function commit(ConsumerMessage $consumerMessage): void
+    public function commit(ConsumerMessageInterface $consumerMessage): void
     {
         $this->connectionFaker->committedMessages[$consumerMessage->topicName()][] = $consumerMessage;
     }

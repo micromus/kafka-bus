@@ -6,7 +6,7 @@ use Micromus\KafkaBus\Bus\Listeners\Listener;
 use Micromus\KafkaBus\Bus\ThreadRegistry;
 use Micromus\KafkaBus\Interfaces\Bus\BusInterface;
 use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
 class Bus implements BusInterface
 {
@@ -25,7 +25,7 @@ class Bus implements BusInterface
             ->thread($connectionName);
     }
 
-    public function publish(MessageInterface $message): void
+    public function publish(ProducerMessageInterface $message): void
     {
         $this->thread->publish($message);
     }

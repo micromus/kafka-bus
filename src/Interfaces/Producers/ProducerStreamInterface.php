@@ -2,12 +2,12 @@
 
 namespace Micromus\KafkaBus\Interfaces\Producers;
 
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
 interface ProducerStreamInterface
 {
     /**
-     * @param  MessageInterface[]  $messages
+     * @param  ProducerMessageInterface[]  $messages
      */
     public function handle(array $messages): void;
 }

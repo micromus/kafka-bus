@@ -2,11 +2,11 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-use Micromus\KafkaBus\Interfaces\Messages\HasHeaders;
-use Micromus\KafkaBus\Interfaces\Messages\HasKey;
-use Micromus\KafkaBus\Interfaces\Messages\HasPartition;
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
 use Micromus\KafkaBus\Interfaces\Messages\MessagePipelineInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\HasHeaders;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\HasKey;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\HasPartition;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
@@ -29,14 +29,14 @@ class ProducerStream implements ProducerStreamInterface
             ->produce($producerMessages);
     }
 
-    private function handleMessage(MessageInterface $message): ProducerMessage
+    private function handleMessage(ProducerMessageInterface $message): ProducerMessage
     {
         return $this->messagePipeline
             ->then($message, $this->mapProducerMessage(...));
     }
 
 
-    private function mapProducerMessage(MessageInterface $message): ProducerMessage
+    private function mapProducerMessage(ProducerMessageInterface $message): ProducerMessage
     {
         return new ProducerMessage(
             payload: $message->toPayload(),
@@ -46,21 +46,21 @@ class ProducerStream implements ProducerStreamInterface
         );
     }
 
-    private function getHeadersFromMessage(MessageInterface $message): array
+    private function getHeadersFromMessage(ProducerMessageInterface $message): array
     {
         return $message instanceof HasHeaders
             ? $message->getHeaders()
             : [];
     }
 
-    private function getKey(MessageInterface $message): ?string
+    private function getKey(ProducerMessageInterface $message): ?string
     {
         return $message instanceof HasKey
             ? $message->getKey()
             : null;
     }
 
-    private function getPartitionFromMessage(MessageInterface $message): int
+    private function getPartitionFromMessage(ProducerMessageInterface $message): int
     {
         return $message instanceof HasPartition
             ? max($message->getPartition(), RD_KAFKA_PARTITION_UA)

@@ -2,12 +2,12 @@
 
 namespace Micromus\KafkaBus\Testing\Messages;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 
 class ConsumerHandlerFaker
 {
-    public function execute(ConsumerMessage $message): void
+    public function execute(ConsumerMessageInterface $message): void
     {
-        echo $message->payload . PHP_EOL;
+        echo $message->payload() . PHP_EOL;
     }
 }

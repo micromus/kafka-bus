@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\ResolverInterface;
 use Micromus\KafkaBus\Exceptions\Consumers\RouteConsumerException;
 
@@ -24,7 +24,7 @@ class ConsumerRouter
         return $this->routes->topics();
     }
 
-    public function handle(ConsumerMessage $consumerMessage): void
+    public function handle(ConsumerMessageInterface $consumerMessage): void
     {
         $executor = $this->getOrCreateExecutor($consumerMessage->topicName());
         $executor->execute($consumerMessage);

@@ -8,7 +8,7 @@ use Micromus\KafkaBus\Bus\Publishers\Publisher;
 use Micromus\KafkaBus\Bus\Publishers\PublisherFactory;
 use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
 class Thread implements ThreadInterface
 {
@@ -31,7 +31,7 @@ class Thread implements ThreadInterface
         return $this->publisher;
     }
 
-    public function publish(MessageInterface $message): void
+    public function publish(ProducerMessageInterface $message): void
     {
         $this->publishMany([$message]);
     }

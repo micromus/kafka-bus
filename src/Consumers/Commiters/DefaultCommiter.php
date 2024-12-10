@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers\Commiters;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use RdKafka\KafkaConsumer;
 
 class DefaultCommiter implements CommiterInterface
@@ -12,9 +12,9 @@ class DefaultCommiter implements CommiterInterface
     ) {
     }
 
-    public function commit(ConsumerMessage $consumerMessage): void
+    public function commit(ConsumerMessageInterface $consumerMessage): void
     {
         $this->consumer
-            ->commitAsync($consumerMessage->meta->message);
+            ->commitAsync($consumerMessage->original());
     }
 }

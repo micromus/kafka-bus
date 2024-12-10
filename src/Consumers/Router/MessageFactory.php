@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Messages\NativeMessageFactory;
+use Micromus\KafkaBus\Consumers\Messages\NativeMessageFactory;
 
 #[\Attribute]
 final readonly class MessageFactory
