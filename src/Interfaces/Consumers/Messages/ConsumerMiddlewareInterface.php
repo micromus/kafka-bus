@@ -7,9 +7,9 @@ use Closure;
 interface ConsumerMiddlewareInterface
 {
     /**
-     * @param ConsumerMessageInterface $message
-     * @param Closure(ConsumerMessageInterface): void  $next
+     * @param WorkerConsumerMessageInterface $message
+     * @param Closure(WorkerConsumerMessageInterface): void  $next
      * @return void
      */
-    public function handle(ConsumerMessageInterface $message, Closure $next): void;
+    public function handle(WorkerConsumerMessageInterface $message, Closure $next): void;
 }

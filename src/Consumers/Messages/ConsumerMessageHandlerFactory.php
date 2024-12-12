@@ -19,6 +19,7 @@ class ConsumerMessageHandlerFactory implements ConsumerMessageHandlerFactoryInte
     public function create(Worker $worker): ConsumerMessageHandlerInterface
     {
         return new ConsumerMessageHandler(
+            $worker->name,
             $this->consumerRouterFactory->create($worker->routes),
             $this->pipelineFactory->create($worker->options->middlewares)
         );
