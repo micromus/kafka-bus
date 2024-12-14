@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Consumers\Messages;
 
-use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouter;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
@@ -14,7 +13,6 @@ use Throwable;
 class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
 {
     public function __construct(
-        protected string $workerName,
         protected ConsumerRouter $consumerRouter,
         protected PipelineInterface $pipeline,
     ) {
@@ -25,10 +23,10 @@ class ConsumerMessageHandler implements ConsumerMessageHandlerInterface
         return $this->consumerRouter->topics();
     }
 
-    public function handle(ConsumerMessageInterface $message): void
+    public function handle(WorkerConsumerMessageInterface $message): void
     {
         $this->pipeline
-            ->then(new WorkerConsumerMessage($this->workerName, $message), $this->handleMessage(...));
+            ->then($message, $this->handleMessage(...));
     }
 
     /**

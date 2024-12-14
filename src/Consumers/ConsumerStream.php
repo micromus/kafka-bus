@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
+use Micromus\KafkaBus\Consumers\Messages\WorkerConsumerMessage;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
@@ -23,7 +24,8 @@ class ConsumerStream implements ConsumerStreamInterface
 
     public function __construct(
         protected ConsumerInterface $consumer,
-        protected ConsumerMessageHandlerInterface $consumerMessageHandler
+        protected ConsumerMessageHandlerInterface $consumerMessageHandler,
+        protected string $workerName
     ) {
     }
 
@@ -56,7 +58,7 @@ class ConsumerStream implements ConsumerStreamInterface
      */
     private function handleMessage(ConsumerMessageInterface $message): void
     {
-        $this->consumerMessageHandler->handle($message);
+        $this->consumerMessageHandler->handle(new WorkerConsumerMessage($this->workerName, $message));
         $this->consumer->commit($message);
     }
 

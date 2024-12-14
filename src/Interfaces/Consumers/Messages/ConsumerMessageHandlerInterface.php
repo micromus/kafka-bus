@@ -9,10 +9,10 @@ interface ConsumerMessageHandlerInterface
     public function topics(): array;
 
     /**
-     * @param ConsumerMessageInterface $message
+     * @param WorkerConsumerMessageInterface $message
      * @return void
      *
      * @throws MessageConsumerNotHandledException
      */
-    public function handle(ConsumerMessageInterface $message): void;
+    public function handle(WorkerConsumerMessageInterface $message): void;
 }
