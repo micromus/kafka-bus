@@ -11,7 +11,7 @@ class Publisher
     ) {
     }
 
-    public function publish(array $messages): void
+    public function publish(iterable $messages): void
     {
         $this->router
             ->publish($messages);

@@ -8,4 +8,4 @@ require '../vendor/autoload.php';
 /** @var BusInterface $bus */
 $bus = require 'bus.php';
 
-$bus->publish(new ProducerMessageFaker('test-message', ['foo' => 'bar']));
+$bus->publish([new ProducerMessageFaker('test-message', ['foo' => 'bar'])]);

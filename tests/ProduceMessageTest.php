@@ -47,7 +47,7 @@ it('can produce message', function () {
         'default'
     );
 
-    $bus->publish(new ProducerMessageFaker('test-message', ['foo' => 'bar'], 5));
+    $bus->publish([new ProducerMessageFaker('test-message', ['foo' => 'bar'], 5)]);
 
     expect($connectionFaker->publishedMessages)
         ->toHaveCount(1)

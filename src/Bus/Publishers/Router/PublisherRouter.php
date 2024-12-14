@@ -3,10 +3,12 @@
 namespace Micromus\KafkaBus\Bus\Publishers\Router;
 
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
 use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
 use Micromus\KafkaBus\Topics\TopicRegistry;
+use WeakMap;
 
 class PublisherRouter
 {
@@ -21,19 +23,26 @@ class PublisherRouter
     }
 
     /**
+     * @param ProducerMessageInterface[] $messages
+     * @return void
+     *
      * @throws RouteProducerException
      */
-    public function publish(array $messages): void
+    public function publish(iterable $messages): void
     {
-        $groupMessages = $this->groupMessagesByClass($messages);
+        $producerStreamCollection = $this->makeProducerStreamCollection($messages);
 
-        foreach ($groupMessages as $messageClass => $messages) {
-            $this->getOrCreateProducerStream($messageClass)
-                ->handle($messages);
+        foreach ($producerStreamCollection as $producerStreamItem) {
+            $producerStream = $producerStreamItem['producer_stream'];
+            $producerStream->handle($producerStreamItem['messages']);
         }
     }
 
-    private function groupMessagesByClass(array $messages): array
+    /**
+     * @param ProducerMessageInterface[] $messages
+     * @return array<int, array{producer_stream: ProducerStreamInterface, messages: ProducerMessageInterface[]}>
+     */
+    private function makeProducerStreamCollection(iterable $messages): array
     {
         $result = [];
 
@@ -41,7 +50,19 @@ class PublisherRouter
             $result[get_class($message)][] = $message;
         }
 
-        return $result;
+        $producerStreamCollection = [];
+
+        // Создание ProducerStream происходит на этом этапе чтобы
+        // если вдруг вылетит RouteProducerException
+        // то не отправлять все сообщения
+        foreach ($result as $messageClass => $messages) {
+            $producerStreamCollection[] = [
+                'producer_stream' => $this->getOrCreateProducerStream($messageClass),
+                'messages' => $messages,
+            ];
+        }
+
+        return $producerStreamCollection;
     }
 
     /**

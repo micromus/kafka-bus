@@ -62,7 +62,7 @@ test('can consume message', function () {
         'default'
     );
 
-    $bus->listener('default-listener')
+    $bus->createListener('default-listener')
         ->listen();
 
     expect($connectionFaker->committedMessages)

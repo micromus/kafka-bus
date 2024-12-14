@@ -9,16 +9,11 @@ use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 interface ThreadInterface
 {
     /**
-     * @throws RouteProducerException
-     */
-    public function publish(ProducerMessageInterface $message): void;
-
-    /**
-     * @param  ProducerMessageInterface[]  $messages
+     * @param  iterable<ProducerMessageInterface>  $messages
      *
      * @throws RouteProducerException
      */
-    public function publishMany(array $messages): void;
+    public function publish(iterable $messages): void;
 
-    public function listener(string $listenerWorkerName): Listener;
+    public function createListener(string $listenerWorkerName): Listener;
 }

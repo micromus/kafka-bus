@@ -31,18 +31,13 @@ class Thread implements ThreadInterface
         return $this->publisher;
     }
 
-    public function publish(ProducerMessageInterface $message): void
-    {
-        $this->publishMany([$message]);
-    }
-
-    public function publishMany(array $messages): void
+    public function publish(iterable $messages): void
     {
         $this->getPublisher()
             ->publish($messages);
     }
 
-    public function listener(string $listenerWorkerName): Listener
+    public function createListener(string $listenerWorkerName): Listener
     {
         return $this->listenerFactory
             ->create($this->connection, $listenerWorkerName);

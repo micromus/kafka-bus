@@ -9,7 +9,7 @@ $bus = require 'bus.php';
 
 pcntl_async_signals(true);
 
-$listener = $bus->listener('default-listener');
+$listener = $bus->createListener('default-listener');
 
 pcntl_signal(SIGINT, fn () => $listener->forceStop());
 
