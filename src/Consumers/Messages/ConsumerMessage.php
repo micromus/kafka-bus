@@ -14,7 +14,7 @@ final class ConsumerMessage implements ConsumerMessageInterface
 
     public function msgId(): string
     {
-        return "{$this->message->partition}-{$this->message->offset}";
+        return "{$this->message->partition}-{$this->message->offset}-{$this->message->topic_name}";
     }
 
     public function topicName(): string
