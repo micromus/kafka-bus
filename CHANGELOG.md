@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v0.6.6 - 2024-12-14
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v0.6.5...v0.6.6
+
 ## v0.6.5 - 2024-12-14
 
 **Full Changelog**: https://github.com/micromus/kafka-bus/compare/v0.6.4...v0.6.5
