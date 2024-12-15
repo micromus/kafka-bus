@@ -23,7 +23,7 @@ class ConsumerRouter
         protected PipelineFactoryInterface $pipelineFactory,
         protected ConsumerRoutes $routes
     ) {
-        $this->messageFactoryClassExtractor = new MessageFactoryClassExtractor($this->resolver);
+        $this->messageFactoryClassExtractor = new MessageFactoryClassExtractor();
         $this->middlewareClassExtractor = new MiddlewareClassExtractor();
     }
 
@@ -71,12 +71,13 @@ class ConsumerRouter
             ?? throw new RouteConsumerException("Route for topic [$topicName] not found.");
 
         $handler = $this->resolver->resolve($route->handlerClass);
+        $messageFactoryClass = $this->messageFactoryClassExtractor->extract($handler);
         $middlewares = $this->middlewareClassExtractor->extract($handler);
 
         return new Executor(
             $handler,
             $this->pipelineFactory->create($middlewares),
-            $this->messageFactoryClassExtractor->extract($handler)
+            $this->resolver->resolve($messageFactoryClass)
         );
     }
 }

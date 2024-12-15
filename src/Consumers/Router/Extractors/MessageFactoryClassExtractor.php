@@ -11,28 +11,22 @@ use ReflectionObject;
 
 final class MessageFactoryClassExtractor
 {
-    public function __construct(
-        protected ResolverInterface $resolver,
-    ) {
-    }
-
     /**
      * @param mixed $handler
-     * @return MessageFactoryInterface
+     * @return class-string
      *
      * @throws ReflectionException
      */
-    public function extract(mixed $handler): MessageFactoryInterface
+    public function extract(mixed $handler): string
     {
         $reflectionObject = new ReflectionObject($handler);
         $attributes = $reflectionObject->getMethod('execute')
             ->getAttributes(MessageFactory::class);
 
         if (count($attributes) > 0) {
-            return $this->resolver
-                ->resolve($attributes[0]->newInstance()->messageClass);
+            return $attributes[0]->newInstance()->messageClass;
         }
 
-        return new NativeMessageFactory();
+        return NativeMessageFactory::class;
     }
 }
