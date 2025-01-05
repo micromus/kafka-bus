@@ -18,7 +18,7 @@ class Executor
     public function execute(ConsumerMessageInterface $message): void
     {
         $this->pipeline
-            ->then($this->map($message), function (ConsumerMessageInterface $message) {
+            ->then($this->map($message), function ($message) {
                 return $this->handler
                     ->execute($message);
             });
