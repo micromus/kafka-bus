@@ -4,13 +4,13 @@ namespace Micromus\KafkaBus\Consumers\Router;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRoutes;
 use Micromus\KafkaBus\Interfaces\Pipelines\PipelineFactoryInterface;
-use Micromus\KafkaBus\Interfaces\ResolverInterface;
 use Micromus\KafkaBus\Topics\TopicRegistry;
+use Psr\Container\ContainerInterface;
 
 class ConsumerRouterFactory
 {
     public function __construct(
-        protected ResolverInterface $resolver,
+        protected ContainerInterface $container,
         protected PipelineFactoryInterface $pipelineFactory,
         protected TopicRegistry $topicRegistry
     ) {
@@ -26,6 +26,6 @@ class ConsumerRouterFactory
             $consumerRoutes->add(new Route($topicName, $route->handlerClass));
         }
 
-        return new ConsumerRouter($this->resolver, $this->pipelineFactory, $consumerRoutes);
+        return new ConsumerRouter($this->container, $this->pipelineFactory, $consumerRoutes);
     }
 }
