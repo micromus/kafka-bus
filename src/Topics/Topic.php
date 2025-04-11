@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Topics;
 
-readonly class Topic
+final readonly class Topic
 {
     public function __construct(
         public string $name,

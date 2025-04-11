@@ -2,21 +2,25 @@
 
 namespace Micromus\KafkaBus\Connections;
 
+use Micromus\KafkaBus\Connections\Offsets\Offset;
+use Micromus\KafkaBus\Connections\Offsets\OffsetConnectionSetter;
 use Micromus\KafkaBus\Consumers\Commiters\DefaultCommiter;
 use Micromus\KafkaBus\Consumers\Commiters\VoidCommiter;
 use Micromus\KafkaBus\Consumers\Configuration as ConsumerConfiguration;
 use Micromus\KafkaBus\Consumers\Consumer;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionOffsetInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
 use Micromus\KafkaBus\Producers\Producer;
 use Micromus\KafkaBus\Support\RetryRepeater;
+use Micromus\KafkaBus\Topics\Partition;
 use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
 use RdKafka\Producer as KafkaProducer;
 
-class KafkaConnection implements ConnectionInterface
+class KafkaConnection implements ConnectionInterface, ConnectionOffsetInterface
 {
     protected KafkaConnectionConfiguration $configuration;
 
@@ -75,5 +79,13 @@ class KafkaConnection implements ConnectionInterface
         }
 
         return $conf;
+    }
+
+    public function setOffset(Partition $partition, int|Offset $offset): array
+    {
+        $kafkaConsumer = $this->makeKafkaConsumer(new ConsumerConfiguration());
+
+        return (new OffsetConnectionSetter($kafkaConsumer))
+            ->set($partition, $offset);
     }
 }
