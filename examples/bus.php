@@ -8,7 +8,7 @@ use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
 use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
 use Micromus\KafkaBus\Pipelines\PipelineFactory;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
-use Micromus\KafkaBus\Support\Resolvers\NativeResolver;
+use Micromus\KafkaBus\Support\NativeContainer;
 use Micromus\KafkaBus\Testing\Messages\ConsumerHandlerFaker;
 use Micromus\KafkaBus\Testing\Messages\ProducerMessageFaker;
 use Micromus\KafkaBus\Topics\Topic;
@@ -44,21 +44,23 @@ $connectionRegistry = new ConnectionRegistry(
     ]
 );
 
+$container = new NativeContainer();
+
 return new Bus(
     new Bus\ThreadRegistry(
         $connectionRegistry,
         new Bus\Publishers\PublisherFactory(
-            new ProducerStreamFactory(new PipelineFactory(new NativeResolver())),
+            new ProducerStreamFactory(new PipelineFactory($container)),
             $topicRegistry,
             $routes
         ),
         new Bus\Listeners\ListenerFactory(
             new ConsumerStreamFactory(
                 new ConsumerMessageHandlerFactory(
-                    new PipelineFactory(new NativeResolver()),
+                    new PipelineFactory($container),
                     new ConsumerRouterFactory(
-                        new NativeResolver(),
-                        new PipelineFactory(new NativeResolver()),
+                        $container,
+                        new PipelineFactory($container),
                         $topicRegistry
                     )
                 )

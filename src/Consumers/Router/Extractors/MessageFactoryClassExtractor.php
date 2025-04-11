@@ -4,8 +4,6 @@ namespace Micromus\KafkaBus\Consumers\Router\Extractors;
 
 use Micromus\KafkaBus\Consumers\Attributes\MessageFactory;
 use Micromus\KafkaBus\Consumers\Messages\NativeMessageFactory;
-use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
-use Micromus\KafkaBus\Interfaces\ResolverInterface;
 use ReflectionException;
 use ReflectionObject;
 
