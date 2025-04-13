@@ -16,6 +16,11 @@ class WorkerRoutes
         return $this;
     }
 
+    public function has(string $topicKey): bool
+    {
+        return isset($this->routes[$topicKey]);
+    }
+
     /**
      * @return Route[]
      */

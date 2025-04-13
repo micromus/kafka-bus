@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
-readonly class Configuration
+readonly class ConsumerConfig
 {
     public function __construct(
         public array $additionalOptions = [],

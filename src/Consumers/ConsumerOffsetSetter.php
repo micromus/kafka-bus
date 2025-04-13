@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Micromus\KafkaBus\Consumers;
 
-use Micromus\KafkaBus\Connections\Offsets\Offset;
+use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
+use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRegistry;
 use Micromus\KafkaBus\Exceptions\CannotSetOffsetForPartitionsException;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionOffsetInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionRegistryInterface;
@@ -15,27 +16,22 @@ final class ConsumerOffsetSetter
 {
     public function __construct(
         protected TopicRegistry $topicRegistry,
+        protected WorkerRegistry $workerRegistry,
         protected ConnectionRegistryInterface $connectionRegistry
     ) {
     }
 
     /**
      * @param string $connectionName
-     * @param string $topicKey
-     * @param int $partition
-     * @param Offset|int $offset
+     * @param ConsumerOffset $consumerOffset
      * @return int[]
      *
      * @throws CannotSetOffsetForPartitionsException
      */
-    public function set(
-        string $connectionName,
-        string $topicKey,
-        int $partition = RD_KAFKA_PARTITION_UA,
-        Offset|int $offset = Offset::Latest,
-    ): array {
-        $topic = $this->topicRegistry->get($topicKey);
-        $partition = new Partition($topic, $partition);
+    public function set(string $connectionName, ConsumerOffset $consumerOffset): array
+    {
+        $topic = $this->topicRegistry->get($consumerOffset->topicKey);
+        $partition = new Partition($topic, $consumerOffset->partition);
 
         $connection = $this->connectionRegistry->connection($connectionName);
 
@@ -45,6 +41,31 @@ final class ConsumerOffsetSetter
             );
         }
 
-        return $connection->setOffset($partition, $offset);
+        $worker = $this->workerRegistry->get($consumerOffset->workerName);
+
+        if (\is_null($worker)) {
+            throw new CannotSetOffsetForPartitionsException(
+                "Worker #{$consumerOffset->workerName} does not exist"
+            );
+        }
+
+        if (!$worker->routes->has($consumerOffset->topicKey)) {
+            throw new CannotSetOffsetForPartitionsException(
+                "Worker #{$consumerOffset->workerName} does not contain topic \"{$consumerOffset->topicKey}\""
+            );
+        }
+
+        $consumerConfig = $this->makeConsumerConfig($worker->options);
+
+        return $connection->setOffset($partition, $consumerOffset->offset, $consumerConfig);
+    }
+
+    private function makeConsumerConfig(Options $options): ConsumerConfig
+    {
+        return new ConsumerConfig(
+            additionalOptions: $options->additionalOptions,
+            autoCommit: $options->autoCommit,
+            consumerTimeout: $options->consumerTimeout
+        );
     }
 }

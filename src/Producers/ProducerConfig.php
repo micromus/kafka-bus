@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-readonly class Configuration
+readonly class ProducerConfig
 {
     public function __construct(
         public array $additionalOptions = [],

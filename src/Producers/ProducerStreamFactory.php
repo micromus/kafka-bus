@@ -21,15 +21,15 @@ class ProducerStreamFactory implements ProducerStreamFactoryInterface
         $configuration = $this->makeProducerConfiguration($options);
 
         return new ProducerStream(
-            $connection->createProducer($topic->name, $configuration),
+            $connection->createProducer($topic, $configuration),
             $this->pipelineFactory->create($options->middlewares),
             $topic
         );
     }
 
-    private function makeProducerConfiguration(Options $options): Configuration
+    private function makeProducerConfiguration(Options $options): ProducerConfig
     {
-        return new Configuration(
+        return new ProducerConfig(
             additionalOptions: $options->additionalOptions,
             flushTimeout: $options->flushTimeout,
             flushRetries: $options->flushRetries,

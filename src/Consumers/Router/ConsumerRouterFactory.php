@@ -22,8 +22,8 @@ class ConsumerRouterFactory
         $routesCollection = $routes->all();
 
         foreach ($routesCollection as $route) {
-            $topicName = $this->topicRegistry->getTopicName($route->topicKey);
-            $consumerRoutes->add(new Route($topicName, $route->handlerClass));
+            $topic = $this->topicRegistry->get($route->topicKey);
+            $consumerRoutes->add(new Route($topic, $route->handlerClass));
         }
 
         return new ConsumerRouter($this->container, $this->pipelineFactory, $consumerRoutes);
