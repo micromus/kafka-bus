@@ -8,4 +8,8 @@ require '../vendor/autoload.php';
 /** @var BusInterface $bus */
 require 'bus.php';
 
-$bus->publish([new ProducerMessageFaker('test-message', ['foo' => 'bar'])]);
+$routes = $bus->routes();
+
+foreach ($routes as $route) {
+    echo "{$route->messageClass} => {$route->topic->name}\n";
+}

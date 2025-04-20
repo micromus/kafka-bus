@@ -16,6 +16,14 @@ class PublisherRoutes
         return $this;
     }
 
+    /**
+     * @return list<Route>
+     */
+    public function all(): array
+    {
+        return array_values($this->routes);
+    }
+
     public function get(string $messageClass): ?Route
     {
         return $this->routes[$messageClass] ?? null;

@@ -25,13 +25,18 @@ class Bus implements BusInterface
             ->thread($connectionName);
     }
 
+    public function routes(): array
+    {
+        return $this->thread->routes();
+    }
+
     public function publish(iterable $messages): void
     {
         $this->thread->publish($messages);
     }
 
-    public function createListener(string $listenerWorkerName): Listener
+    public function listener(string $listenerWorkerName): Listener
     {
-        return $this->thread->createListener($listenerWorkerName);
+        return $this->thread->listener($listenerWorkerName);
     }
 }

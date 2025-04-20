@@ -11,8 +11,24 @@ use Micromus\KafkaBus\Producers\NullProducer;
 use Micromus\KafkaBus\Producers\ProducerConfig;
 use Micromus\KafkaBus\Topics\Topic;
 
-class NullConnection implements ConnectionInterface
+final class NullConnection implements ConnectionInterface
 {
+    public function __construct(
+        protected string $name,
+        protected array $options
+    ) {
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getConfig(): KafkaConnectionConfig
+    {
+        return new KafkaConnectionConfig($this->options);
+    }
+
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface
     {
         return new NullProducer();

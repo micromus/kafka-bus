@@ -13,7 +13,7 @@ final class KafkaConfConverter
         $conf = new Conf();
 
         foreach ($options as $key => $value) {
-            $conf->set($key, $value);
+            $conf->set($key, (string) $value);
         }
 
         return $conf;

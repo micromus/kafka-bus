@@ -7,7 +7,6 @@ namespace Micromus\KafkaBus\Connections\Kafka;
 use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
 use Micromus\KafkaBus\Producers\ProducerConfig;
 use RdKafka\Producer as KafkaProducer;
-use RdKafka\Producer as ProducerProducer;
 
 final class KafkaProducerFactory
 {
@@ -19,7 +18,7 @@ final class KafkaProducerFactory
         $this->confConverter = new KafkaConfConverter();
     }
 
-    public function make(ProducerConfig $config): ProducerProducer
+    public function make(ProducerConfig $config): KafkaProducer
     {
         $options = $this->connectionConfig
             ->getProducerOptions($config->additionalOptions);

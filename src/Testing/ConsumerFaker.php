@@ -7,13 +7,15 @@ use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
+use RdKafka\Message;
 
 class ConsumerFaker implements ConsumerInterface
 {
     public function __construct(
-        protected ConnectionFaker          $connectionFaker,
+        protected ConnectionFaker $connectionFaker,
         protected ConsumerMessageConverter $consumerMessageConverter,
-        protected array                    $messages
+        /** @var Message[] */
+        protected array $messages
     ) {
     }
 

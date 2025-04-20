@@ -10,4 +10,12 @@ readonly class Worker
         public Options $options = new Options()
     ) {
     }
+
+    public function topics(): array
+    {
+        return array_map(
+            fn (Route $route) => $route->topic,
+            $this->routes->all()
+        );
+    }
 }

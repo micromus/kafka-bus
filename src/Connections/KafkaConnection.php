@@ -3,25 +3,25 @@
 namespace Micromus\KafkaBus\Connections;
 
 use Micromus\KafkaBus\Connections\Kafka\KafkaConsumerFactory;
-use Micromus\KafkaBus\Connections\Kafka\KafkaOffsetSetterFactory;
 use Micromus\KafkaBus\Connections\Kafka\KafkaProducerFactory;
-use Micromus\KafkaBus\Connections\Offsets\Offset;
-use Micromus\KafkaBus\Connections\Offsets\OffsetConnectionSetter;
+use Micromus\KafkaBus\Connections\Topics\Topics;
 use Micromus\KafkaBus\Consumers\Commiters\DefaultCommiter;
 use Micromus\KafkaBus\Consumers\Commiters\VoidCommiter;
 use Micromus\KafkaBus\Consumers\Consumer;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionHasTopicsInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
-use Micromus\KafkaBus\Interfaces\Connections\ConnectionOffsetInterface;
+use Micromus\KafkaBus\Interfaces\Connections\Topics\ConnectionTopicsInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Producers\Producer;
 use Micromus\KafkaBus\Producers\ProducerConfig;
 use Micromus\KafkaBus\Support\RetryRepeater;
-use Micromus\KafkaBus\Topics\Partition;
 use Micromus\KafkaBus\Topics\Topic;
 
-class KafkaConnection implements ConnectionInterface, ConnectionOffsetInterface
+class KafkaConnection implements
+    ConnectionInterface,
+    ConnectionHasTopicsInterface
 {
     protected KafkaConnectionConfig $connectionConfig;
 
@@ -29,14 +29,11 @@ class KafkaConnection implements ConnectionInterface, ConnectionOffsetInterface
 
     protected KafkaConsumerFactory $consumerFactory;
 
-    protected KafkaOffsetSetterFactory $offsetSetterFactory;
-
-    public function __construct(array $options)
+    public function __construct(protected string $name, array $options)
     {
         $this->connectionConfig = new KafkaConnectionConfig($options);
         $this->producerFactory = new KafkaProducerFactory($this->connectionConfig);
         $this->consumerFactory = new KafkaConsumerFactory($this->connectionConfig);
-        $this->offsetSetterFactory = new KafkaOffsetSetterFactory($this->consumerFactory);
     }
 
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface
@@ -47,6 +44,16 @@ class KafkaConnection implements ConnectionInterface, ConnectionOffsetInterface
             retryRepeater: new RetryRepeater($config->flushRetries),
             timeout: $config->flushTimeout
         );
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getConfig(): KafkaConnectionConfig
+    {
+        return $this->connectionConfig;
     }
 
     public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface
@@ -62,9 +69,8 @@ class KafkaConnection implements ConnectionInterface, ConnectionOffsetInterface
         );
     }
 
-    public function setOffset(Partition $partition, int|Offset $offset, ConsumerConfig $config): array
+    public function topics(): ConnectionTopicsInterface
     {
-        return $this->offsetSetterFactory->make($config)
-            ->set($partition, $offset);
+        return new Topics($this->name, $this->connectionConfig);
     }
 }

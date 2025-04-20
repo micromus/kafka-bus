@@ -11,7 +11,7 @@ class WorkerRoutes
 
     public function add(Route $route): self
     {
-        $this->routes[$route->topicKey] = $route;
+        $this->routes[$route->topic->key] = $route;
 
         return $this;
     }

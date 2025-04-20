@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Micromus\KafkaBus\Connections\Offsets;
+namespace Micromus\KafkaBus\Bus\Listeners\Partitions;
 
 enum Offset
 {

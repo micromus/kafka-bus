@@ -12,7 +12,6 @@ class PublisherFactory
 {
     public function __construct(
         protected ProducerStreamFactoryInterface $factory,
-        protected TopicRegistry $topicRegistry,
         protected PublisherRoutes $routes = new PublisherRoutes(),
     ) {
     }
@@ -23,7 +22,6 @@ class PublisherFactory
             new PublisherRouter(
                 $connection,
                 $this->factory,
-                $this->topicRegistry,
                 $this->routes
             )
         );

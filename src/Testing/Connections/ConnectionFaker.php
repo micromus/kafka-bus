@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Testing\Connections;
 
+use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
@@ -21,9 +22,29 @@ class ConnectionFaker implements ConnectionInterface
 
     protected array $consumeMessages = [];
 
+    private KafkaConnectionConfig $connectionConfig;
+
+    private string $name;
+
+    public function __construct()
+    {
+        $this->name = 'faker';
+        $this->connectionConfig = new KafkaConnectionConfig([]);
+    }
+
     public function addMessage(KafkaMessage $message): void
     {
         $this->consumeMessages[] = $message;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getConfig(): KafkaConnectionConfig
+    {
+        return $this->connectionConfig;
     }
 
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface
