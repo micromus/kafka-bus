@@ -2,16 +2,18 @@
 
 namespace Micromus\KafkaBus\Bus\Publishers\Router;
 
+use Micromus\KafkaBus\Bus\MessageBatch;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
 use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
-use Micromus\KafkaBus\Topics\TopicRegistry;
-use WeakMap;
 
 class PublisherRouter
 {
+    /**
+     * @var array<class-string, ProducerStreamInterface<ProducerMessageInterface>>
+     */
     protected array $activeProducerStreams = [];
 
     public function __construct(
@@ -30,49 +32,23 @@ class PublisherRouter
     }
 
     /**
-     * @param ProducerMessageInterface[] $messages
+     * @template TMessage of ProducerMessageInterface
+     * @param MessageBatch<TMessage> $messageBatch
      * @return void
      *
      * @throws RouteProducerException
      */
-    public function publish(iterable $messages): void
+    public function publish(MessageBatch $messageBatch): void
     {
-        $producerStreamCollection = $this->makeProducerStreamCollection($messages);
-
-        foreach ($producerStreamCollection as $producerStreamItem) {
-            $producerStream = $producerStreamItem['producer_stream'];
-            $producerStream->handle($producerStreamItem['messages']);
-        }
+        $this->getOrCreateProducerStream($messageBatch->class())
+            ->handle($messageBatch->messages());
     }
 
     /**
-     * @param ProducerMessageInterface[] $messages
-     * @return array<int, array{producer_stream: ProducerStreamInterface, messages: ProducerMessageInterface[]}>
-     */
-    private function makeProducerStreamCollection(iterable $messages): array
-    {
-        $result = [];
-
-        foreach ($messages as $message) {
-            $result[get_class($message)][] = $message;
-        }
-
-        $producerStreamCollection = [];
-
-        // Создание ProducerStream происходит на этом этапе чтобы
-        // если вдруг вылетит RouteProducerException
-        // то не отправлять все сообщения
-        foreach ($result as $messageClass => $messages) {
-            $producerStreamCollection[] = [
-                'producer_stream' => $this->getOrCreateProducerStream($messageClass),
-                'messages' => $messages,
-            ];
-        }
-
-        return $producerStreamCollection;
-    }
-
-    /**
+     * @template TMessage of ProducerMessageInterface
+     * @param class-string<TMessage> $messageClass
+     * @return ProducerStreamInterface<TMessage>
+     *
      * @throws RouteProducerException
      */
     private function getOrCreateProducerStream(string $messageClass): ProducerStreamInterface
@@ -81,10 +57,15 @@ class PublisherRouter
             $this->activeProducerStreams[$messageClass] = $this->createProducerStream($messageClass);
         }
 
+        /** @var ProducerStreamInterface<TMessage> */
         return $this->activeProducerStreams[$messageClass];
     }
 
     /**
+     * @template TMessage of ProducerMessageInterface
+     * @param class-string<TMessage> $messageClass
+     * @return ProducerStreamInterface<TMessage>
+     *
      * @throws RouteProducerException
      */
     private function createProducerStream(string $messageClass): ProducerStreamInterface

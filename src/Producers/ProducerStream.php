@@ -12,6 +12,10 @@ use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 use Micromus\KafkaBus\Topics\Topic;
 
+/**
+ * @template TMessage of ProducerMessageInterface
+ * @implements ProducerStreamInterface<TMessage>
+ */
 class ProducerStream implements ProducerStreamInterface
 {
     public function __construct(
