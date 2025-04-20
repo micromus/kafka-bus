@@ -28,10 +28,15 @@ final class Thread implements ThreadInterface
             ->routes();
     }
 
-    public function publish(iterable $messages): void
+    public function publish(ProducerMessageInterface $message): void
+    {
+        $this->publishBatch(MessageBatch::fromArray([$message]));
+    }
+
+    public function publishBatch(MessageBatch $messageBatch): void
     {
         $this->publisher
-            ->publish($messages);
+            ->publish($messageBatch);
     }
 
     public function listener(string $listenerWorkerName): Listener

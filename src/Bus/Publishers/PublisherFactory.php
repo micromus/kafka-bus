@@ -11,7 +11,7 @@ use Micromus\KafkaBus\Topics\TopicRegistry;
 class PublisherFactory
 {
     public function __construct(
-        protected ProducerStreamFactoryInterface $factory,
+        protected ProducerStreamFactoryInterface $producerFactory,
         protected PublisherRoutes $routes = new PublisherRoutes(),
     ) {
     }
@@ -21,7 +21,7 @@ class PublisherFactory
         return new Publisher(
             new PublisherRouter(
                 $connection,
-                $this->factory,
+                $this->producerFactory,
                 $this->routes
             )
         );
