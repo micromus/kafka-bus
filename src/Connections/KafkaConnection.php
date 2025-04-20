@@ -2,78 +2,75 @@
 
 namespace Micromus\KafkaBus\Connections;
 
+use Micromus\KafkaBus\Connections\Kafka\KafkaConsumerFactory;
+use Micromus\KafkaBus\Connections\Kafka\KafkaProducerFactory;
+use Micromus\KafkaBus\Connections\Topics\Topics;
 use Micromus\KafkaBus\Consumers\Commiters\DefaultCommiter;
 use Micromus\KafkaBus\Consumers\Commiters\VoidCommiter;
-use Micromus\KafkaBus\Consumers\Configuration as ConsumerConfiguration;
 use Micromus\KafkaBus\Consumers\Consumer;
+use Micromus\KafkaBus\Consumers\ConsumerConfig;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionHasTopicsInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
+use Micromus\KafkaBus\Interfaces\Connections\Topics\ConnectionTopicsInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
-use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
 use Micromus\KafkaBus\Producers\Producer;
+use Micromus\KafkaBus\Producers\ProducerConfig;
 use Micromus\KafkaBus\Support\RetryRepeater;
-use RdKafka\Conf;
-use RdKafka\KafkaConsumer;
-use RdKafka\Producer as KafkaProducer;
+use Micromus\KafkaBus\Topics\Topic;
 
-class KafkaConnection implements ConnectionInterface
+class KafkaConnection implements
+    ConnectionInterface,
+    ConnectionHasTopicsInterface
 {
-    protected KafkaConnectionConfiguration $configuration;
+    protected KafkaConnectionConfig $connectionConfig;
 
-    public function __construct(array $options)
+    protected KafkaProducerFactory $producerFactory;
+
+    protected KafkaConsumerFactory $consumerFactory;
+
+    public function __construct(protected string $name, array $options)
     {
-        $this->configuration = new KafkaConnectionConfiguration($options);
+        $this->connectionConfig = new KafkaConnectionConfig($options);
+        $this->producerFactory = new KafkaProducerFactory($this->connectionConfig);
+        $this->consumerFactory = new KafkaConsumerFactory($this->connectionConfig);
     }
 
-    public function createProducer(string $topicName, ProducerConfiguration $configuration): ProducerInterface
+    public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface
     {
         return new Producer(
-            producer: $this->makeKafkaProducer($configuration),
-            topicName: $topicName,
-            retryRepeater: new RetryRepeater($configuration->flushRetries),
-            timeout: $configuration->flushTimeout
+            producer: $this->producerFactory->make($config),
+            topicName: $topic->name,
+            retryRepeater: new RetryRepeater($config->flushRetries),
+            timeout: $config->flushTimeout
         );
     }
 
-    private function makeKafkaProducer(ProducerConfiguration $configuration): KafkaProducer
+    public function getName(): string
     {
-        $options = $this->configuration
-            ->getProducerOptions($configuration->additionalOptions);
-
-        return new KafkaProducer($this->makeConf($options));
+        return $this->name;
     }
 
-    public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): ConsumerInterface
+    public function getConfig(): KafkaConnectionConfig
     {
-        $consumer = $this->makeKafkaConsumer($configuration);
+        return $this->connectionConfig;
+    }
+
+    public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface
+    {
+        $consumer = $this->consumerFactory->make($config);
 
         return new Consumer(
             consumer: $consumer,
-            topicNames: $topicNames,
-            commiter: $configuration->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter(),
+            topicNames: array_map(fn (Topic $topic) => $topic->name, $topics),
+            commiter: $config->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter(),
             retryRepeater: new RetryRepeater(),
-            consumerTimeout: $configuration->consumerTimeout,
+            consumerTimeout: $config->consumerTimeout,
         );
     }
 
-    private function makeKafkaConsumer(ConsumerConfiguration $configuration): KafkaConsumer
+    public function topics(): ConnectionTopicsInterface
     {
-        $options = $this->configuration
-            ->getConsumerOptions($configuration->additionalOptions);
-
-        $options['enable.auto.commit'] = $configuration->autoCommit ? 'true' : 'false';
-
-        return new KafkaConsumer($this->makeConf($options));
-    }
-
-    private function makeConf(array $options): Conf
-    {
-        $conf = new Conf();
-
-        foreach ($options as $key => $value) {
-            $conf->set($key, $value);
-        }
-
-        return $conf;
+        return new Topics($this->name, $this->connectionConfig);
     }
 }

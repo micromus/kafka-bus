@@ -7,6 +7,7 @@ use Micromus\KafkaBus\Consumers\Router\Extractors\MiddlewareClassExtractor;
 use Micromus\KafkaBus\Exceptions\Consumers\RouteConsumerException;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Pipelines\PipelineFactoryInterface;
+use Micromus\KafkaBus\Topics\Topic;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -29,6 +30,9 @@ class ConsumerRouter
         $this->middlewareClassExtractor = new MiddlewareClassExtractor();
     }
 
+    /**
+     * @return Topic[]
+     */
     public function topics(): array
     {
         return $this->routes->topics();

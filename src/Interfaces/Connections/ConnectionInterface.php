@@ -2,14 +2,25 @@
 
 namespace Micromus\KafkaBus\Interfaces\Connections;
 
-use Micromus\KafkaBus\Consumers\Configuration as ConsumerConfiguration;
+use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
+use Micromus\KafkaBus\Consumers\ConsumerConfig;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
-use Micromus\KafkaBus\Producers\Configuration as ProducerConfiguration;
+use Micromus\KafkaBus\Producers\ProducerConfig;
+use Micromus\KafkaBus\Topics\Topic;
 
 interface ConnectionInterface
 {
-    public function createProducer(string $topicName, ProducerConfiguration $configuration): ProducerInterface;
+    public function getName(): string;
 
-    public function createConsumer(array $topicNames, ConsumerConfiguration $configuration): ConsumerInterface;
+    public function getConfig(): KafkaConnectionConfig;
+
+    public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface;
+
+    /**
+     * @param Topic[] $topics
+     * @param ConsumerConfig $config
+     * @return ConsumerInterface
+     */
+    public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface;
 }

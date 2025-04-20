@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Micromus\KafkaBus\Connections\Kafka;
+
+use RdKafka\Conf;
+
+final class KafkaConfConverter
+{
+    public function fromArray(array $options): Conf
+    {
+        $conf = new Conf();
+
+        foreach ($options as $key => $value) {
+            $conf->set($key, (string) $value);
+        }
+
+        return $conf;
+    }
+}

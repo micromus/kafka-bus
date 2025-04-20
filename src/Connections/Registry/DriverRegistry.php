@@ -29,15 +29,15 @@ class DriverRegistry
 
     private function addNullDriver(): void
     {
-        $this->add('null', fn () => new NullConnection());
+        $this->add('null', fn ($name, $options) => new NullConnection($name, $options));
     }
 
     private function addKafkaDriver(): void
     {
-        $this->add('kafka', fn ($options) => new KafkaConnection($options));
+        $this->add('kafka', fn ($name, $options) => new KafkaConnection($name, $options));
     }
 
-    public function makeConnection(string $driverName, array $options): ConnectionInterface
+    public function makeConnection(string $connectionName, string $driverName, array $options): ConnectionInterface
     {
         if (! isset($this->drivers[$driverName])) {
             $availableDrivers = implode(', ', array_keys($this->drivers));
@@ -45,6 +45,6 @@ class DriverRegistry
             throw new DriverException("Driver [$driverName] not defined. Available drivers: $availableDrivers");
         }
 
-        return call_user_func($this->drivers[$driverName], $options);
+        return call_user_func($this->drivers[$driverName], $connectionName, $options);
     }
 }

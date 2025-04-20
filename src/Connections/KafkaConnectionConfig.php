@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Connections;
 
-class KafkaConnectionConfiguration
+class KafkaConnectionConfig
 {
     final public const PRODUCER_OPTIONS = [
         'transactional.id',

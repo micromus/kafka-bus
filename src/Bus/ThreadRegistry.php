@@ -13,8 +13,7 @@ class ThreadRegistry
 
     public function __construct(
         protected ConnectionRegistryInterface $connectionRegistry,
-        protected PublisherFactory            $publisherFactory,
-        protected ListenerFactory             $listenerFactory
+        protected ThreadFactory $factory,
     ) {
     }
 
@@ -32,10 +31,6 @@ class ThreadRegistry
         $connection = $this->connectionRegistry
             ->connection($connectionName);
 
-        return new Thread(
-            $connection,
-            $this->listenerFactory,
-            $this->publisherFactory
-        );
+        return $this->factory->create($connection);
     }
 }

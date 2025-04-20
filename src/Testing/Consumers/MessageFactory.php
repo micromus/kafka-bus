@@ -13,6 +13,10 @@ class MessageFactory
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     * @return Message
+     */
     public function fromArray(array $attributes): Message
     {
         $message = new Message();

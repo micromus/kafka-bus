@@ -21,29 +21,30 @@ it('can produce message', function () {
     $connectionFaker = new ConnectionFaker();
 
     $routes = (new PublisherRoutes())
-        ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, 'products'));
+        ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, $topicRegistry->get('products')));
 
     $container = new NativeContainer();
 
     $bus = new Bus(
         new Bus\ThreadRegistry(
             new ConnectionRegistryFaker($connectionFaker),
-            new Bus\Publishers\PublisherFactory(
-                new ProducerStreamFactory(new PipelineFactory($container)),
-                $topicRegistry,
-                $routes
-            ),
-            new Bus\Listeners\ListenerFactory(
-                new ConsumerStreamFactory(
-                    new ConsumerMessageHandlerFactory(
-                        new PipelineFactory($container),
-                        new ConsumerRouterFactory(
-                            $container,
+            new Bus\ThreadFactory(
+                new Bus\Listeners\ListenerFactory(
+                    new ConsumerStreamFactory(
+                        new ConsumerMessageHandlerFactory(
                             new PipelineFactory($container),
-                            $topicRegistry
+                            new ConsumerRouterFactory(
+                                $container,
+                                new PipelineFactory($container)
+                            )
                         )
-                    )
-                )
+                    ),
+                    new Bus\Listeners\Workers\WorkerRegistry()
+                ),
+                new Bus\Publishers\PublisherFactory(
+                    new ProducerStreamFactory(new PipelineFactory($container)),
+                    $routes
+                ),
             )
         ),
         'default'

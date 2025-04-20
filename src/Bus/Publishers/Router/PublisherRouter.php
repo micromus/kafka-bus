@@ -15,11 +15,18 @@ class PublisherRouter
     protected array $activeProducerStreams = [];
 
     public function __construct(
-        protected ConnectionInterface            $connection,
+        protected ConnectionInterface $connection,
         protected ProducerStreamFactoryInterface $producerStreamFactory,
-        protected TopicRegistry                  $topicRegistry,
-        protected PublisherRoutes                $routes
+        protected PublisherRoutes $routes
     ) {
+    }
+
+    /**
+     * @return list<Route>
+     */
+    public function routes(): array
+    {
+        return $this->routes->all();
     }
 
     /**
@@ -86,6 +93,6 @@ class PublisherRouter
             ?? throw new RouteProducerException("Route for message [$messageClass] not found");
 
         return $this->producerStreamFactory
-            ->create($this->connection, $this->topicRegistry->get($route->topicKey), $route->options);
+            ->create($this->connection, $route->topic, $route->options);
     }
 }

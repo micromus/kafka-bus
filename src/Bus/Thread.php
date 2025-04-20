@@ -10,34 +10,31 @@ use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
-class Thread implements ThreadInterface
+final class Thread implements ThreadInterface
 {
-    protected ?Publisher $publisher = null;
+    protected Publisher $publisher;
 
     public function __construct(
         protected ConnectionInterface $connection,
         protected ListenerFactory $listenerFactory,
-        protected PublisherFactory $publisherFactory,
+        PublisherFactory $publisherFactory,
     ) {
+        $this->publisher = $publisherFactory->create($this->connection);
     }
 
-    private function getPublisher(): Publisher
+    public function routes(): array
     {
-        if ($this->publisher === null) {
-            $this->publisher = $this->publisherFactory
-                ->create($this->connection);
-        }
-
-        return $this->publisher;
+        return $this->publisher
+            ->routes();
     }
 
     public function publish(iterable $messages): void
     {
-        $this->getPublisher()
+        $this->publisher
             ->publish($messages);
     }
 
-    public function createListener(string $listenerWorkerName): Listener
+    public function listener(string $listenerWorkerName): Listener
     {
         return $this->listenerFactory
             ->create($this->connection, $listenerWorkerName);

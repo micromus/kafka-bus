@@ -30,9 +30,9 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
         );
     }
 
-    private function makeConsumerConfiguration(Options $options): Configuration
+    private function makeConsumerConfiguration(Options $options): ConsumerConfig
     {
-        return new Configuration(
+        return new ConsumerConfig(
             additionalOptions: $options->additionalOptions,
             autoCommit: $options->autoCommit,
             consumerTimeout: $options->consumerTimeout,

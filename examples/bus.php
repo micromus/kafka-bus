@@ -17,18 +17,23 @@ use Micromus\KafkaBus\Topics\TopicRegistry;
 $topicRegistry = (new TopicRegistry())
     ->add(new Topic('production.fact.products.1', 'products'));
 
+$consumeOptions = [
+    'group.id' => 'products-microservice',
+    'auto.offset.reset' => 'beginning',
+];
+
 $worker = new Bus\Listeners\Workers\Worker(
     'default-listener',
     (new Bus\Listeners\Workers\WorkerRoutes())
-        ->add(new Bus\Listeners\Workers\Route('products', ConsumerHandlerFaker::class)),
-    new Bus\Listeners\Workers\Options(additionalOptions: ['group.id' => 'products-microservice'])
+        ->add(new Bus\Listeners\Workers\Route($topicRegistry->get('products'), ConsumerHandlerFaker::class)),
+    new Bus\Listeners\Workers\Options(additionalOptions: $consumeOptions)
 );
 
-$listenerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
+$workerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
     ->add($worker);
 
 $routes = (new Bus\Publishers\Router\PublisherRoutes())
-    ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, 'products'));
+    ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, $topicRegistry->get('products')));
 
 $connectionRegistry = new ConnectionRegistry(
     new DriverRegistry(),
@@ -46,26 +51,30 @@ $connectionRegistry = new ConnectionRegistry(
 
 $container = new NativeContainer();
 
-return new Bus(
+$publisherFactory = new Bus\Publishers\PublisherFactory(
+    new ProducerStreamFactory(new PipelineFactory($container)),
+    $routes
+);
+
+$listenerFactory = new Bus\Listeners\ListenerFactory(
+    new ConsumerStreamFactory(
+        new ConsumerMessageHandlerFactory(
+            new PipelineFactory($container),
+            new ConsumerRouterFactory(
+                $container,
+                new PipelineFactory($container)
+            )
+        )
+    ),
+    $workerRegistry
+);
+
+$bus = new Bus(
     new Bus\ThreadRegistry(
         $connectionRegistry,
-        new Bus\Publishers\PublisherFactory(
-            new ProducerStreamFactory(new PipelineFactory($container)),
-            $topicRegistry,
-            $routes
-        ),
-        new Bus\Listeners\ListenerFactory(
-            new ConsumerStreamFactory(
-                new ConsumerMessageHandlerFactory(
-                    new PipelineFactory($container),
-                    new ConsumerRouterFactory(
-                        $container,
-                        new PipelineFactory($container),
-                        $topicRegistry
-                    )
-                )
-            ),
-            $listenerRegistry
+        new Bus\ThreadFactory(
+            $listenerFactory,
+            $publisherFactory,
         )
     ),
     'default'

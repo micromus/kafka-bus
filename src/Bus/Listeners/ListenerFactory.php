@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
-use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRegistry;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
@@ -12,7 +11,7 @@ class ListenerFactory
 {
     public function __construct(
         protected ConsumerStreamFactoryInterface $streamFactory,
-        protected WorkerRegistry $workerRegistry = new WorkerRegistry(),
+        protected WorkerRegistry $workerRegistry
     ) {
     }
 
@@ -23,6 +22,6 @@ class ListenerFactory
 
         $consumerStream = $this->streamFactory->create($connection, $worker);
 
-        return new Listener($consumerStream);
+        return new Listener($worker, $connection, $consumerStream);
     }
 }

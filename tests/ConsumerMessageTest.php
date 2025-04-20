@@ -34,7 +34,7 @@ test('can consume message', function () {
             new Bus\Listeners\Workers\Worker(
                 'default-listener',
                 (new Bus\Listeners\Workers\WorkerRoutes())
-                    ->add(new Bus\Listeners\Workers\Route('products', VoidConsumerHandlerFaker::class))
+                    ->add(new Bus\Listeners\Workers\Route($topicRegistry->get('products'), VoidConsumerHandlerFaker::class))
             )
         );
 
@@ -43,28 +43,28 @@ test('can consume message', function () {
     $bus = new Bus(
         new Bus\ThreadRegistry(
             new ConnectionRegistryFaker($connectionFaker),
-            new Bus\Publishers\PublisherFactory(
-                new ProducerStreamFactory(new PipelineFactory($container)),
-                $topicRegistry
-            ),
-            new Bus\Listeners\ListenerFactory(
-                new ConsumerStreamFactory(
-                    new ConsumerMessageHandlerFactory(
-                        new PipelineFactory($container),
-                        new ConsumerRouterFactory(
-                            $container,
+            new Bus\ThreadFactory(
+                new Bus\Listeners\ListenerFactory(
+                    new ConsumerStreamFactory(
+                        new ConsumerMessageHandlerFactory(
                             new PipelineFactory($container),
-                            $topicRegistry
+                            new ConsumerRouterFactory(
+                                $container,
+                                new PipelineFactory($container)
+                            )
                         )
-                    )
+                    ),
+                    $workerRegistry
                 ),
-                $workerRegistry
+                new Bus\Publishers\PublisherFactory(
+                    new ProducerStreamFactory(new PipelineFactory($container)),
+                )
             )
         ),
         'default'
     );
 
-    $bus->createListener('default-listener')
+    $bus->listener('default-listener')
         ->listen();
 
     expect($connectionFaker->committedMessages)

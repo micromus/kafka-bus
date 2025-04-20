@@ -29,7 +29,8 @@ class ConnectionRegistry implements ConnectionRegistryInterface
     {
         $config = $this->getConnectionConfig($connectionName);
 
-        return $this->driverRegistry->makeConnection($config['driver'], $config['options'] ?: []);
+        return $this->driverRegistry
+            ->makeConnection($connectionName, $config['driver'], $config['options'] ?: []);
     }
 
     private function getConnectionConfig(string $connectionName): array

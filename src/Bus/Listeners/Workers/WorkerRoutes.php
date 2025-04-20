@@ -11,9 +11,14 @@ class WorkerRoutes
 
     public function add(Route $route): self
     {
-        $this->routes[$route->topicKey] = $route;
+        $this->routes[$route->topic->key] = $route;
 
         return $this;
+    }
+
+    public function has(string $topicKey): bool
+    {
+        return isset($this->routes[$topicKey]);
     }
 
     /**
