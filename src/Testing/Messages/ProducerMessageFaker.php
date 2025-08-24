@@ -8,6 +8,11 @@ use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
 final class ProducerMessageFaker implements HasHeaders, HasPartition, ProducerMessageInterface
 {
+    /**
+     * @param string $message
+     * @param array<string, string|\Stringable> $headers
+     * @param int $partition
+     */
     public function __construct(
         protected string $message,
         protected array $headers = [],

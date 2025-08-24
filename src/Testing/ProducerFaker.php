@@ -9,11 +9,11 @@ class ProducerFaker implements ProducerInterface
 {
     public function __construct(
         protected ConnectionFaker $connection,
-        protected string          $topicName,
+        protected string $topicName,
     ) {
     }
 
-    public function produce(array $messages): void
+    public function produce(iterable $messages): void
     {
         $this->connection->publishedMessages[$this->topicName] = [
             ...$this->connection->publishedMessages[$this->topicName] ?? [],

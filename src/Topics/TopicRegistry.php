@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Topics;
 
 use Micromus\KafkaBus\Exceptions\TopicCannotResolvedException;
 
-class TopicRegistry
+final class TopicRegistry
 {
     /**
      * @var Topic[]
@@ -26,6 +26,6 @@ class TopicRegistry
     public function get(string $topicKey): Topic
     {
         return $this->topics[$topicKey]
-            ?? throw new TopicCannotResolvedException("Topic [$topicKey] not found");
+            ?? throw TopicCannotResolvedException::topicNotFound($topicKey);
     }
 }

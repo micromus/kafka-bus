@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Interfaces\Connections;
 
-use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
+use Micromus\KafkaBus\Connections\Config\Options;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
@@ -13,7 +13,7 @@ interface ConnectionInterface
 {
     public function getName(): string;
 
-    public function getConfig(): KafkaConnectionConfig;
+    public function getOptions(): Options;
 
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface;
 

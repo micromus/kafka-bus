@@ -3,28 +3,18 @@
 namespace Micromus\KafkaBus\Producers;
 
 use Micromus\KafkaBus\Bus\Publishers\Router\Options;
+use Micromus\KafkaBus\Bus\Publishers\Router\Route;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
-use Micromus\KafkaBus\Interfaces\Pipelines\PipelineFactoryInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
-use Micromus\KafkaBus\Topics\Topic;
 
 class ProducerStreamFactory implements ProducerStreamFactoryInterface
 {
-    public function __construct(
-        protected PipelineFactoryInterface $pipelineFactory
-    ) {
-    }
-
-    public function create(ConnectionInterface $connection, Topic $topic, Options $options): ProducerStreamInterface
+    public function create(ConnectionInterface $connection, Route $route): ProducerStreamInterface
     {
-        $configuration = $this->makeProducerConfiguration($options);
+        $configuration = $this->makeProducerConfiguration($route->options);
 
-        return new ProducerStream(
-            $connection->createProducer($topic, $configuration),
-            $this->pipelineFactory->create($options->middlewares),
-            $topic
-        );
+        return new ProducerStream($route, $connection->createProducer($route->topic, $configuration));
     }
 
     private function makeProducerConfiguration(Options $options): ProducerConfig

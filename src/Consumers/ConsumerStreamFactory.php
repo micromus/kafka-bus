@@ -4,23 +4,24 @@ namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Bus\Listeners\Workers\Options;
 use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
+use Micromus\KafkaBus\Consumers\Handlers\MessageHandlerFactory;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
-use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
-use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Handlers\MessageHandlerFactoryInterface;
 
 class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
 {
     public function __construct(
-        protected ConsumerMessageHandlerFactoryInterface $consumerMessageHandlerFactory,
+        protected MessageHandlerFactoryInterface $messageHandlerFactory = new MessageHandlerFactory(),
     ) {
     }
 
     public function create(ConnectionInterface $connection, Worker $worker): ConsumerStreamInterface
     {
-        $configuration = $this->makeConsumerConfiguration($worker->options);
+        $configuration = $this->makeConsumerConfig($worker->options);
 
-        $consumerMessageHandler = $this->consumerMessageHandlerFactory
+        $consumerMessageHandler = $this->messageHandlerFactory
             ->create($worker);
 
         return new ConsumerStream(
@@ -30,7 +31,7 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
         );
     }
 
-    private function makeConsumerConfiguration(Options $options): ConsumerConfig
+    private function makeConsumerConfig(Options $options): ConsumerConfig
     {
         return new ConsumerConfig(
             additionalOptions: $options->additionalOptions,

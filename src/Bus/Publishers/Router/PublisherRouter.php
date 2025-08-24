@@ -12,7 +12,7 @@ use Micromus\KafkaBus\Exceptions\Producers\RouteProducerException;
 class PublisherRouter
 {
     /**
-     * @var array<class-string, ProducerStreamInterface<ProducerMessageInterface>>
+     * @var array<class-string, ProducerStreamInterface>
      */
     protected array $activeProducerStreams = [];
 
@@ -74,6 +74,6 @@ class PublisherRouter
             ?? throw new RouteProducerException("Route for message [$messageClass] not found");
 
         return $this->producerStreamFactory
-            ->create($this->connection, $route->topic, $route->options);
+            ->create($this->connection, $route);
     }
 }

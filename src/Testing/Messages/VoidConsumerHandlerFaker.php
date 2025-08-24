@@ -6,7 +6,7 @@ use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 
 final class VoidConsumerHandlerFaker
 {
-    public function execute(ConsumerMessageInterface $message): void
+    public function __invoke(ConsumerMessageInterface $message): void
     {
 
     }

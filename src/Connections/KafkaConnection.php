@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Connections;
 
+use Micromus\KafkaBus\Connections\Config\Options;
 use Micromus\KafkaBus\Connections\Kafka\KafkaConsumerFactory;
 use Micromus\KafkaBus\Connections\Kafka\KafkaProducerFactory;
 use Micromus\KafkaBus\Connections\Topics\Topics;
@@ -23,24 +24,25 @@ class KafkaConnection implements
     ConnectionInterface,
     ConnectionHasTopicsInterface
 {
-    protected KafkaConnectionConfig $connectionConfig;
-
     protected KafkaProducerFactory $producerFactory;
 
     protected KafkaConsumerFactory $consumerFactory;
 
-    public function __construct(protected string $name, array $options)
+    /**
+     * @param string $name
+     * @param Options $options
+     */
+    public function __construct(protected string $name, protected Options $options)
     {
-        $this->connectionConfig = new KafkaConnectionConfig($options);
-        $this->producerFactory = new KafkaProducerFactory($this->connectionConfig);
-        $this->consumerFactory = new KafkaConsumerFactory($this->connectionConfig);
+        $this->producerFactory = new KafkaProducerFactory($this->options);
+        $this->consumerFactory = new KafkaConsumerFactory($this->options);
     }
 
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface
     {
         return new Producer(
             producer: $this->producerFactory->make($config),
-            topicName: $topic->name,
+            topic: $topic,
             retryRepeater: new RetryRepeater($config->flushRetries),
             timeout: $config->flushTimeout
         );
@@ -51,9 +53,9 @@ class KafkaConnection implements
         return $this->name;
     }
 
-    public function getConfig(): KafkaConnectionConfig
+    public function getOptions(): Options
     {
-        return $this->connectionConfig;
+        return $this->options;
     }
 
     public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface
@@ -71,6 +73,6 @@ class KafkaConnection implements
 
     public function topics(): ConnectionTopicsInterface
     {
-        return new Topics($this->name, $this->connectionConfig);
+        return new Topics($this->name, $this->options);
     }
 }

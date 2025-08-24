@@ -2,13 +2,19 @@
 
 namespace Micromus\KafkaBus\Connections\Registry;
 
+use Micromus\KafkaBus\Connections\Config\KafkaConnectionConfig;
+use Micromus\KafkaBus\Connections\Config\NullConnectionConfig;
 use Micromus\KafkaBus\Connections\KafkaConnection;
 use Micromus\KafkaBus\Connections\NullConnection;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionConfigInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Exceptions\Connections\DriverException;
 
 class DriverRegistry
 {
+    /**
+     * @var array<class-string, callable(string, ConnectionConfigInterface): ConnectionInterface>
+     */
     protected array $drivers = [];
 
     public function __construct()
@@ -16,9 +22,15 @@ class DriverRegistry
         $this->initDrivers();
     }
 
-    public function add(string $driverName, callable $connectionMaker): void
+    /**
+     * @template TConfiguration of ConnectionConfigInterface
+     * @param class-string<TConfiguration> $configurationClass
+     * @param callable(string, TConfiguration): ConnectionInterface $connectionMaker
+     * @return void
+     */
+    public function add(string $configurationClass, callable $connectionMaker): void
     {
-        $this->drivers[$driverName] = $connectionMaker;
+        $this->drivers[$configurationClass] = $connectionMaker; // @phpstan-ignore-line
     }
 
     protected function initDrivers(): void
@@ -29,22 +41,28 @@ class DriverRegistry
 
     private function addNullDriver(): void
     {
-        $this->add('null', fn ($name, $options) => new NullConnection($name, $options));
+        $this->add(
+            NullConnectionConfig::class,
+            static fn (string $name, NullConnectionConfig $config) => new NullConnection($name)
+        );
+
     }
 
     private function addKafkaDriver(): void
     {
-        $this->add('kafka', fn ($name, $options) => new KafkaConnection($name, $options));
+        $this->add(
+            KafkaConnectionConfig::class,
+            static fn (string $name, KafkaConnectionConfig $config) => new KafkaConnection($name, $config->getOptions())
+        );
     }
 
-    public function makeConnection(string $connectionName, string $driverName, array $options): ConnectionInterface
+    public function makeConnection(string $name, ConnectionConfigInterface $config): ConnectionInterface
     {
-        if (! isset($this->drivers[$driverName])) {
-            $availableDrivers = implode(', ', array_keys($this->drivers));
+        $configuration = get_class($config);
 
-            throw new DriverException("Driver [$driverName] not defined. Available drivers: $availableDrivers");
-        }
+        $driver = $this->drivers[$configuration]
+            ?? throw DriverException::driverNotFound($configuration, array_keys($this->drivers));
 
-        return call_user_func($this->drivers[$driverName], $connectionName, $options);
+        return call_user_func($driver, $name, $config);
     }
 }

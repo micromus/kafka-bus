@@ -2,17 +2,30 @@
 
 namespace Micromus\KafkaBus\Testing\Messages\Middlewares;
 
-use Closure;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\Messages\MessagePipelineHandlerInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\Messages\MessagePipelineMiddlewareInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
 
-final class ConsumerMessageLoggerFakerMiddleware
+final class ConsumerMessageLoggerFakerMiddleware implements MessagePipelineMiddlewareInterface
 {
-    public function handle(ConsumerMessageInterface $message, Closure $next): void
+    /**
+     * @param PipelineInterface<MessagePipelineHandlerInterface> $pipeline
+     * @return PipelineInterface<MessagePipelineHandlerInterface>
+     */
+    public function handle(PipelineInterface $pipeline): PipelineInterface
     {
+        $message = $pipeline->handler()
+            ->target();
+
+        \assert($message instanceof ConsumerMessageInterface);
+
         echo "Execute consumer message: {$message->msgId()}" . PHP_EOL;
 
-        $next($message);
+        $pipeline->continue();
 
         echo "Consumer message executed." . PHP_EOL;
+
+        return $pipeline;
     }
 }

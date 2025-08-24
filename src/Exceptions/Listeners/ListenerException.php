@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBus\Exceptions\Consumers;
+namespace Micromus\KafkaBus\Exceptions\Listeners;
 
 use LogicException;
 

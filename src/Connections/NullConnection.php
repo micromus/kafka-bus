@@ -2,21 +2,23 @@
 
 namespace Micromus\KafkaBus\Connections;
 
+use Micromus\KafkaBus\Connections\Config\Options;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
+use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
-use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
 use Micromus\KafkaBus\Producers\NullProducer;
 use Micromus\KafkaBus\Producers\ProducerConfig;
 use Micromus\KafkaBus\Topics\Topic;
 
 final class NullConnection implements ConnectionInterface
 {
-    public function __construct(
-        protected string $name,
-        protected array $options
-    ) {
+    /**
+     * @param string $name
+     */
+    public function __construct(protected string $name)
+    {
     }
 
     public function getName(): string
@@ -24,9 +26,9 @@ final class NullConnection implements ConnectionInterface
         return $this->name;
     }
 
-    public function getConfig(): KafkaConnectionConfig
+    public function getOptions(): Options
     {
-        return new KafkaConnectionConfig($this->options);
+        return new Options([]);
     }
 
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface

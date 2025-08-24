@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Micromus\KafkaBus\Connections\Topics;
 
+use Micromus\KafkaBus\Connections\Config\Options;
 use Micromus\KafkaBus\Connections\Kafka\KafkaConsumerFactory;
-use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
 use Micromus\KafkaBus\Connections\Topics\Consumers\ConsumerPartition;
 use Micromus\KafkaBus\Connections\Topics\Consumers\PartitionOffset;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
@@ -22,9 +22,9 @@ final class ConsumerTopics implements ConnectionConsumerTopicsInterface
     protected ?KafkaConsumer $consumer = null;
 
     public function __construct(
-        protected string $connectionName,
-        protected KafkaConnectionConfig $config,
-        protected ConsumerConfig $consumerConfig,
+        protected string                    $connectionName,
+        protected Options                   $config,
+        protected ConsumerConfig            $consumerConfig,
         protected ConnectionTopicsInterface $topics
     ) {
         $this->consumerFactory = new KafkaConsumerFactory($this->config);
@@ -72,6 +72,11 @@ final class ConsumerTopics implements ConnectionConsumerTopicsInterface
         );
     }
 
+    /**
+     * @param string $topicName
+     * @param int $partition
+     * @return array{0: int, 1: int}
+     */
     private function getMinAndMaxOffset(string $topicName, int $partition): array
     {
         $this->consumer()
@@ -81,7 +86,7 @@ final class ConsumerTopics implements ConnectionConsumerTopicsInterface
     }
 
     /**
-     * @param array $offsets
+     * @param list<PartitionOffset> $offsets
      * @return void
      *
      * @throws Exception

@@ -2,13 +2,24 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
+use Micromus\KafkaBus\Consumers\Messages\NativeMessageFactory;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\Messages\MessagePipelineMiddlewareInterface;
 use Micromus\KafkaBus\Topics\Topic;
 
-readonly class Route
+final readonly class Route
 {
+    /**
+     * @param Topic $topic
+     * @param callable $handler
+     * @param MessageFactoryInterface $messageFactory
+     * @param list<MessagePipelineMiddlewareInterface> $middleware
+     */
     public function __construct(
         public Topic $topic,
-        public string $handlerClass
+        public mixed $handler,
+        public MessageFactoryInterface $messageFactory = new NativeMessageFactory(),
+        public array $middleware = []
     ) {
     }
 }

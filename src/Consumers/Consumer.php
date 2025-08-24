@@ -16,6 +16,15 @@ class Consumer implements ConsumerInterface
 {
     protected ConsumerMessageConverter $consumerMessageNormalizer;
 
+    /**
+     * @param KafkaConsumer $consumer
+     * @param list<string> $topicNames
+     * @param CommiterInterface $commiter
+     * @param RetryRepeater $retryRepeater
+     * @param int $consumerTimeout
+     *
+     * @throws Exception
+     */
     public function __construct(
         protected KafkaConsumer     $consumer,
         protected array             $topicNames,

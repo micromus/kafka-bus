@@ -8,6 +8,10 @@ use RdKafka\Conf;
 
 final class KafkaConfConverter
 {
+    /**
+     * @param array<string, int|string|null> $options
+     * @return Conf
+     */
     public function fromArray(array $options): Conf
     {
         $conf = new Conf();

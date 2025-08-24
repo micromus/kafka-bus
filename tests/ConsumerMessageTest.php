@@ -2,14 +2,13 @@
 
 use Micromus\KafkaBus\Bus;
 use Micromus\KafkaBus\Consumers\ConsumerStreamFactory;
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageHandlerFactory;
-use Micromus\KafkaBus\Consumers\Router\ConsumerRouterFactory;
-use Micromus\KafkaBus\Pipelines\PipelineFactory;
+use Micromus\KafkaBus\Consumers\Handlers\MessageHandlerFactory;
+use Micromus\KafkaBus\Consumers\Router\ConsumerRoutes;
+use Micromus\KafkaBus\Consumers\Router\Route;
 use Micromus\KafkaBus\Producers\ProducerStreamFactory;
-use Micromus\KafkaBus\Support\NativeContainer;
 use Micromus\KafkaBus\Testing\Connections\ConnectionFaker;
 use Micromus\KafkaBus\Testing\Connections\ConnectionRegistryFaker;
-use Micromus\KafkaBus\Testing\Consumers\MessageBuilder;
+use Micromus\KafkaBus\Testing\Consumers\MessageFactory;
 use Micromus\KafkaBus\Testing\Messages\VoidConsumerHandlerFaker;
 use Micromus\KafkaBus\Topics\Topic;
 use Micromus\KafkaBus\Topics\TopicRegistry;
@@ -20,12 +19,10 @@ test('can consume message', function () {
 
     $connectionFaker = new ConnectionFaker();
 
-    $message = MessageBuilder::for($topicRegistry)
-        ->build([
-            'topic_name' => 'products',
-            'payload' => 'test-message',
-            'headers' => ['foo' => 'bar'],
-        ]);
+    $message = MessageFactory::for($topicRegistry)
+        ->withHeaders(['foo' => 'bar'])
+        ->withTopicKey('products')
+        ->make('test-message');
 
     $connectionFaker->addMessage($message);
 
@@ -33,31 +30,21 @@ test('can consume message', function () {
         ->add(
             new Bus\Listeners\Workers\Worker(
                 'default-listener',
-                (new Bus\Listeners\Workers\WorkerRoutes())
-                    ->add(new Bus\Listeners\Workers\Route($topicRegistry->get('products'), VoidConsumerHandlerFaker::class))
+                (new ConsumerRoutes())
+                    ->add(new Route($topicRegistry->get('products'), new VoidConsumerHandlerFaker()))
             )
         );
-
-    $container = new NativeContainer();
 
     $bus = new Bus(
         new Bus\ThreadRegistry(
             new ConnectionRegistryFaker($connectionFaker),
             new Bus\ThreadFactory(
                 new Bus\Listeners\ListenerFactory(
-                    new ConsumerStreamFactory(
-                        new ConsumerMessageHandlerFactory(
-                            new PipelineFactory($container),
-                            new ConsumerRouterFactory(
-                                $container,
-                                new PipelineFactory($container)
-                            )
-                        )
-                    ),
+                    new ConsumerStreamFactory(new MessageHandlerFactory()),
                     $workerRegistry
                 ),
                 new Bus\Publishers\PublisherFactory(
-                    new ProducerStreamFactory(new PipelineFactory($container)),
+                    new ProducerStreamFactory(),
                 )
             )
         ),

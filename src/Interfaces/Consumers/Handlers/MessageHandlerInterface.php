@@ -1,11 +1,12 @@
 <?php
 
-namespace Micromus\KafkaBus\Interfaces\Consumers\Messages;
+namespace Micromus\KafkaBus\Interfaces\Consumers\Handlers;
 
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\WorkerConsumerMessageInterface;
 use Micromus\KafkaBus\Topics\Topic;
 
-interface ConsumerMessageHandlerInterface
+interface MessageHandlerInterface
 {
     /**
      * @return Topic[]

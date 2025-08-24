@@ -9,6 +9,9 @@ use Micromus\KafkaBus\Interfaces\Connections\ConnectionRegistryInterface;
 
 class ThreadRegistry
 {
+    /**
+     * @var array<string, ThreadInterface>
+     */
     protected array $activeThreads = [];
 
     public function __construct(

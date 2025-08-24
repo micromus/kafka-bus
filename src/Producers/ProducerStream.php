@@ -2,15 +2,13 @@
 
 namespace Micromus\KafkaBus\Producers;
 
-use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
-use Micromus\KafkaBus\Interfaces\Producers\Messages\HasHeaders;
-use Micromus\KafkaBus\Interfaces\Producers\Messages\HasKey;
-use Micromus\KafkaBus\Interfaces\Producers\Messages\HasPartition;
+use Micromus\KafkaBus\Bus\Publishers\Router\Route;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamInterface;
+use Micromus\KafkaBus\Pipelines\PipelineBuilder;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
-use Micromus\KafkaBus\Topics\Topic;
+use Micromus\KafkaBus\Producers\Pipelines\ProducerPipelineHandler;
 
 /**
  * @template TMessage of ProducerMessageInterface
@@ -18,56 +16,38 @@ use Micromus\KafkaBus\Topics\Topic;
  */
 class ProducerStream implements ProducerStreamInterface
 {
+    /**
+     * @param Route<TMessage> $route
+     * @param ProducerInterface $producer
+     */
     public function __construct(
+        protected Route $route,
         protected ProducerInterface $producer,
-        protected PipelineInterface $pipeline,
-        protected Topic $topic
     ) {
     }
 
-    public function handle(array $messages): void
+    public function handle(iterable $messages): void
     {
-        $producerMessages = array_filter(array_map($this->handleMessage(...), $messages));
-
         $this->producer
-            ->produce($producerMessages);
+            ->produce($this->prepareMessages($messages));
     }
 
-    private function handleMessage(ProducerMessageInterface $message): ProducerMessage
+    /**
+     * @param iterable<ProducerMessageInterface> $messages
+     * @return iterable<ProducerMessage>
+     */
+    private function prepareMessages(iterable $messages): iterable
     {
-        return $this->pipeline
-            ->then($message, $this->mapProducerMessage(...));
-    }
+        foreach ($messages as $message) {
+            $producerHandler = new ProducerPipelineHandler($message, $this->route->topic);
+            $producerMessage = PipelineBuilder::for($producerHandler)
+                ->middleware($this->route->options->middlewares)
+                ->create()
+                ->start();
 
-
-    private function mapProducerMessage(ProducerMessageInterface $message): ProducerMessage
-    {
-        return new ProducerMessage(
-            payload: $message->toPayload(),
-            headers: $this->getHeadersFromMessage($message),
-            partition: $this->getPartitionFromMessage($message),
-            key: $this->getKey($message)
-        );
-    }
-
-    private function getHeadersFromMessage(ProducerMessageInterface $message): array
-    {
-        return $message instanceof HasHeaders
-            ? $message->getHeaders()
-            : [];
-    }
-
-    private function getKey(ProducerMessageInterface $message): ?string
-    {
-        return $message instanceof HasKey
-            ? $message->getKey()
-            : null;
-    }
-
-    private function getPartitionFromMessage(ProducerMessageInterface $message): int
-    {
-        return $message instanceof HasPartition
-            ? max($message->getPartition(), RD_KAFKA_PARTITION_UA)
-            : RD_KAFKA_PARTITION_UA;
+            if (!is_null($producerMessage)) {
+                yield $producerMessage;
+            }
+        }
     }
 }

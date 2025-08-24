@@ -2,9 +2,18 @@
 
 namespace Micromus\KafkaBus\Interfaces\Pipelines;
 
-use Closure;
-
+/**
+ * @template-covariant THandler of PipelineHandlerInterface
+ */
 interface PipelineInterface
 {
-    public function then(mixed $message, Closure $destination): mixed;
+    /**
+     * @return THandler
+     */
+    public function handler(): PipelineHandlerInterface;
+
+    /**
+     * @return PipelineInterface<THandler>
+     */
+    public function continue(): PipelineInterface;
 }

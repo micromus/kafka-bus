@@ -9,7 +9,7 @@ use Micromus\KafkaBus\Interfaces\Bus\BusInterface;
 use Micromus\KafkaBus\Interfaces\Bus\ThreadInterface;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 
-class Bus implements BusInterface
+final class Bus implements BusInterface
 {
     protected ThreadInterface $thread;
 
