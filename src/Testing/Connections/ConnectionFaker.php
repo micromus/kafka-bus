@@ -2,34 +2,46 @@
 
 namespace Micromus\KafkaBus\Testing\Connections;
 
-use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
+use Micromus\KafkaBus\Connections\Config\Options;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessageConverter;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
+use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 use Micromus\KafkaBus\Producers\ProducerConfig;
 use Micromus\KafkaBus\Testing\ConsumerFaker;
 use Micromus\KafkaBus\Testing\ProducerFaker;
 use Micromus\KafkaBus\Topics\Topic;
+use RdKafka\Message;
 use RdKafka\Message as KafkaMessage;
 
 class ConnectionFaker implements ConnectionInterface
 {
+    /**
+     * @var array<string, list<ProducerMessage>>
+     */
     public array $publishedMessages = [];
 
+    /**
+     * @var array<string, list<ConsumerMessageInterface>>
+     */
     public array $committedMessages = [];
 
+    /**
+     * @var array<int, Message>
+     */
     protected array $consumeMessages = [];
 
-    private KafkaConnectionConfig $connectionConfig;
+    private Options $options;
 
     private string $name;
 
     public function __construct()
     {
         $this->name = 'faker';
-        $this->connectionConfig = new KafkaConnectionConfig([]);
+        $this->options = new Options([]);
     }
 
     public function addMessage(KafkaMessage $message): void
@@ -42,9 +54,9 @@ class ConnectionFaker implements ConnectionInterface
         return $this->name;
     }
 
-    public function getConfig(): KafkaConnectionConfig
+    public function getOptions(): Options
     {
-        return $this->connectionConfig;
+        return $this->options;
     }
 
     public function createProducer(Topic $topic, ProducerConfig $config): ProducerInterface

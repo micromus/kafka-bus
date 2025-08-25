@@ -3,6 +3,7 @@
 namespace Micromus\KafkaBus\Interfaces\Consumers\Messages;
 
 use RdKafka\Message;
+use Stringable;
 
 interface ConsumerMessageInterface
 {
@@ -14,6 +15,9 @@ interface ConsumerMessageInterface
 
     public function payload(): string;
 
+    /**
+     * @return array<string, string|Stringable>
+     */
     public function headers(): array;
 
     public function original(): Message;

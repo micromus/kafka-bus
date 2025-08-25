@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Support;
 
 use Throwable;
 
-class RetryRepeater
+final class RetryRepeater
 {
     public function __construct(
         protected int $maximumRetries = 10,
@@ -12,6 +12,9 @@ class RetryRepeater
     ) {
     }
 
+    /**
+     * @throws Throwable
+     */
     public function execute(callable $function): void
     {
         $this->attempt($function);

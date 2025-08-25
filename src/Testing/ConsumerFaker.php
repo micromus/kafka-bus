@@ -11,10 +11,14 @@ use RdKafka\Message;
 
 class ConsumerFaker implements ConsumerInterface
 {
+    /**
+     * @param ConnectionFaker $connectionFaker
+     * @param ConsumerMessageConverter $consumerMessageConverter
+     * @param array<int, Message> $messages
+     */
     public function __construct(
         protected ConnectionFaker $connectionFaker,
         protected ConsumerMessageConverter $consumerMessageConverter,
-        /** @var Message[] */
         protected array $messages
     ) {
     }

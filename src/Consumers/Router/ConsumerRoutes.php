@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Consumers\Router;
 
 use Micromus\KafkaBus\Topics\Topic;
 
-class ConsumerRoutes
+final class ConsumerRoutes
 {
     /**
      * @var array<string, Route>

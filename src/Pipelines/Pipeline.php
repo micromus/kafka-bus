@@ -3,41 +3,67 @@
 namespace Micromus\KafkaBus\Pipelines;
 
 use Closure;
+use LogicException;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineHandlerInterface;
 use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
 
+/**
+ * @template TResult
+ * @template-covariant THandler of PipelineHandlerInterface<mixed, TResult>
+ *
+ * @implements PipelineInterface<THandler>
+ */
 final class Pipeline implements PipelineInterface
 {
+    protected bool $stopped = false;
+    protected bool $completed = false;
+
+    /**
+     * @var TResult|null
+     */
+    protected mixed $result = null;
+
+    /**
+     * @param THandler $handler
+     * @param list<PipelineMiddlewareInterface<THandler>> $middlewares
+     */
     public function __construct(
-        protected array $pipes = []
+        protected PipelineHandlerInterface $handler,
+        protected array $middlewares = [],
     ) {
     }
 
-    public function then(mixed $message, Closure $destination): mixed
+    public function handler(): PipelineHandlerInterface
     {
-        $pipeline = array_reduce(
-            array_reverse($this->pipes),
-            $this->carry(),
-            $this->prepareDestination($destination),
-        );
-
-        return $pipeline($message);
+        return $this->handler;
     }
 
-    protected function carry(): Closure
+    public function continue(): PipelineInterface
     {
-        return function ($stack, $pipe) {
-            return function ($message) use ($stack, $pipe) {
-                return method_exists($pipe, 'handle')
-                    ? $pipe->handle($message, $stack)
-                    : $pipe($message, $stack);
-            };
-        };
+        if ($this->completed) {
+            throw new LogicException('Pipeline has already been completed.');
+        }
+
+        if (count($this->middlewares) == 0) {
+            $this->completed = true;
+            $this->result = $this->handler()->handle();
+            return $this;
+        }
+
+        /** @var PipelineMiddlewareInterface<THandler> $middleware */
+        $middleware = array_shift($this->middlewares);
+
+        return $middleware->handle($this);
     }
 
-    private function prepareDestination(Closure $destination): Closure
+    /**
+     * @return TResult|null
+     */
+    public function start(): mixed
     {
-        return function ($message) use ($destination) {
-            return $destination($message);
-        };
+        $this->continue();
+
+        return $this->result;
     }
 }

@@ -12,21 +12,13 @@ use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 final class MessageBatch
 {
     /**
-     * @var non-empty-list<TMessage>
-     */
-    protected array $messages;
-
-    /**
      * @param class-string<TMessage> $messageClass,
-     * @param list<TMessage> $messages
+     * @param iterable<TMessage> $messages
      */
-    private function __construct(
+    public function __construct(
         protected string $messageClass,
-        array $messages
+        protected iterable $messages
     ) {
-        foreach ($messages as $message) {
-            $this->add($message);
-        }
     }
 
     /**
@@ -38,39 +30,17 @@ final class MessageBatch
     }
 
     /**
-     * @return non-empty-list<TMessage>
+     * @return iterable<TMessage>
      */
-    public function messages(): array
+    public function messages(): iterable
     {
         return $this->messages;
     }
 
     /**
-     * @param TMessage $message
-     * @return void
-     */
-    public function add(ProducerMessageInterface $message): void
-    {
-        \assert(get_class($message) !== $this->messageClass);
-
-        $this->messages[] = $message;
-    }
-
-    /**
      * @template TClass of ProducerMessageInterface
      *
-     * @param class-string<TClass> $messageClass
-     * @return self<TClass>
-     */
-    public static function empty(string $messageClass): self
-    {
-        return new self($messageClass, []);
-    }
-
-    /**
-     * @template TClass of ProducerMessageInterface
-     *
-     * @param non-empty-list<TClass> $messages
+     * @param array<TClass> $messages
      * @return self<TClass>
      */
     public static function fromArray(array $messages): self

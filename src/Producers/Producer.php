@@ -6,27 +6,25 @@ use Micromus\KafkaBus\Interfaces\Producers\ProducerInterface;
 use Micromus\KafkaBus\Exceptions\Producers\CannotFlushProducerException;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 use Micromus\KafkaBus\Support\RetryRepeater;
+use Micromus\KafkaBus\Topics\Topic;
 use RdKafka\Producer as KafkaProducer;
 use RdKafka\ProducerTopic;
 
 class Producer implements ProducerInterface
 {
-    protected ProducerTopic $topic;
+    protected ProducerTopic $producerTopic;
 
     public function __construct(
         protected KafkaProducer $producer,
-        protected string $topicName,
+        protected Topic $topic,
         protected RetryRepeater $retryRepeater = new RetryRepeater(),
         protected int $timeout = 2000
     ) {
-        $this->topic = $this->producer
-            ->newTopic($this->topicName);
+        $this->producerTopic = $this->producer
+            ->newTopic($this->topic->name);
     }
 
-    /**
-     * @param  ProducerMessage[]  $messages
-     */
-    public function produce(array $messages): void
+    public function produce(iterable $messages): void
     {
         foreach ($messages as $message) {
             $this->poll($message);
@@ -37,7 +35,7 @@ class Producer implements ProducerInterface
 
     private function poll(ProducerMessage $producerMessage): void
     {
-        $this->topic->producev(
+        $this->producerTopic->producev(
             partition: $producerMessage->partition,
             msgflags: RD_KAFKA_MSG_F_BLOCK,
             payload: $producerMessage->payload,
@@ -45,7 +43,7 @@ class Producer implements ProducerInterface
             headers: $producerMessage->headers
         );
 
-        $this->producer->poll(0);
+        $this->producer->poll($this->timeout);
     }
 
     private function flush(): void

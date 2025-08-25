@@ -3,12 +3,15 @@
 namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Consumers\Messages\WorkerConsumerMessage;
-use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerNotHandledException;
+use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineHandler;
+use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
-use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageHandlerInterface;
-use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
-use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Handlers\MessageHandlerInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\ConsumerPipelineMiddlewareInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
+use Micromus\KafkaBus\Pipelines\Pipeline;
+use Micromus\KafkaBus\Pipelines\PipelineBuilder;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
 class ConsumerStream implements ConsumerStreamInterface
@@ -22,10 +25,17 @@ class ConsumerStream implements ConsumerStreamInterface
         RD_KAFKA_RESP_ERR__TIMED_OUT,
     ];
 
+    /**
+     * @param ConsumerInterface $consumer
+     * @param MessageHandlerInterface $messageHandler
+     * @param string $workerName
+     * @param list<PipelineMiddlewareInterface<ConsumerPipelineHandler>> $middleware
+     */
     public function __construct(
         protected ConsumerInterface $consumer,
-        protected ConsumerMessageHandlerInterface $consumerMessageHandler,
-        protected string $workerName
+        protected MessageHandlerInterface $messageHandler,
+        protected string $workerName,
+        protected array $middleware = []
     ) {
     }
 
@@ -36,7 +46,16 @@ class ConsumerStream implements ConsumerStreamInterface
                 $consumerMessage = $this->consumer
                     ->getMessage();
 
-                $this->handleMessage($consumerMessage);
+                $workerMessage = new WorkerConsumerMessage($this->workerName, $consumerMessage);
+                $pipelineHandler = new ConsumerPipelineHandler($workerMessage, $this->messageHandler);
+
+                $pipeline = PipelineBuilder::for($pipelineHandler)
+                    ->middleware($this->middleware)
+                    ->create();
+
+                $pipeline->start();
+
+                $this->consumer->commit($workerMessage);
             }
             catch (MessageConsumerException $exception) {
                 if (! in_array($exception->consumerMessage->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
@@ -48,18 +67,6 @@ class ConsumerStream implements ConsumerStreamInterface
             }
         }
         while (! $this->forceStop);
-    }
-
-    /**
-     * @param ConsumerMessageInterface $message
-     * @return void
-     *
-     * @throws MessageConsumerNotHandledException
-     */
-    private function handleMessage(ConsumerMessageInterface $message): void
-    {
-        $this->consumerMessageHandler->handle(new WorkerConsumerMessage($this->workerName, $message));
-        $this->consumer->commit($message);
     }
 
     public function forceStop(): void

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Micromus\KafkaBus\Connections\Topics;
 
+use Micromus\KafkaBus\Connections\Config\Options;
 use Micromus\KafkaBus\Connections\Kafka\KafkaProducerFactory;
-use Micromus\KafkaBus\Connections\KafkaConnectionConfig;
 use Micromus\KafkaBus\Consumers\ConsumerConfig;
 use Micromus\KafkaBus\Exceptions\TopicNotFoundException;
 use Micromus\KafkaBus\Interfaces\Connections\Topics\ConnectionConsumerTopicsInterface;
@@ -24,7 +24,7 @@ final class Topics implements ConnectionTopicsInterface
 
     public function __construct(
         protected string $connectionName,
-        protected KafkaConnectionConfig $config
+        protected Options $config
     ) {
         $this->producerFactory = new KafkaProducerFactory($this->config);
     }

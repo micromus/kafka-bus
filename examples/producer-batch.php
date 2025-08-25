@@ -9,11 +9,11 @@ require '../vendor/autoload.php';
 /** @var BusInterface $bus */
 require 'bus.php';
 
-$messageBatch = MessageBatch::empty(ProducerMessageFaker::class);
 $time = microtime(true);
+$messages = [];
 
 foreach (range(1, 50) as $i) {
-    $messageBatch->add(new ProducerMessageFaker("$time-test-message-$i"));
+    $messages[] = new ProducerMessageFaker("$time-test-message-$i");
 }
 
-$bus->publishBatch($messageBatch);
+$bus->publishBatch(MessageBatch::fromArray($messages));

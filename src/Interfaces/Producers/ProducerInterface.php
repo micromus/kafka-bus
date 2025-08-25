@@ -7,7 +7,7 @@ use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 interface ProducerInterface
 {
     /**
-     * @param  ProducerMessage[]  $messages
+     * @param iterable<ProducerMessage> $messages
      */
-    public function produce(array $messages): void;
+    public function produce(iterable $messages): void;
 }

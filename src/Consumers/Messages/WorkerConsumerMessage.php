@@ -6,7 +6,7 @@ use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\WorkerConsumerMessageInterface;
 use RdKafka\Message;
 
-class WorkerConsumerMessage implements WorkerConsumerMessageInterface
+final class WorkerConsumerMessage implements WorkerConsumerMessageInterface
 {
     public function __construct(
         protected string $workerName,

@@ -1,8 +1,8 @@
 <?php
 
-namespace Micromus\KafkaBus\Connections;
+namespace Micromus\KafkaBus\Connections\Config;
 
-class KafkaConnectionConfig
+final readonly class Options
 {
     final public const PRODUCER_OPTIONS = [
         'transactional.id',
@@ -57,11 +57,18 @@ class KafkaConnectionConfig
         'group.id',
     ];
 
+    /**
+     * @param array<string, int|bool|string|null> $options
+     */
     public function __construct(
         protected array $options = []
     ) {
     }
 
+    /**
+     * @param array<string, int|bool|string|null> $customOptions
+     * @return array<string, int|string|null>
+     */
     public function getProducerOptions(array $customOptions = []): array
     {
         $settings = [
@@ -72,6 +79,10 @@ class KafkaConnectionConfig
         return $this->cleanupSettings($settings);
     }
 
+    /**
+     * @param array<string, int|bool|string|null> $customOptions
+     * @return array<string, int|string|null>
+     */
     public function getConsumerOptions(array $customOptions = []): array
     {
         $settings = [
@@ -82,6 +93,11 @@ class KafkaConnectionConfig
         return $this->cleanupSettings($settings);
     }
 
+    /**
+     * @param array<string, int|bool|string|null> $customOptions
+     * @param list<string> $allowKeys
+     * @return array<string, int|bool|string|null>
+     */
     private function filterSettingsByKeys(array $customOptions, array $allowKeys): array
     {
         return array_filter(
@@ -91,12 +107,16 @@ class KafkaConnectionConfig
         );
     }
 
+    /**
+     * @param array<string, int|bool|string|null> $settings
+     * @return array<string, int|string|null>
+     */
     private function cleanupSettings(array $settings = []): array
     {
         return array_filter(array_map($this->prepareSetting(...), $settings));
     }
 
-    private function prepareSetting(mixed $value): mixed
+    private function prepareSetting(int|bool|string|null $value): int|string|null
     {
         if (is_null($value)) {
             return null;

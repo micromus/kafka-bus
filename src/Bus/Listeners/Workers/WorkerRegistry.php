@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners\Workers;
 
-class WorkerRegistry
+final class WorkerRegistry
 {
     /**
      * @var array<string, Worker>

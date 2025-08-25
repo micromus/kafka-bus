@@ -2,14 +2,23 @@
 
 namespace Micromus\KafkaBus\Connections\Registry;
 
+use Micromus\KafkaBus\Connections\Config;
+use Micromus\KafkaBus\Interfaces\Connections\ConnectionConfigInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionRegistryInterface;
 use Micromus\KafkaBus\Exceptions\Connections\ConnectionException;
 
 class ConnectionRegistry implements ConnectionRegistryInterface
 {
+    /**
+     * @var array<string, ConnectionInterface>
+     */
     protected array $activeConnections = [];
 
+    /**
+     * @param DriverRegistry $driverRegistry
+     * @param array<string, ConnectionConfigInterface> $connectionsConfig
+     */
     public function __construct(
         protected DriverRegistry $driverRegistry,
         protected array $connectionsConfig
@@ -27,23 +36,13 @@ class ConnectionRegistry implements ConnectionRegistryInterface
 
     private function makeConnection(string $connectionName): ConnectionInterface
     {
-        $config = $this->getConnectionConfig($connectionName);
-
         return $this->driverRegistry
-            ->makeConnection($connectionName, $config['driver'], $config['options'] ?: []);
+            ->makeConnection($connectionName, $this->getConnectionConfig($connectionName));
     }
 
-    private function getConnectionConfig(string $connectionName): array
+    private function getConnectionConfig(string $connectionName): ConnectionConfigInterface
     {
-        if (! isset($this->connectionsConfig[$connectionName])) {
-            $availableConnections = implode(', ', array_keys($this->connectionsConfig));
-
-            throw new ConnectionException(
-                "Connection [$connectionName] not defined." .
-                    " Available connections: $availableConnections"
-            );
-        }
-
-        return $this->connectionsConfig[$connectionName];
+        return $this->connectionsConfig[$connectionName]
+            ?? throw ConnectionException::connectionNotFound($connectionName, array_keys($this->connectionsConfig));
     }
 }
