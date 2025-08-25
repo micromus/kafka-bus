@@ -17,7 +17,9 @@ class MessageFactory
 
     protected string $topicKey = 'test';
 
-    protected string $connection = 'default';
+    protected int $partition = 0;
+
+    protected int $offset = 0;
 
     public function __construct(
         protected TopicRegistry $topicRegistry
@@ -58,9 +60,14 @@ class MessageFactory
         return $this->immutableSet('topicKey', $topicKey);
     }
 
-    public function withConnection(string $connection): static
+    public function withPartition(int $partition): static
     {
-        return $this->immutableSet('connection', $connection);
+        return $this->immutableSet('partition', $partition);
+    }
+
+    public function withOffset(int $offset): static
+    {
+        return $this->immutableSet('offset', $offset);
     }
 
     private function immutableSet(string $field, mixed $value): static
@@ -78,6 +85,8 @@ class MessageFactory
         $message->payload = $payload;
         $message->headers = $this->headers;
         $message->key = $this->key ?: '';
+        $message->partition = $this->partition;
+        $message->offset = $this->offset;
 
         $message->topic_name = $this->getTopicName($this->topicKey);
 

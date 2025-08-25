@@ -2,13 +2,14 @@
 
 namespace Micromus\KafkaBus\Bus\Publishers\Router;
 
-use Micromus\KafkaBus\Interfaces\Producers\Pipelines\ProducerPipelineMiddlewareInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
+use Micromus\KafkaBus\Producers\Pipelines\ProducerPipelineHandler;
 
 readonly class Options
 {
     /**
      * @param array<string, int|bool|string|null> $additionalOptions
-     * @param list<ProducerPipelineMiddlewareInterface> $middlewares
+     * @param list<PipelineMiddlewareInterface<ProducerPipelineHandler>> $middlewares
      * @param int $flushTimeout
      * @param int $flushRetries
      */

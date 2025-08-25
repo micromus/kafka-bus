@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Micromus\KafkaBus\Producers\Pipelines;
 
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineHandlerInterface;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasHeaders;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasKey;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasPartition;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
-use Micromus\KafkaBus\Interfaces\Producers\Pipelines\ProducerPipelineHandlerInterface;
 use Micromus\KafkaBus\Producers\Messages\ProducerMessage;
 use Micromus\KafkaBus\Topics\Topic;
 
-final class ProducerPipelineHandler implements ProducerPipelineHandlerInterface
+/**
+ * @implements PipelineHandlerInterface<ProducerMessageInterface, ProducerMessage>
+ */
+final class ProducerPipelineHandler implements PipelineHandlerInterface
 {
     /**
      * @var array<string, mixed>

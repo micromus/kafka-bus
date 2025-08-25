@@ -26,14 +26,14 @@ test('can consume message', function () {
 
     $connectionFaker->addMessage($message);
 
+    $consumerRoutes = (new ConsumerRoutes())
+        ->add(new Route(
+            topic: $topicRegistry->get('products'),
+            handler: new VoidConsumerHandlerFaker(),
+        ));
+
     $workerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
-        ->add(
-            new Bus\Listeners\Workers\Worker(
-                'default-listener',
-                (new ConsumerRoutes())
-                    ->add(new Route($topicRegistry->get('products'), new VoidConsumerHandlerFaker()))
-            )
-        );
+        ->add(new Bus\Listeners\Workers\Worker('default-listener', $consumerRoutes));
 
     $bus = new Bus(
         new Bus\ThreadRegistry(

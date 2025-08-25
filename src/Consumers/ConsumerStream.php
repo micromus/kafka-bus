@@ -9,6 +9,7 @@ use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Handlers\MessageHandlerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\ConsumerPipelineMiddlewareInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
 use Micromus\KafkaBus\Pipelines\Pipeline;
 use Micromus\KafkaBus\Pipelines\PipelineBuilder;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
@@ -28,7 +29,7 @@ class ConsumerStream implements ConsumerStreamInterface
      * @param ConsumerInterface $consumer
      * @param MessageHandlerInterface $messageHandler
      * @param string $workerName
-     * @param list<ConsumerPipelineMiddlewareInterface> $middleware
+     * @param list<PipelineMiddlewareInterface<ConsumerPipelineHandler>> $middleware
      */
     public function __construct(
         protected ConsumerInterface $consumer,
@@ -46,8 +47,9 @@ class ConsumerStream implements ConsumerStreamInterface
                     ->getMessage();
 
                 $workerMessage = new WorkerConsumerMessage($this->workerName, $consumerMessage);
+                $pipelineHandler = new ConsumerPipelineHandler($workerMessage, $this->messageHandler);
 
-                $pipeline = PipelineBuilder::for(new ConsumerPipelineHandler($workerMessage, $this->messageHandler))
+                $pipeline = PipelineBuilder::for($pipelineHandler)
                     ->middleware($this->middleware)
                     ->create();
 

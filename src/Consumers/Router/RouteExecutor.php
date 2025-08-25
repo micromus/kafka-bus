@@ -2,11 +2,10 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Consumers\Pipelines\Messages\MessagePipelineHandler;
+use Micromus\KafkaBus\Consumers\Pipelines\MessagePipelineHandler;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
-use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\Messages\MessagePipelineMiddlewareInterface;
-use Micromus\KafkaBus\Pipelines\Pipeline;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
 use Micromus\KafkaBus\Pipelines\PipelineBuilder;
 
 final readonly class RouteExecutor
@@ -14,12 +13,12 @@ final readonly class RouteExecutor
     /**
      * @param callable $handler
      * @param MessageFactoryInterface $factory
-     * @param list<MessagePipelineMiddlewareInterface> $middlewares
+     * @param list<PipelineMiddlewareInterface<MessagePipelineHandler>> $middleware
      */
     public function __construct(
         protected mixed $handler,
         protected MessageFactoryInterface $factory,
-        protected array $middlewares = []
+        protected array $middleware = []
     ) {
     }
 
@@ -28,7 +27,7 @@ final readonly class RouteExecutor
         $pipelineHandler = new MessagePipelineHandler($this->handler, $this->map($message));
 
         $pipeline = PipelineBuilder::for($pipelineHandler)
-            ->middleware($this->middlewares)
+            ->middleware($this->middleware)
             ->create();
 
         $pipeline->start();

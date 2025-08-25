@@ -11,9 +11,6 @@ final class MessageHandlerFactory implements MessageHandlerFactoryInterface
 {
     public function create(Worker $worker): MessageHandlerInterface
     {
-        return new MessageHandler(
-            new ConsumerRouter($worker->routes),
-            $worker->options->middlewares
-        );
+        return new MessageHandler(new ConsumerRouter($worker->routes));
     }
 }

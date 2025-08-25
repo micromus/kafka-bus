@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Micromus\KafkaBus\Consumers\Pipelines\Messages;
+namespace Micromus\KafkaBus\Consumers\Pipelines;
 
-use Micromus\KafkaBus\Exceptions\Consumers\ConsumerException;
-use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\Messages\MessagePipelineHandlerInterface;
+use Micromus\KafkaBus\Interfaces\Pipelines\PipelineHandlerInterface;
 
-final class MessagePipelineHandler implements MessagePipelineHandlerInterface
+/**
+ * @implements PipelineHandlerInterface<mixed, true>
+ */
+final class MessagePipelineHandler implements PipelineHandlerInterface
 {
     /**
      * @param callable $handler
