@@ -102,7 +102,7 @@ final readonly class Options
     {
         return array_filter(
             $customOptions,
-            fn (string $key) => in_array($key, $allowKeys, true),
+            fn (string $key) => \in_array($key, $allowKeys, true),
             ARRAY_FILTER_USE_KEY
         );
     }
@@ -118,11 +118,11 @@ final readonly class Options
 
     private function prepareSetting(int|bool|string|null $value): int|string|null
     {
-        if (is_null($value)) {
+        if (\is_null($value)) {
             return null;
         }
 
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return $value ? 'true' : 'false';
         }
 

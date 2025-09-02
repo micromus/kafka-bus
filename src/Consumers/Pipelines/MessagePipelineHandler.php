@@ -31,7 +31,7 @@ final class MessagePipelineHandler implements PipelineHandlerInterface
      */
     public function handle(): true
     {
-        call_user_func($this->handler, $this->target);
+        \call_user_func($this->handler, $this->target);
 
         return true;
     }

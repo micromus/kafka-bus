@@ -45,6 +45,6 @@ final class MessageBatch
      */
     public static function fromArray(array $messages): self
     {
-        return new self(get_class($messages[0]), $messages);
+        return new self(\get_class($messages[0]), $messages);
     }
 }

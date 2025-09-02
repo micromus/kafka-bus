@@ -25,7 +25,7 @@ class ConsumerFaker implements ConsumerInterface
 
     public function getMessage(): ConsumerMessageInterface
     {
-        if (count($this->messages) == 0) {
+        if (\count($this->messages) == 0) {
             throw new KafkaMessagesEndedException();
         }
 

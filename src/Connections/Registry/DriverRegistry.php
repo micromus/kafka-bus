@@ -58,11 +58,11 @@ class DriverRegistry
 
     public function makeConnection(string $name, ConnectionConfigInterface $config): ConnectionInterface
     {
-        $configuration = get_class($config);
+        $configuration = \get_class($config);
 
         $driver = $this->drivers[$configuration]
             ?? throw DriverException::driverNotFound($configuration, array_keys($this->drivers));
 
-        return call_user_func($driver, $name, $config);
+        return \call_user_func($driver, $name, $config);
     }
 }

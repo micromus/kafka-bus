@@ -102,6 +102,6 @@ class MessageFactory
 
     public function fromArray(array $attributes): Message
     {
-        return $this->make(\json_encode($attributes, JSON_THROW_ON_ERROR));
+        return $this->make(json_encode($attributes, JSON_THROW_ON_ERROR));
     }
 }

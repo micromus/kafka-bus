@@ -30,7 +30,7 @@ $worker = new Bus\Listeners\Workers\Worker(
     new Bus\Listeners\Workers\Options(additionalOptions: $consumeOptions)
 );
 
-$workerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
+$workerRegistry = (new Bus\Listeners\Workers\MemoryWorkerRegistry())
     ->add($worker);
 
 $routes = (new Bus\Publishers\Router\PublisherRoutes())

@@ -45,7 +45,7 @@ final class Pipeline implements PipelineInterface
             throw new LogicException('Pipeline has already been completed.');
         }
 
-        if (count($this->middlewares) == 0) {
+        if (\count($this->middlewares) == 0) {
             $this->completed = true;
             $this->result = $this->handler()->handle();
             return $this;
