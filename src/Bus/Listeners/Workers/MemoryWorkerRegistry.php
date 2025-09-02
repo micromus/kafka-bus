@@ -2,7 +2,9 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners\Workers;
 
-final class WorkerRegistry
+use Micromus\KafkaBus\Interfaces\Bus\Listeners\WorkerRegistryInterface;
+
+final class MemoryWorkerRegistry implements WorkerRegistryInterface
 {
     /**
      * @var array<string, Worker>

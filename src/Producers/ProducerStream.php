@@ -45,7 +45,7 @@ class ProducerStream implements ProducerStreamInterface
                 ->create()
                 ->start();
 
-            if (!is_null($producerMessage)) {
+            if (!\is_null($producerMessage)) {
                 yield $producerMessage;
             }
         }

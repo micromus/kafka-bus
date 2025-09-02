@@ -15,7 +15,7 @@ final class NativeContainer implements ContainerInterface
 
     public function set(object $object): void
     {
-        $this->singletons[get_class($object)] = $object;
+        $this->singletons[\get_class($object)] = $object;
     }
 
     /**

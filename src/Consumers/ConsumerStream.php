@@ -58,7 +58,7 @@ class ConsumerStream implements ConsumerStreamInterface
                 $this->consumer->commit($workerMessage);
             }
             catch (MessageConsumerException $exception) {
-                if (! in_array($exception->consumerMessage->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
+                if (! \in_array($exception->consumerMessage->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
                     throw $exception;
                 }
             }

@@ -18,7 +18,7 @@ final readonly class KafkaConnectionConfig implements ConnectionConfigInterface
     public function __construct(
         public string $broketList,
         public int $logLevel = LOG_DEBUG,
-        public bool $debug = true,
+        public bool $debug = false,
         public ?UserCredentialsConfig $saslConfig = null,
         public array $extra = [],
     ) {
@@ -27,11 +27,11 @@ final readonly class KafkaConnectionConfig implements ConnectionConfigInterface
     public function getOptions(): Options
     {
         /** @var array<string, string|int|bool> $options */
-        $options = array_values([
+        $options = [
             'metadata.broker.list' => $this->broketList,
             'log_level' => $this->logLevel,
             'debug' =>  $this->debug ? 'all' : null,
-        ]);
+        ];
 
         $saslOptions = $this->saslConfig?->toOptions() ?? [];
 

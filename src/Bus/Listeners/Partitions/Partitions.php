@@ -102,7 +102,7 @@ final class Partitions implements PartitionsInterface
     {
         $topicKeys = array_map(fn (Topic $topic) => $topic->key, $this->worker->topics());
 
-        if (!in_array($topic->key, $topicKeys)) {
+        if (!\in_array($topic->key, $topicKeys)) {
             throw new CannotCommitOffsetException(
                 "Topic '{$topic->key}' not found for worker '{$this->worker->name}'"
             );

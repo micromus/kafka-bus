@@ -2,8 +2,9 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners;
 
-use Micromus\KafkaBus\Bus\Listeners\Workers\WorkerRegistry;
+use Micromus\KafkaBus\Bus\Listeners\Workers\MemoryWorkerRegistry;
 use Micromus\KafkaBus\Exceptions\Listeners\ListenerException;
+use Micromus\KafkaBus\Interfaces\Bus\Listeners\WorkerRegistryInterface;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamFactoryInterface;
 
@@ -11,7 +12,7 @@ class ListenerFactory
 {
     public function __construct(
         protected ConsumerStreamFactoryInterface $streamFactory,
-        protected WorkerRegistry $workerRegistry = new WorkerRegistry(),
+        protected WorkerRegistryInterface $workerRegistry = new MemoryWorkerRegistry(),
     ) {
     }
 

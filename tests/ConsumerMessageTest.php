@@ -32,7 +32,7 @@ test('can consume message', function () {
             handler: new VoidConsumerHandlerFaker(),
         ));
 
-    $workerRegistry = (new Bus\Listeners\Workers\WorkerRegistry())
+    $workerRegistry = (new Bus\Listeners\Workers\MemoryWorkerRegistry())
         ->add(new Bus\Listeners\Workers\Worker('default-listener', $consumerRoutes));
 
     $bus = new Bus(
