@@ -127,6 +127,10 @@ If you only need to consume, configure the worker(s) and call `listener('name')-
 - Consumer only: see `examples/consumer.php`
 - Full setup with routing: see `examples/bus.php`
 
+## Architecture
+
+The architecture of the package is described in [STRUCTURE.md](STRUCTURE.md) (in Russian).
+
 ## Testing
 
 ```bash

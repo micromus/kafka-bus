@@ -1,13 +1,32 @@
-.idea
-.phpunit.cache
-build
+# IDE-specific files (JetBrains)
+.idea/
+
+# Cache files
+.phpunit.cache/
+.php-cs-fixer.cache
+
+# Build artifacts
+build/
+
+# Code coverage reports
+coverage/
+
+# Generated documentation
+docs/
+
+# Dependencies managed by Composer and npm
+vendor/
+node_modules/
+
+# Dependency lock file
+# For libraries, it's good practice to ignore composer.lock to allow testing
+# against a wider range of dependency versions. For applications, you should
+# typically commit this file to ensure consistent dependencies.
 composer.lock
-coverage
-docs
+
+# Local configuration files.
+# These often contain environment-specific or sensitive information.
+# It's common to have .dist files (e.g., phpunit.xml.dist) in version control.
 phpunit.xml
 phpstan.neon
 testbench.yaml
-vendor
-node_modules
-
-.php-cs-fixer.cache
