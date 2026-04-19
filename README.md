@@ -1,8 +1,9 @@
 # Kafka Bus for PHP
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/micromus/kafka-bus.svg?style=flat-square)](https://packagist.org/packages/micromus/kafka-bus)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/php-code-style.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3A"PHP+Code+Style"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/run-tests.yml?branch=1.x&label=tests&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3Arun-tests+branch%3A1.x)
+[![GitHub Code Style](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/php-code-style.yml?branch=1.x&label=code-style&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3Acode-style+branch%3A1.x)
+[![GitHub PHPStan](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/phpstan.yml?branch=1.x&label=phpstan&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3Aphpstan+branch%3A1.x)
 [![Total Downloads](https://img.shields.io/packagist/dt/micromus/kafka-bus.svg?style=flat-square)](https://packagist.org/packages/micromus/kafka-bus)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
