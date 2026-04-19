@@ -12,8 +12,12 @@ use Micromus\KafkaBus\Testing\Consumers\MessageFactory;
 use Micromus\KafkaBus\Testing\Messages\VoidConsumerHandlerFaker;
 use Micromus\KafkaBus\Topics\Topic;
 use Micromus\KafkaBus\Topics\TopicRegistry;
+use Testo\Assert;
+use Testo\Test;
 
-test('can consume message', function () {
+#[Test]
+function can_consume_message(): void
+{
     $topicRegistry = (new TopicRegistry())
         ->add(new Topic('production.fact.products.1', 'products'));
 
@@ -54,11 +58,12 @@ test('can consume message', function () {
     $bus->listener('default-listener')
         ->listen();
 
-    expect($connectionFaker->committedMessages)
-        ->toHaveCount(1)
-        ->and($connectionFaker->committedMessages['production.fact.products.1'][0]->original())
-        ->toHaveProperties([
-            'payload' => 'test-message',
-            'headers' => ['foo' => 'bar'],
-        ]);
-});
+    Assert::array($connectionFaker->committedMessages)
+        ->hasCount(1)
+        ->hasKeys('production.fact.products.1');
+
+    $message = $connectionFaker->committedMessages['production.fact.products.1'][0]->original();
+
+    Assert::true($message->payload == 'test-message');
+    Assert::true($message->headers == ['foo' => 'bar']);
+}
