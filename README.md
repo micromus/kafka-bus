@@ -110,7 +110,73 @@ If you only need to produce messages, configure the bus and call `publish` with 
 
 ### Consuming only
 
-If you only need to consume, configure the worker(s) and call `listener('name')->listen()`. Your `MessageHandler` implementation will be invoked for each message received.
+If you only need to consume, configure the worker(s) and call `listener('name')->listen()`. Your `MessageHandler` 
+implementation will be invoked for each message received.
+
+```php
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+
+class MessageHandler
+{
+    public function __invoke(ConsumerMessageInterface $message)
+    {
+        // $message->payload()
+    }
+}
+```
+
+#### Only payload
+
+```php
+class MessageHandler
+{
+    public function __invoke(string $message)
+    {
+        // $message == kafka message->payload 
+    }
+}
+```
+
+#### Payload as Array
+
+```php
+class MessageHandler
+{
+    public function __invoke(array $payload)
+    {
+        // $payload == json_decode(message->payload, true)
+    }
+}
+```
+
+#### Original Message
+
+```php
+use RdKafka\Message;
+
+class MessageHandler
+{
+    public function __invoke(Message $message)
+    {
+        // $message->key
+    }
+}
+```
+
+#### Customer factory
+
+```php
+use Micromus\KafkaBus\Consumers\Attributes\MessageFactory;use Micromus\KafkaBus\Consumers\Messages\JsonMessageFactory;use RdKafka\Message;
+
+class MessageHandler
+{
+    #[MessageFactory(new JsonMessageFactory())]
+    public function __invoke(array $payload)
+    {
+        // $payload == json_decode(message->payload, true)
+    }
+}
+```
 
 ### More examples
 
