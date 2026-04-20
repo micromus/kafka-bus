@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC2 - 2026-04-20
+
+### What's Changed
+
+* feat: Интеграция PHP Testo by @popkovkirill in https://github.com/micromus/kafka-bus/pull/16
+* fix: Исправление Readme by @popkovkirill in https://github.com/micromus/kafka-bus/pull/17
+* feat: Оптимизация конфигурации шины by @popkovkirill in https://github.com/micromus/kafka-bus/pull/18
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v1.0.0-RC1...v1.0.0-RC2
+
 ## v0.6.8 - 2025-01-05
 
 **Full Changelog**: https://github.com/micromus/kafka-bus/compare/v0.6.7...v0.6.8
