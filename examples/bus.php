@@ -1,15 +1,10 @@
 <?php
 
 use Micromus\KafkaBus\Bus;
-use Micromus\KafkaBus\Connections\Config\KafkaConnectionConfig;
+use Micromus\KafkaBus\Bus\Publishers\Router\PublisherRoutesBuilder;
 use Micromus\KafkaBus\Connections\Registry\ConnectionRegistry;
-use Micromus\KafkaBus\Connections\Registry\DriverRegistry;
-use Micromus\KafkaBus\Consumers\ConsumerStreamFactory;
-use Micromus\KafkaBus\Consumers\Handlers\MessageHandlerFactory;
-use Micromus\KafkaBus\Consumers\Router\ConsumerRoutes;
-use Micromus\KafkaBus\Consumers\Router\Route;
-use Micromus\KafkaBus\Producers\ProducerStreamFactory;
-use Micromus\KafkaBus\Support\NativeContainer;
+use Micromus\KafkaBus\Consumers\Router\ConsumerRoutesBuilder;
+use Micromus\KafkaBus\Consumers\Router\RouteInfo;
 use Micromus\KafkaBus\Testing\Messages\ConsumerHandlerFaker;
 use Micromus\KafkaBus\Testing\Messages\ProducerMessageFaker;
 use Micromus\KafkaBus\Topics\Topic;
@@ -23,43 +18,30 @@ $consumeOptions = [
     'auto.offset.reset' => 'beginning',
 ];
 
-$worker = new Bus\Listeners\Workers\Worker(
-    'default-listener',
-    (new ConsumerRoutes())
-        ->add(new Route($topicRegistry->get('products'), new ConsumerHandlerFaker())),
-    new Bus\Listeners\Workers\Options(additionalOptions: $consumeOptions)
-);
+$consumerRoutes = ConsumerRoutesBuilder::make($topicRegistry)
+    ->add(new RouteInfo('products', new ConsumerHandlerFaker()))
+    ->build();
 
-$workerRegistry = (new Bus\Listeners\Workers\MemoryWorkerRegistry())
-    ->add($worker);
+$publisherRoutes = PublisherRoutesBuilder::make($topicRegistry)
+    ->add(ProducerMessageFaker::class, 'products')
+    ->build();
 
-$routes = (new Bus\Publishers\Router\PublisherRoutes())
-    ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, $topicRegistry->get('products')));
-
-$connectionRegistry = new ConnectionRegistry(
-    new DriverRegistry(),
-    ['default' => new KafkaConnectionConfig('127.0.0.1:29092')]
-);
-
-$container = new NativeContainer();
-
-$publisherFactory = new Bus\Publishers\PublisherFactory(
-    new ProducerStreamFactory(),
-    $routes
-);
-
-$listenerFactory = new Bus\Listeners\ListenerFactory(
-    new ConsumerStreamFactory(new MessageHandlerFactory()),
-    $workerRegistry
-);
+$workerRegistry = Bus\Listeners\Workers\MemoryWorkerRegistry::make()
+    ->add(
+        new Bus\Listeners\Workers\Worker(
+            'default-listener',
+            $consumerRoutes,
+            new Bus\Listeners\Workers\Options(additionalOptions: $consumeOptions)
+        )
+    );
 
 $bus = new Bus(
     new Bus\ThreadRegistry(
-        $connectionRegistry,
+        ConnectionRegistry::default(),
         new Bus\ThreadFactory(
-            $listenerFactory,
-            $publisherFactory,
+            new Bus\Listeners\ListenerFactory(workerRegistry: $workerRegistry),
+            new Bus\Publishers\PublisherFactory(routes: $publisherRoutes),
         )
     ),
-    'default'
+    ConnectionRegistry::DEFAULT_CONNECTION_NAME
 );

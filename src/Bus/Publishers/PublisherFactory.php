@@ -6,12 +6,13 @@ use Micromus\KafkaBus\Bus\Publishers\Router\PublisherRouter;
 use Micromus\KafkaBus\Bus\Publishers\Router\PublisherRoutes;
 use Micromus\KafkaBus\Interfaces\Connections\ConnectionInterface;
 use Micromus\KafkaBus\Interfaces\Producers\ProducerStreamFactoryInterface;
+use Micromus\KafkaBus\Producers\ProducerStreamFactory;
 use Micromus\KafkaBus\Topics\TopicRegistry;
 
 class PublisherFactory
 {
     public function __construct(
-        protected ProducerStreamFactoryInterface $producerFactory,
+        protected ProducerStreamFactoryInterface $producerFactory = new ProducerStreamFactory(),
         protected PublisherRoutes $routes = new PublisherRoutes(),
     ) {
     }

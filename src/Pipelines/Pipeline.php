@@ -10,7 +10,7 @@ use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
 
 /**
  * @template TResult
- * @template-covariant THandler of PipelineHandlerInterface<mixed, TResult>
+ * @template THandler of PipelineHandlerInterface<mixed, TResult>
  *
  * @implements PipelineInterface<THandler>
  */

@@ -10,18 +10,20 @@ use Micromus\KafkaBus\Exceptions\Connections\ConnectionException;
 
 class ConnectionRegistry implements ConnectionRegistryInterface
 {
+    public const DEFAULT_CONNECTION_NAME = 'default';
+
     /**
      * @var array<string, ConnectionInterface>
      */
     protected array $activeConnections = [];
 
     /**
-     * @param DriverRegistry $driverRegistry
      * @param array<string, ConnectionConfigInterface> $connectionsConfig
+     * @param DriverRegistry $driverRegistry
      */
     public function __construct(
-        protected DriverRegistry $driverRegistry,
-        protected array $connectionsConfig
+        protected array $connectionsConfig,
+        protected DriverRegistry $driverRegistry = new DriverRegistry(),
     ) {
     }
 
@@ -44,5 +46,13 @@ class ConnectionRegistry implements ConnectionRegistryInterface
     {
         return $this->connectionsConfig[$connectionName]
             ?? throw ConnectionException::connectionNotFound($connectionName, array_keys($this->connectionsConfig));
+    }
+
+    public static function default(string $host = '127.0.0.1', int $port = 29092): self
+    {
+        return new self([
+            self::DEFAULT_CONNECTION_NAME => new Config\KafkaConnectionConfig("$host:$port"),
+            'null' => new Config\NullConnectionConfig(),
+        ]);
     }
 }
