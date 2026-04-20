@@ -49,6 +49,7 @@ final class ConsumerTopics implements ConnectionConsumerTopicsInterface
             $connectionTopic->partitions
         );
 
+        /** @var list<TopicPartition> $commitedPartitions */
         $commitedPartitions = $this->consumer()
             ->getCommittedOffsets($topicPartitions, 10_000);
 
@@ -82,7 +83,7 @@ final class ConsumerTopics implements ConnectionConsumerTopicsInterface
         $this->consumer()
             ->queryWatermarkOffsets($topicName, $partition, $earlyOffset, $latestOffset, 1000);
 
-        return [$earlyOffset, $latestOffset];
+        return [$earlyOffset, $latestOffset]; // @phpstan-ignore-line
     }
 
     /**

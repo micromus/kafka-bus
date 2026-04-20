@@ -15,6 +15,7 @@ class ProducerFaker implements ProducerInterface
 
     public function produce(iterable $messages): void
     {
+        // @phpstan-ignore-next-line
         $this->connection->publishedMessages[$this->topicName] = [
             ...$this->connection->publishedMessages[$this->topicName] ?? [],
             ...$messages,

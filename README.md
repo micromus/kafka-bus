@@ -65,43 +65,32 @@ class PrintHandler implements MessageHandler {
     }
 }
 
-$worker = new Bus\Listeners\Workers\Worker(
-    'default-listener',
-    (new ConsumerRoutes())
-        ->add(new ConsumerRoute($topicRegistry->get('products'), new PrintHandler())),
-    new Bus\Listeners\Workers\Options(additionalOptions: $consumeOptions)
-);
+$consumerRoutes = ConsumerRoutesBuilder::make($topicRegistry)
+    ->add(new RouteInfo('products', new PrintHandler()))
+    ->build();
 
-$workerRegistry = (new Bus\Listeners\Workers\MemoryWorkerRegistry())
-    ->add($worker);
+$publisherRoutes = PublisherRoutesBuilder::make($topicRegistry)
+    ->add(ProducerMessageFaker::class, 'products')
+    ->build();
 
-// Configure how to route producer messages to topics
-$routes = (new Bus\Publishers\Router\PublisherRoutes())
-    ->add(new Bus\Publishers\Router\Route(ProducerMessage::class, $topicRegistry->get('products')));
-
-// Kafka connection(s)
-$connectionRegistry = new ConnectionRegistry(
-    new DriverRegistry(),
-    ['default' => new KafkaConnectionConfig('127.0.0.1:29092')]
-);
-
-// Create Bus
-$publisherFactory = new Bus\Publishers\PublisherFactory(
-    new ProducerStreamFactory(),
-    $routes
-);
-
-$listenerFactory = new Bus\Listeners\ListenerFactory(
-    new ConsumerStreamFactory(new MessageHandlerFactory()),
-    $workerRegistry
-);
+$workerRegistry = Bus\Listeners\Workers\MemoryWorkerRegistry::make()
+    ->add(
+        new Bus\Listeners\Workers\Worker(
+            'default-listener',
+            $consumerRoutes,
+            new Bus\Listeners\Workers\Options(additionalOptions: $consumeOptions)
+        )
+    );
 
 $bus = new Bus(
     new Bus\ThreadRegistry(
-        $connectionRegistry,
-        new Bus\ThreadFactory($listenerFactory, $publisherFactory)
+        ConnectionRegistry::default(),
+        new Bus\ThreadFactory(
+            new Bus\Listeners\ListenerFactory(workerRegistry: $workerRegistry),
+            new Bus\Publishers\PublisherFactory(routes: $publisherRoutes),
+        )
     ),
-    'default' // default connection name
+    ConnectionRegistry::DEFAULT_CONNECTION_NAME
 );
 
 // Produce a message
@@ -111,6 +100,7 @@ $bus->publish(new ProducerMessage(payload: 'test-message', headers: ['foo' => 'b
 pcntl_async_signals(true);
 $listener = $bus->listener('default-listener');
 pcntl_signal(SIGINT, fn () => $listener->forceStop());
+
 $listener->listen();
 ```
 

@@ -24,7 +24,9 @@ final class ConsumerMessage implements ConsumerMessageInterface
 
     public function key(): ?string
     {
-        return $this->message->key;
+        return $this->message->key == ''
+            ? null
+            : $this->message->key;
     }
 
     public function payload(): string

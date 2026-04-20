@@ -12,11 +12,11 @@ final class ConsumerRoutes
     protected array $routes = [];
 
     /**
-     * @return Topic[]
+     * @return list<Topic>
      */
     public function topics(): array
     {
-        return array_map(fn (Route $route) => $route->topic, $this->routes);
+        return array_column($this->routes, 'topic');
     }
 
     public function add(Route $route): self
