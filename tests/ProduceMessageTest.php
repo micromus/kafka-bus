@@ -18,7 +18,7 @@ function can_produce_message(): void
     $topicRegistry = (new TopicRegistry())
         ->add(new Topic('production.fact.products.1', 'products'));
 
-    $connectionFaker = new ConnectionFaker();
+    $connectionFaker = new ConnectionFaker($topicRegistry);
 
     $routes = (new PublisherRoutes())
         ->add(new Bus\Publishers\Router\Route(ProducerMessageFaker::class, $topicRegistry->get('products')));
@@ -47,7 +47,7 @@ function can_produce_message(): void
 
     $message = $connectionFaker->publishedMessages['production.fact.products.1'][0];
 
-    Assert::true($message->payload == 'test-message');
-    Assert::true($message->partition == 5);
-    Assert::true($message->headers == ['foo' => 'bar']);
+    Assert::equals($message->payload, 'test-message');
+    Assert::equals($message->partition, 5);
+    Assert::equals($message->headers, ['foo' => 'bar']);
 }

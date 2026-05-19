@@ -1,5 +1,6 @@
 # IDE-specific files (JetBrains)
 .idea/
+.junie/
 
 # Cache files
 .phpunit.cache/

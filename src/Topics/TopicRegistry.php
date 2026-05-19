@@ -23,6 +23,13 @@ final class TopicRegistry
         return $this->get($topicKey)->name;
     }
 
+    public function tryGetTopicName(string $topicKey): string
+    {
+        return isset($this->topics[$topicKey])
+            ? $this->topics[$topicKey]->name
+            : $topicKey;
+    }
+
     public function get(string $topicKey): Topic
     {
         return $this->topics[$topicKey]

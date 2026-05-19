@@ -14,6 +14,7 @@ use Micromus\KafkaBus\Producers\ProducerConfig;
 use Micromus\KafkaBus\Testing\ConsumerFaker;
 use Micromus\KafkaBus\Testing\ProducerFaker;
 use Micromus\KafkaBus\Topics\Topic;
+use Micromus\KafkaBus\Topics\TopicRegistry;
 use RdKafka\Message;
 use RdKafka\Message as KafkaMessage;
 
@@ -38,7 +39,7 @@ class ConnectionFaker implements ConnectionInterface
 
     private string $name;
 
-    public function __construct()
+    public function __construct(private readonly TopicRegistry $topicRegistry)
     {
         $this->name = 'faker';
         $this->options = new Options([]);
@@ -46,6 +47,9 @@ class ConnectionFaker implements ConnectionInterface
 
     public function addMessage(KafkaMessage $message): void
     {
+        $message->topic_name = $this->topicRegistry
+            ->tryGetTopicName($message->topic_name);
+
         $this->consumeMessages[] = $message;
     }
 

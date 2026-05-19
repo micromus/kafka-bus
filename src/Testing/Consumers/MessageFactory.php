@@ -21,24 +21,9 @@ class MessageFactory
 
     protected int $offset = 0;
 
-    public function __construct(
-        protected TopicRegistry $topicRegistry
-    ) {
-    }
-
-    public static function for(TopicRegistry $topicRegistry): MessageFactory
+    public static function for(): MessageFactory
     {
-        return new self($topicRegistry);
-    }
-
-    private function getTopicName(string $topicKey): string
-    {
-        try {
-            return $this->topicRegistry->getTopicName($topicKey);
-        }
-        catch (TopicCannotResolvedException) {
-            return $topicKey;
-        }
+        return new self();
     }
 
     /**
@@ -87,14 +72,13 @@ class MessageFactory
         $message->key = $this->key ?: '';
         $message->partition = $this->partition;
         $message->offset = $this->offset;
-
-        $message->topic_name = $this->getTopicName($this->topicKey);
+        $message->topic_name = $this->topicKey;
 
         return $message;
     }
 
     /**
-     * @param array<string, mixed> $attributes
+     * @param array<string|string, mixed> $attributes
      * @return Message
      *
      * @throws \JsonException
