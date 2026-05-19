@@ -78,7 +78,7 @@ class MessageFactory
     }
 
     /**
-     * @param array<string|string, mixed> $attributes
+     * @param array<string|int, mixed> $attributes
      * @return Message
      *
      * @throws \JsonException
