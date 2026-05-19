@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC6 - 2026-05-19
+
+### What's Changed
+
+* fix: Подправлен тип у фабрики сообщений by @popkovkirill in https://github.com/micromus/kafka-bus/pull/23
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v1.0.0-RC5...v1.0.0-RC6
+
 ## v1.0.0-RC5 - 2026-05-19
 
 ### What's Changed
