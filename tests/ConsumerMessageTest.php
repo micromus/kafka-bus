@@ -21,9 +21,9 @@ function can_consume_message(): void
     $topicRegistry = (new TopicRegistry())
         ->add(new Topic('production.fact.products.1', 'products'));
 
-    $connectionFaker = new ConnectionFaker();
+    $connectionFaker = new ConnectionFaker($topicRegistry);
 
-    $message = MessageFactory::for($topicRegistry)
+    $message = MessageFactory::for()
         ->withHeaders(['foo' => 'bar'])
         ->withTopicKey('products')
         ->make('test-message');
@@ -64,6 +64,6 @@ function can_consume_message(): void
 
     $message = $connectionFaker->committedMessages['production.fact.products.1'][0]->original();
 
-    Assert::true($message->payload == 'test-message');
-    Assert::true($message->headers == ['foo' => 'bar']);
+    Assert::equals($message->payload, 'test-message');
+    Assert::equals($message->headers, ['foo' => 'bar']);
 }
