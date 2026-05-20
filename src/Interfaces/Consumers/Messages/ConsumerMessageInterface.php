@@ -16,7 +16,7 @@ interface ConsumerMessageInterface
     public function payload(): string;
 
     /**
-     * @return array<string, string|Stringable>
+     * @return array<string, mixed>
      */
     public function headers(): array;
 

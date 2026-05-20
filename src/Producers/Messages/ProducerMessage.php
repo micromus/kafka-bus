@@ -4,7 +4,7 @@ namespace Micromus\KafkaBus\Producers\Messages;
 
 use Micromus\KafkaBus\Topics\Topic;
 
-class ProducerMessage
+readonly class ProducerMessage
 {
     /**
      * @param Topic $topic
