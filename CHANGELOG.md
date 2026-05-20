@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC8 - 2026-05-20
+
+### What's Changed
+
+* fix: Подправлен тип заголовков сообщений by @popkovkirill in https://github.com/micromus/kafka-bus/pull/25
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v1.0.0-RC7...v1.0.0-RC8
+
 ## v1.0.0-RC7 - 2026-05-20
 
 ### What's Changed
