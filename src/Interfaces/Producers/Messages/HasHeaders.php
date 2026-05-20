@@ -2,12 +2,10 @@
 
 namespace Micromus\KafkaBus\Interfaces\Producers\Messages;
 
-use Stringable;
-
 interface HasHeaders
 {
     /**
-     * @return array<string, string|Stringable>
+     * @return array<string, mixed>
      */
     public function getHeaders(): array;
 }
