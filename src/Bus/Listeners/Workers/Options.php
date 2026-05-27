@@ -2,14 +2,13 @@
 
 namespace Micromus\KafkaBus\Bus\Listeners\Workers;
 
-use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineHandler;
-use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
+use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineMiddleware;
 
 readonly class Options
 {
     /**
      * @param array<string, int|bool|string|null> $additionalOptions
-     * @param list<PipelineMiddlewareInterface<ConsumerPipelineHandler>> $middlewares
+     * @param list<ConsumerPipelineMiddleware> $middlewares
      * @param bool $autoCommit
      * @param int $consumerTimeout
      */

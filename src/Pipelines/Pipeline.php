@@ -2,7 +2,6 @@
 
 namespace Micromus\KafkaBus\Pipelines;
 
-use Closure;
 use LogicException;
 use Micromus\KafkaBus\Interfaces\Pipelines\PipelineHandlerInterface;
 use Micromus\KafkaBus\Interfaces\Pipelines\PipelineInterface;
