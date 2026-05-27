@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.1.1 - 2026-05-27
+
+### What's Changed
+
+* fix: Исправлены Middleware у ConsumerStream by @popkovkirill in https://github.com/micromus/kafka-bus/pull/28
+
+**Full Changelog**: https://github.com/micromus/kafka-bus/compare/v1.1.0...v1.1.1
+
 ## v1.0.0-RC9 - 2026-05-20
 
 ### What's Changed
