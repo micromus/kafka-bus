@@ -5,7 +5,6 @@ namespace Micromus\KafkaBus\Consumers\Router;
 use Micromus\KafkaBus\Consumers\Pipelines\MessagePipelineHandler;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
-use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
 use Micromus\KafkaBus\Pipelines\PipelineBuilder;
 
 final readonly class RouteExecutor
@@ -13,7 +12,7 @@ final readonly class RouteExecutor
     /**
      * @param callable $handler
      * @param MessageFactoryInterface $factory
-     * @param list<PipelineMiddlewareInterface<MessagePipelineHandler>> $middleware
+     * @param list<MessagePipelineMiddleware> $middleware
      */
     public function __construct(
         protected mixed $handler,

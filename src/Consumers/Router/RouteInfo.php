@@ -2,16 +2,12 @@
 
 namespace Micromus\KafkaBus\Consumers\Router;
 
-use Micromus\KafkaBus\Consumers\Pipelines\MessagePipelineHandler;
-use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
-use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
-
 final readonly class RouteInfo
 {
     /**
      * @param string $topicKey
      * @param callable $handler
-     * @param list<PipelineMiddlewareInterface<MessagePipelineHandler>> $middleware
+     * @param list<MessagePipelineMiddleware> $middleware
      */
     public function __construct(
         public string $topicKey,

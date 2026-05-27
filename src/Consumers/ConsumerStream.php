@@ -4,13 +4,11 @@ namespace Micromus\KafkaBus\Consumers;
 
 use Micromus\KafkaBus\Consumers\Messages\WorkerConsumerMessage;
 use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineHandler;
+use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineMiddleware;
 use Micromus\KafkaBus\Exceptions\Consumers\MessageConsumerException;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\ConsumerStreamInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Handlers\MessageHandlerInterface;
-use Micromus\KafkaBus\Interfaces\Consumers\Pipelines\ConsumerPipelineMiddlewareInterface;
-use Micromus\KafkaBus\Interfaces\Pipelines\PipelineMiddlewareInterface;
-use Micromus\KafkaBus\Pipelines\Pipeline;
 use Micromus\KafkaBus\Pipelines\PipelineBuilder;
 use Micromus\KafkaBus\Testing\Exceptions\KafkaMessagesEndedException;
 
@@ -29,7 +27,7 @@ class ConsumerStream implements ConsumerStreamInterface
      * @param ConsumerInterface $consumer
      * @param MessageHandlerInterface $messageHandler
      * @param string $workerName
-     * @param list<PipelineMiddlewareInterface<ConsumerPipelineHandler>> $middleware
+     * @param list<ConsumerPipelineMiddleware> $middleware
      */
     public function __construct(
         protected ConsumerInterface $consumer,
