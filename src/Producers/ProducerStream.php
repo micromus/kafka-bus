@@ -41,7 +41,7 @@ class ProducerStream implements ProducerStreamInterface
         foreach ($messages as $message) {
             $producerHandler = new ProducerPipelineHandler($message, $this->route->topic);
             $producerMessage = PipelineBuilder::for($producerHandler)
-                ->middleware($this->route->options->middlewares)
+                ->middleware($this->route->options->middleware)
                 ->create()
                 ->start();
 

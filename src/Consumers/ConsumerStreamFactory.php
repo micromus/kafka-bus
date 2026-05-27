@@ -27,7 +27,7 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
         return new ConsumerStream(
             $connection->createConsumer($consumerMessageHandler->topics(), $configuration),
             $consumerMessageHandler,
-            $worker->name
+            $worker
         );
     }
 

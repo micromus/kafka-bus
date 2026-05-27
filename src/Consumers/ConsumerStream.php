@@ -2,6 +2,7 @@
 
 namespace Micromus\KafkaBus\Consumers;
 
+use Micromus\KafkaBus\Bus\Listeners\Workers\Worker;
 use Micromus\KafkaBus\Consumers\Messages\WorkerConsumerMessage;
 use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineHandler;
 use Micromus\KafkaBus\Consumers\Pipelines\ConsumerPipelineMiddleware;
@@ -26,14 +27,12 @@ class ConsumerStream implements ConsumerStreamInterface
     /**
      * @param ConsumerInterface $consumer
      * @param MessageHandlerInterface $messageHandler
-     * @param string $workerName
-     * @param list<ConsumerPipelineMiddleware> $middleware
+     * @param Worker $worker
      */
     public function __construct(
         protected ConsumerInterface $consumer,
         protected MessageHandlerInterface $messageHandler,
-        protected string $workerName,
-        protected array $middleware = []
+        protected Worker $worker,
     ) {
     }
 
@@ -44,11 +43,11 @@ class ConsumerStream implements ConsumerStreamInterface
                 $consumerMessage = $this->consumer
                     ->getMessage();
 
-                $workerMessage = new WorkerConsumerMessage($this->workerName, $consumerMessage);
+                $workerMessage = new WorkerConsumerMessage($this->worker->name, $consumerMessage);
                 $pipelineHandler = new ConsumerPipelineHandler($workerMessage, $this->messageHandler);
 
                 $pipeline = PipelineBuilder::for($pipelineHandler)
-                    ->middleware($this->middleware)
+                    ->middleware($this->worker->options->middleware)
                     ->create();
 
                 $pipeline->start();
