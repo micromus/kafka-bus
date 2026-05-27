@@ -8,15 +8,15 @@ readonly class Options
 {
     /**
      * @param array<string, int|bool|string|null> $additionalOptions
-     * @param list<ConsumerPipelineMiddleware> $middlewares
+     * @param list<ConsumerPipelineMiddleware> $middleware
      * @param bool $autoCommit
      * @param int $consumerTimeout
      */
     public function __construct(
         public array $additionalOptions = [],
-        public array $middlewares = [],
-        public bool $autoCommit = true,
-        public int $consumerTimeout = 2000,
+        public array $middleware = [],
+        public bool  $autoCommit = true,
+        public int   $consumerTimeout = 2000,
     ) {
     }
 }

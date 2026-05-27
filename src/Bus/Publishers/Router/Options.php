@@ -8,15 +8,15 @@ readonly class Options
 {
     /**
      * @param array<string, int|bool|string|null> $additionalOptions
-     * @param list<ProducerPipelineMiddleware> $middlewares
+     * @param list<ProducerPipelineMiddleware> $middleware
      * @param int $flushTimeout
      * @param int $flushRetries
      */
     public function __construct(
         public array $additionalOptions = [],
-        public array $middlewares = [],
-        public int $flushTimeout = 5000,
-        public int $flushRetries = 10
+        public array $middleware = [],
+        public int   $flushTimeout = 5000,
+        public int   $flushRetries = 10
     ) {
     }
 }
